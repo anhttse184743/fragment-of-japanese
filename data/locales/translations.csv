@@ -1,0 +1,18 @@
+keys,vi,en,ja
+UI_NEW_GAME,Chơi mới,New Game,新しいゲーム
+UI_CONTINUE,Tiếp tục,Continue,続ける
+UI_SETTINGS,Cài đặt,Settings,設定
+UI_LANGUAGE,Ngôn ngữ,Language,言語
+UI_QUIT,Thoát,Quit,終了
+UI_BACK,Quay lại,Back,戻る
+UI_PAUSE,Tạm dừng,Pause,ポーズ
+BATTLE_CORRECT,Chính xác!,Correct!,正解！
+BATTLE_WRONG,Sai rồi!,Wrong!,不正解！
+BATTLE_VICTORY,Chiến thắng!,Victory!,勝利！
+BATTLE_DEFEAT,Thất bại...,Defeat...,敗北...
+BATTLE_LEVEL_UP,Lên cấp!,Level Up!,レベルアップ！
+DIALOGUE_NEXT,Tiếp theo,Next,次へ
+QUIZ_CHOOSE,Chọn đáp án đúng:,Choose the correct answer:,正しい答えを選んでください:
+QUIZ_RESULT_SCORE,Điểm số:,Score:,スコア:
+SETTINGS_BGM,Nhạc nền,BGM,BGM
+SETTINGS_SFX,Hiệu ứng âm thanh,Sound Effects,効果音

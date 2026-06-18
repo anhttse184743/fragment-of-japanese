@@ -1,0 +1,22 @@
+[
+  {
+    "id": "quest_001",
+    "name_vi": "Bước đầu tiên",
+    "name_en": "First Step",
+    "name_ja": "最初の一歩",
+    "description_vi": "Hãy học 5 chữ Hiragana đầu tiên",
+    "type": "learn",
+    "condition": {"vocab_tag": "hiragana", "count": 5},
+    "reward": {"exp": 30, "item_id": "item_potion"}
+  },
+  {
+    "id": "quest_002",
+    "name_vi": "Chiến binh từ vựng",
+    "name_en": "Vocab Warrior",
+    "name_ja": "単語の戦士",
+    "description_vi": "Đánh bại 3 Ma Hiragana",
+    "type": "battle",
+    "condition": {"enemy_id": "enemy_hiragana_ghost", "count": 3},
+    "reward": {"exp": 50, "item_id": "item_scroll"}
+  }
+]

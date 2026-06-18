@@ -1,0 +1,9 @@
+[
+  {"item_id":"item_potion",       "currency":"gold",    "price":50},
+  {"item_id":"item_hi_potion",    "currency":"gold",    "price":120},
+  {"item_id":"item_scroll",       "currency":"gold",    "price":80},
+  {"item_id":"item_silver_key",   "currency":"gold",    "price":300},
+  {"item_id":"item_golden_key",   "currency":"mathach", "price":30},
+  {"item_id":"item_wooden_sword", "currency":"gold",    "price":100},
+  {"item_id":"item_leather_armor","currency":"gold",    "price":150}
+]

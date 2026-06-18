@@ -1,0 +1,5 @@
+[
+  {"id":"enemy_hiragana_ghost","name_vi":"Ma Hiragana",  "name_en":"Hiragana Ghost",  "name_ja":"ひらがなゴースト","hp":20,"attack":5,"defense":1,"exp_reward":15,"vocab_topic":"hiragana","description_vi":"Linh hồn của các chữ Hiragana bị lãng quên"},
+  {"id":"enemy_katakana_golem","name_vi":"Golem Katakana","name_en":"Katakana Golem","name_ja":"カタカナゴーレム","hp":35,"attack":8,"defense":3,"exp_reward":25,"vocab_topic":"katakana","description_vi":"Golem được tạo từ các chữ Katakana cổ đại"},
+  {"id":"enemy_kanji_dragon",  "name_vi":"Rồng Kanji",    "name_en":"Kanji Dragon",    "name_ja":"漢字ドラゴン",   "hp":80,"attack":18,"defense":8,"exp_reward":80,"vocab_topic":"kanji","description_vi":"Boss — Rồng được triệu hồi từ sức mạnh của Kanji"}
+]

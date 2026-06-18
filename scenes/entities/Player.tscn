@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://ccy8pxkgjsstq"]
+
+[ext_resource type="Script" uid="uid://dbhpro7frtmib" path="res://src/Entities/Player/Player.cs" id="1_player"]
+[ext_resource type="Script" uid="uid://re3ev7crn6x" path="res://src/Entities/Player/PlayerController.cs" id="2_ctrl"]
+[ext_resource type="Script" uid="uid://kh01c88yrhgy" path="res://src/Entities/Player/CameraRig.cs" id="3_rig"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="4_pcam"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="5_host"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_lfoco"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/player/player_frames.tres" id="7_frames"]
+[ext_resource type="Script" uid="uid://br776t024ji3u" path="res://src/Entities/Player/PlayerAnimator.cs" id="8_anim"]
+
+[sub_resource type="CapsuleShape3D" id="Capsule_player"]
+radius = 0.35
+height = 1.75
+
+[sub_resource type="Resource" id="Resource_h683u"]
+script = ExtResource("5_lfoco")
+
+[node name="PlayerRig" type="Node3D" unique_id=2069311076]
+
+[node name="Player" type="CharacterBody3D" parent="." unique_id=47495964]
+unique_name_in_owner = true
+script = ExtResource("1_player")
+
+[node name="Visual" type="AnimatedSprite3D" parent="Player" unique_id=89265302]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.832, 0)
+pixel_size = 0.02869
+billboard = 2
+texture_filter = 0
+alpha_cut = 1
+sprite_frames = ExtResource("7_frames")
+animation = &"idle_down"
+autoplay = "idle_down"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1936819117]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("Capsule_player")
+
+[node name="Controller" type="Node" parent="Player" unique_id=1699955057 node_paths=PackedStringArray("_player", "_camera")]
+script = ExtResource("2_ctrl")
+_player = NodePath("..")
+_camera = NodePath("../../MainCamera3D")
+
+[node name="Animator" type="Node" parent="Player" node_paths=PackedStringArray("_sprite", "_player", "_camera", "_controller")]
+script = ExtResource("8_anim")
+_sprite = NodePath("../Visual")
+_player = NodePath("..")
+_camera = NodePath("../../MainCamera3D")
+_controller = NodePath("../Controller")
+
+[node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=1818356730 node_paths=PackedStringArray("follow_target")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.9335804, 0.35836798, 0, -0.35836798, 0.9335804, 0, 2.5085757, 6.535063)
+script = ExtResource("4_pcam")
+priority = 10
+follow_mode = 6
+follow_target = NodePath("../Player")
+tween_resource = SubResource("Resource_h683u")
+follow_distance = 7.0
+vertical_rotation_offset = 0.3665191429188092
+spring_length = 7.0
+align_transform_with_view = Callable()
+align_position_with_view = Callable()
+align_rotation_with_view = Callable()
+
+[node name="MainCamera3D" type="Camera3D" parent="." unique_id=1624152271]
+unique_name_in_owner = true
+physics_interpolation_mode = 1
+transform = Transform3D(1, 0, 0, 0, 0.9335804, 0.35836798, 0, -0.35836798, 0.9335804, 0, 2.5085757, 6.535063)
+top_level = true
+fov = 82.0
+
+[node name="PhantomCameraHost" type="Node" parent="MainCamera3D" unique_id=1953128648]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("5_host")
+
+[node name="CameraRig" type="Node" parent="." unique_id=819442149 node_paths=PackedStringArray("_pcamNode")]
+script = ExtResource("3_rig")
+_pcamNode = NodePath("../PlayerPhantomCamera3D")
