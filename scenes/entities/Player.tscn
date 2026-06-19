@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_lfoco"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/player/player_frames.tres" id="7_frames"]
 [ext_resource type="Script" uid="uid://br776t024ji3u" path="res://src/Entities/Player/PlayerAnimator.cs" id="8_anim"]
+[ext_resource type="Script" path="res://src/Entities/AttackZone.cs" id="9_zone"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_player"]
 radius = 0.35
@@ -26,8 +27,8 @@ script = ExtResource("1_player")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.832, 0)
 pixel_size = 0.02869
 billboard = 2
-texture_filter = 0
 alpha_cut = 1
+texture_filter = 0
 sprite_frames = ExtResource("7_frames")
 animation = &"idle_down"
 autoplay = "idle_down"
@@ -36,28 +37,37 @@ autoplay = "idle_down"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
 shape = SubResource("Capsule_player")
 
-[node name="Controller" type="Node" parent="Player" unique_id=1699955057 node_paths=PackedStringArray("_player", "_camera")]
+[node name="Controller" type="Node" parent="Player" unique_id=1699955057 node_paths=PackedStringArray("_player", "_camera", "_attackZone")]
 script = ExtResource("2_ctrl")
 _player = NodePath("..")
 _camera = NodePath("../../MainCamera3D")
+_attackZone = NodePath("../AttackZone")
 
-[node name="Animator" type="Node" parent="Player" node_paths=PackedStringArray("_sprite", "_player", "_camera", "_controller")]
+[node name="Animator" type="Node" parent="Player" unique_id=1186738613 node_paths=PackedStringArray("_sprite", "_player", "_camera", "_controller")]
 script = ExtResource("8_anim")
 _sprite = NodePath("../Visual")
 _player = NodePath("..")
 _camera = NodePath("../../MainCamera3D")
 _controller = NodePath("../Controller")
 
+[node name="AttackZone" type="Node3D" parent="Player" node_paths=PackedStringArray("OwnerBody")]
+script = ExtResource("9_zone")
+OwnerBody = NodePath("..")
+Damage = 14
+Range = 1.6
+Width = 1.4
+Height = 1.6
+
 [node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=1818356730 node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.9335804, 0.35836798, 0, -0.35836798, 0.9335804, 0, 2.5085757, 6.535063)
+transform = Transform3D(1, 0, 0, 0, 0.9396926, 0.34202012, 0, -0.34202012, 0.9396926, 0, 2.394141, 6.5778484)
 script = ExtResource("4_pcam")
 priority = 10
 follow_mode = 6
 follow_target = NodePath("../Player")
 tween_resource = SubResource("Resource_h683u")
 follow_distance = 7.0
-vertical_rotation_offset = 0.3665191429188092
+vertical_rotation_offset = 0.3490658503988659
 spring_length = 7.0
 align_transform_with_view = Callable()
 align_position_with_view = Callable()
@@ -66,7 +76,7 @@ align_rotation_with_view = Callable()
 [node name="MainCamera3D" type="Camera3D" parent="." unique_id=1624152271]
 unique_name_in_owner = true
 physics_interpolation_mode = 1
-transform = Transform3D(1, 0, 0, 0, 0.9335804, 0.35836798, 0, -0.35836798, 0.9335804, 0, 2.5085757, 6.535063)
+transform = Transform3D(1, 0, 0, 0, 0.9396926, 0.34202012, 0, -0.34202012, 0.9396926, 0, 2.394141, 6.5778484)
 top_level = true
 fov = 82.0
 

@@ -10,8 +10,10 @@ public partial class PlayerData : Resource
     [Export] public int    Level       { get; set; } = 1;
     [Export] public int    Exp         { get; set; } = 0;
     [Export] public int    MaxExp      { get; set; } = 100;
-    [Export] public int    Hp          { get; set; } = 100;
-    [Export] public int    MaxHp       { get; set; } = 100;
+    [Export] public int    Hp          { get; set; } = 150;
+    [Export] public int    MaxHp       { get; set; } = 150;
+    [Export] public int    Mana        { get; set; } = 100;
+    [Export] public int    MaxMana     { get; set; } = 100;
     [Export] public int    Attack      { get; set; } = 10;
     [Export] public int    Defense     { get; set; } = 5;
 

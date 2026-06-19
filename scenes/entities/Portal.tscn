@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bportal7gate12"]
+
+[ext_resource type="Script" path="res://src/World/Portal.cs" id="1_portal"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/props/portal/portal_frames.tres" id="2_frames"]
+
+[sub_resource type="CylinderShape3D" id="cyl_portal"]
+radius = 1.8
+height = 3.0
+
+[node name="Portal" type="Area3D"]
+script = ExtResource("1_portal")
+DestinationName = "khu vực mới"
+
+[node name="Visual" type="AnimatedSprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+pixel_size = 0.02
+billboard = 2
+alpha_cut = 1
+texture_filter = 0
+sprite_frames = ExtResource("2_frames")
+animation = &"spin"
+autoplay = "spin"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("cyl_portal")

@@ -1,51 +1,70 @@
 using Godot;
+using FragmentOfJapanese.Entities;
 
 namespace FragmentOfJapanese.Entities.Enemy;
 
 /// <summary>
-/// AI đơn giản (2.5D): Patrol → Chase khi phát hiện player → Trigger battle khi đến gần.
-/// Di chuyển trong không gian 3D trên mặt phẳng X,Z; có trọng lực để bám mặt đất.
-/// Khoảng cách tính bằng MÉT (không phải pixel).
-/// TODO: nâng cấp sang NavigationAgent3D (terrain đã bake sẵn NavigationRegion3D).
+/// AI quái real-time (2.5D): Idle → Chase (đi/chạy về phía player) → Attack khi đến tầm.
+///   - Đi bộ khi gần, CHẠY khi xa (đều chậm hơn player một chút).
+///   - Nhảy TÙY TÌNH HUỐNG: khi kẹt tường hoặc mục tiêu ở cao hơn (dù không có animation nhảy).
+///   - Đến tầm thì vung đòn theo nhịp (AttackCooldown) → AttackZone gây sát thương.
+/// Tự tìm player trong group "player". Mọi thông số chỉnh trong Inspector.
+/// Khoảng cách = MÉT. TODO: nâng cấp NavigationAgent3D (terrain đã bake NavigationRegion3D).
 /// </summary>
 public partial class EnemyAi : Node
 {
-    public enum AiState { Patrol, Chase, Battle }
+    public enum AiState { Idle, Chase, Attack }
 
-    [Export] private Enemy _enemy;
-    [Export] public float DetectRange { get; set; } = 12f;    // m
-    [Export] public float BattleRange { get; set; } = 2f;     // m
-    [Export] public float MoveSpeed   { get; set; } = 3.5f;   // m/s
-    [Export] public float Gravity     { get; set; } = 18f;
+    [Export] private Enemy             _enemy;
+    [Export] private CharacterAnimator _animator;
+    [Export] private AttackZone        _attackZone;
 
-    public AiState State { get; private set; } = AiState.Patrol;
+    [Export] public float DetectRange    { get; set; } = 12f;   // m — bắt đầu đuổi
+    [Export] public float AttackRange     { get; set; } = 1.6f;  // m — vào tầm đánh
+    [Export] public float WalkSpeed       { get; set; } = 3.2f;  // chậm hơn player (4.5)
+    [Export] public float RunSpeed        { get; set; } = 6.0f;  // chậm hơn player (9.0)
+    [Export] public float RunDistance     { get; set; } = 5f;    // xa hơn mức này thì chạy
+    [Export] public float Gravity         { get; set; } = 18f;
+    [Export] public float JumpSpeed       { get; set; } = 5.5f;
+    [Export] public float JumpHeightDiff  { get; set; } = 1.0f;  // mục tiêu cao hơn ngần này thì nhảy
+    [Export] public float AttackCooldown  { get; set; } = 1.2f;  // giây giữa các đòn
 
-    private Node3D  _target;                       // tham chiếu Player (CharacterBody3D)
-    private AiState _lastState = AiState.Patrol;
+    public AiState State { get; private set; } = AiState.Idle;
 
-    [Signal] public delegate void BattleTriggeredEventHandler(Enemy enemy);
+    [Signal] public delegate void BattleTriggeredEventHandler(Enemy enemy);  // giữ cho tương thích
+
+    private Node3D _target;
+    private float  _atkTimer;
+
+    public override void _Ready() => _target = GetTree().GetFirstNodeInGroup("player") as Node3D;
+
+    public void SetTarget(Node3D target) => _target = target;
 
     public override void _PhysicsProcess(double delta)
     {
-        if (_enemy == null || _target == null) return;
+        if (_enemy == null) return;
+        float dt = (float)delta;
 
-        float dt   = (float)delta;
-        float dist = _enemy.GlobalPosition.DistanceTo(_target.GlobalPosition);
+        _target ??= GetTree().GetFirstNodeInGroup("player") as Node3D;
+        float dist = _target != null ? _enemy.GlobalPosition.DistanceTo(_target.GlobalPosition) : float.MaxValue;
 
-        State = dist <= BattleRange ? AiState.Battle
+        State = dist <= AttackRange ? AiState.Attack
               : dist <= DetectRange ? AiState.Chase
-              : AiState.Patrol;
+              :                       AiState.Idle;
 
         var v = _enemy.Velocity;
+        bool running = false;
 
-        // Di chuyển ngang (X,Z) — chỉ khi đang đuổi theo player
-        if (State == AiState.Chase)
+        // Di chuyển ngang khi đang đuổi
+        if (State == AiState.Chase && _target != null)
         {
             var to = _target.GlobalPosition - _enemy.GlobalPosition;
             to.Y = 0f;
             var dir = to.Normalized();
-            v.X = dir.X * MoveSpeed;
-            v.Z = dir.Z * MoveSpeed;
+            running = dist > RunDistance;
+            float spd = running ? RunSpeed : WalkSpeed;
+            v.X = dir.X * spd;
+            v.Z = dir.Z * spd;
         }
         else
         {
@@ -53,18 +72,34 @@ public partial class EnemyAi : Node
             v.Z = 0f;
         }
 
-        // Trọng lực để bám mặt đất
-        if (!_enemy.IsOnFloor()) v.Y -= Gravity * dt;
-        else if (v.Y < 0f)       v.Y = 0f;
+        // Trọng lực + nhảy tùy tình huống
+        bool onFloor = _enemy.IsOnFloor();
+        if (!onFloor)
+            v.Y -= Gravity * dt;
+        else
+        {
+            v.Y = 0f;
+            if (State == AiState.Chase)
+            {
+                bool blocked = _enemy.IsOnWall();   // kẹt vật cản
+                bool higher  = _target != null &&
+                               (_target.GlobalPosition.Y - _enemy.GlobalPosition.Y) > JumpHeightDiff;
+                if (blocked || higher) v.Y = JumpSpeed;
+            }
+        }
 
         _enemy.Velocity = v;
         _enemy.MoveAndSlide();
 
-        // Phát battle 1 lần khi vừa vào tầm (tránh spam mỗi frame)
-        if (State == AiState.Battle && _lastState != AiState.Battle)
-            EmitSignal(SignalName.BattleTriggered, _enemy);
-        _lastState = State;
-    }
+        if (_animator != null) _animator.Running = running;
 
-    public void SetTarget(Node3D target) => _target = target;
+        // Vung đòn theo nhịp khi trong tầm
+        _atkTimer -= dt;
+        if (State == AiState.Attack && _atkTimer <= 0f)
+        {
+            _atkTimer = AttackCooldown;
+            _animator?.TriggerAttack();
+            _attackZone?.Attack();
+        }
+    }
 }

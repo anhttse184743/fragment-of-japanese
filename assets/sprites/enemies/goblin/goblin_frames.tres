@@ -1,0 +1,117 @@
+[gd_resource type="SpriteFrames" load_steps=53 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_down_01.png" id="g1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_down_02.png" id="g2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_down_03.png" id="g3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_down_04.png" id="g4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_down_05.png" id="g5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_top_01.png" id="g6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_top_02.png" id="g7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_top_03.png" id="g8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_top_04.png" id="g9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_top_05.png" id="g10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_left_01.png" id="g11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_left_02.png" id="g12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_left_03.png" id="g13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_left_04.png" id="g14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_left_05.png" id="g15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_right_01.png" id="g16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_right_02.png" id="g17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_right_03.png" id="g18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_right_04.png" id="g19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/idle/idle_right_05.png" id="g20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_down_01.png" id="g21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_down_02.png" id="g22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_down_03.png" id="g23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_down_04.png" id="g24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_up_01.png" id="g25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_up_02.png" id="g26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_up_03.png" id="g27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_up_04.png" id="g28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_left_01.png" id="g29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_left_02.png" id="g30"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_left_03.png" id="g31"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_left_04.png" id="g32"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_right_01.png" id="g33"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_right_02.png" id="g34"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_right_03.png" id="g35"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/run/run_right_04.png" id="g36"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_down_01.png" id="g37"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_down_02.png" id="g38"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_down_03.png" id="g39"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_down_04.png" id="g40"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_up_01.png" id="g41"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_up_02.png" id="g42"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_up_03.png" id="g43"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_up_04.png" id="g44"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_left_01.png" id="g45"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_left_02.png" id="g46"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_left_03.png" id="g47"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_left_04.png" id="g48"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_right_01.png" id="g49"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_right_02.png" id="g50"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_right_03.png" id="g51"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/goblin/attack/attack_right_04.png" id="g52"]
+
+[resource]
+animations = [{
+"frames": [{"duration": 1.0, "texture": ExtResource("g1")}, {"duration": 1.0, "texture": ExtResource("g2")}, {"duration": 1.0, "texture": ExtResource("g3")}, {"duration": 1.0, "texture": ExtResource("g4")}, {"duration": 1.0, "texture": ExtResource("g5")}],
+"loop": true,
+"name": &"idle_down",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g6")}, {"duration": 1.0, "texture": ExtResource("g7")}, {"duration": 1.0, "texture": ExtResource("g8")}, {"duration": 1.0, "texture": ExtResource("g9")}, {"duration": 1.0, "texture": ExtResource("g10")}],
+"loop": true,
+"name": &"idle_up",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g11")}, {"duration": 1.0, "texture": ExtResource("g12")}, {"duration": 1.0, "texture": ExtResource("g13")}, {"duration": 1.0, "texture": ExtResource("g14")}, {"duration": 1.0, "texture": ExtResource("g15")}],
+"loop": true,
+"name": &"idle_left",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g16")}, {"duration": 1.0, "texture": ExtResource("g17")}, {"duration": 1.0, "texture": ExtResource("g18")}, {"duration": 1.0, "texture": ExtResource("g19")}, {"duration": 1.0, "texture": ExtResource("g20")}],
+"loop": true,
+"name": &"idle_right",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g21")}, {"duration": 1.0, "texture": ExtResource("g22")}, {"duration": 1.0, "texture": ExtResource("g23")}, {"duration": 1.0, "texture": ExtResource("g24")}],
+"loop": true,
+"name": &"run_down",
+"speed": 10.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g25")}, {"duration": 1.0, "texture": ExtResource("g26")}, {"duration": 1.0, "texture": ExtResource("g27")}, {"duration": 1.0, "texture": ExtResource("g28")}],
+"loop": true,
+"name": &"run_up",
+"speed": 10.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g29")}, {"duration": 1.0, "texture": ExtResource("g30")}, {"duration": 1.0, "texture": ExtResource("g31")}, {"duration": 1.0, "texture": ExtResource("g32")}],
+"loop": true,
+"name": &"run_left",
+"speed": 10.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g33")}, {"duration": 1.0, "texture": ExtResource("g34")}, {"duration": 1.0, "texture": ExtResource("g35")}, {"duration": 1.0, "texture": ExtResource("g36")}],
+"loop": true,
+"name": &"run_right",
+"speed": 10.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g37")}, {"duration": 1.0, "texture": ExtResource("g38")}, {"duration": 1.0, "texture": ExtResource("g39")}, {"duration": 1.0, "texture": ExtResource("g40")}],
+"loop": false,
+"name": &"attack_down",
+"speed": 12.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g41")}, {"duration": 1.0, "texture": ExtResource("g42")}, {"duration": 1.0, "texture": ExtResource("g43")}, {"duration": 1.0, "texture": ExtResource("g44")}],
+"loop": false,
+"name": &"attack_up",
+"speed": 12.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g45")}, {"duration": 1.0, "texture": ExtResource("g46")}, {"duration": 1.0, "texture": ExtResource("g47")}, {"duration": 1.0, "texture": ExtResource("g48")}],
+"loop": false,
+"name": &"attack_left",
+"speed": 12.0
+}, {
+"frames": [{"duration": 1.0, "texture": ExtResource("g49")}, {"duration": 1.0, "texture": ExtResource("g50")}, {"duration": 1.0, "texture": ExtResource("g51")}, {"duration": 1.0, "texture": ExtResource("g52")}],
+"loop": false,
+"name": &"attack_right",
+"speed": 12.0
+}]

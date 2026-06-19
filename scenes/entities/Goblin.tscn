@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://6qfiflgckue6"]
+
+[ext_resource type="Script" uid="uid://mnsqr31mr3r0" path="res://src/Entities/Enemy/Enemy.cs" id="1_enemy"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/enemies/goblin/goblin_frames.tres" id="2_frames"]
+[ext_resource type="Script" uid="uid://bgyi8pudmhicg" path="res://src/Entities/CharacterAnimator.cs" id="3_anim"]
+[ext_resource type="Script" uid="uid://c8xpeb3lhqugw" path="res://src/Entities/AttackZone.cs" id="4_zone"]
+[ext_resource type="Script" uid="uid://cqr5mwsk1phtx" path="res://src/Entities/Enemy/EnemyAi.cs" id="5_ai"]
+
+[sub_resource type="CapsuleShape3D" id="cap_goblin"]
+radius = 0.3
+height = 1.4
+
+[node name="Goblin" type="CharacterBody3D" unique_id=362843177]
+script = ExtResource("1_enemy")
+EnemyId = "goblin"
+EnemyName = "Goblin"
+
+[node name="Visual" type="AnimatedSprite3D" parent="." unique_id=653402652]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7325, 0)
+pixel_size = 0.03488
+billboard = 2
+alpha_cut = 1
+texture_filter = 0
+sprite_frames = ExtResource("2_frames")
+animation = &"idle_down"
+autoplay = "idle_down"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=716352018]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+shape = SubResource("cap_goblin")
+
+[node name="Animator" type="Node" parent="." unique_id=2008700661 node_paths=PackedStringArray("_sprite", "_body")]
+script = ExtResource("3_anim")
+_sprite = NodePath("../Visual")
+_body = NodePath("..")
+
+[node name="AttackZone" type="Node3D" parent="." unique_id=1981664222 node_paths=PackedStringArray("OwnerBody")]
+script = ExtResource("4_zone")
+OwnerBody = NodePath("..")
+Damage = 12
+Range = 1.5
+Width = 1.3
+Height = 1.4
+
+[node name="Ai" type="Node" parent="." unique_id=1804282519 node_paths=PackedStringArray("_enemy", "_animator", "_attackZone")]
+script = ExtResource("5_ai")
+_enemy = NodePath("..")
+_animator = NodePath("../Animator")
+_attackZone = NodePath("../AttackZone")
+DetectRange = 10.0

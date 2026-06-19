@@ -16,8 +16,9 @@ namespace FragmentOfJapanese.Entities.Player;
 /// </summary>
 public partial class PlayerController : Node
 {
-    [Export] private CharacterBody3D _player;   // = %Player
-    [Export] private Camera3D        _camera;   // = %MainCamera3D (lấy yaw cho camera-relative)
+    [Export] private CharacterBody3D _player;       // = %Player
+    [Export] private Camera3D        _camera;       // = %MainCamera3D (lấy yaw cho camera-relative)
+    [Export] private AttackZone      _attackZone;   // vùng tấn công trước mặt (debug: vùng đỏ)
 
     [Export] public float MoveSpeed = 4.5f;     // m/s đi bộ
     [Export] public float RunSpeed  = 9.0f;     // m/s chạy nhanh
@@ -40,7 +41,7 @@ public partial class PlayerController : Node
     // ───── API cho nút cảm ứng mobile (gọi sau) ─────
     public void ToggleRun()    => IsRunning = !IsRunning;
     public void RequestJump()  => _jumpRequested = true;
-    public void RequestAttack() => AttackPressed?.Invoke();
+    public void RequestAttack() { AttackPressed?.Invoke(); _attackZone?.Attack(); }
 
     public override void _PhysicsProcess(double delta)
     {
@@ -55,7 +56,10 @@ public partial class PlayerController : Node
 
         // Tấn công
         if (Input.IsActionJustPressed("attack"))
-            AttackPressed?.Invoke();
+        {
+            AttackPressed?.Invoke();   // → animation
+            _attackZone?.Attack();     // → sát thương vùng trước mặt
+        }
 
         bool onFloor = _player.IsOnFloor();
 
@@ -105,6 +109,7 @@ public partial class PlayerController : Node
         AddKey("jump",       Key.Space);
         AddKey("run_toggle", Key.Shift);
         AddKey("attack",     Key.J);
+        AddMouseButton("attack", MouseButton.Left);   // chuột trái = đánh
     }
 
     private static void AddKey(string action, Key key)
@@ -117,5 +122,17 @@ public partial class PlayerController : Node
                 return; // đã có, không add trùng
 
         InputMap.ActionAddEvent(action, new InputEventKey { PhysicalKeycode = key });
+    }
+
+    private static void AddMouseButton(string action, MouseButton button)
+    {
+        if (!InputMap.HasAction(action))
+            InputMap.AddAction(action);
+
+        foreach (var e in InputMap.ActionGetEvents(action))
+            if (e is InputEventMouseButton mb && mb.ButtonIndex == button)
+                return; // đã có
+
+        InputMap.ActionAddEvent(action, new InputEventMouseButton { ButtonIndex = button });
     }
 }

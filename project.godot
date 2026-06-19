@@ -29,6 +29,8 @@ Wallet="*res://src/Items/Wallet.cs"
 Shop="*res://src/Items/Shop.cs"
 InventoryUi="*res://src/Ui/InventoryUi.cs"
 ShopUi="*res://src/Ui/ShopUi.cs"
+SceneTransition="*res://src/Autoloads/SceneTransition.cs"
+ConfirmUi="*res://src/Ui/ConfirmUi.cs"
 
 [display]
 

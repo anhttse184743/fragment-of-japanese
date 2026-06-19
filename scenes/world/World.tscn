@@ -35,6 +35,7 @@
 [ext_resource type="PackedScene" uid="uid://c0l8pk2evgth8" path="res://assets/models/constructions/volcanic_peak/mountain.glb" id="33_xokg7"]
 [ext_resource type="PackedScene" uid="uid://dnlo2axadvtsl" path="res://assets/models/constructions/volcanic_peak/lava_mountain.glb" id="34_g82e4"]
 [ext_resource type="PackedScene" uid="uid://c83lnhqnjxs4h" path="res://assets/models/constructions/volcanic_peak/basalt_dirt_base.glb" id="36_g82e4"]
+[ext_resource type="PackedScene" uid="uid://6qfiflgckue6" path="res://scenes/entities/Goblin.tscn" id="37_2vkyy"]
 [ext_resource type="PackedScene" uid="uid://ccy8pxkgjsstq" path="res://scenes/entities/Player.tscn" id="player_scene"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lplgh"]
@@ -46736,6 +46737,9 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -16.220108, 1.7527609, 2.8374
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="horizontal_boulder2/node_0/StaticBody3D" unique_id=603545646]
 shape = SubResource("ConvexPolygonShape3D_i08rc")
+
+[node name="Goblin" parent="." unique_id=297625340 instance=ExtResource("37_2vkyy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.656277, 3.413987, 11.591797)
 
 [editable path="Magic_castle_region/Castle"]
 [editable path="Magic_castle_region/Gate"]

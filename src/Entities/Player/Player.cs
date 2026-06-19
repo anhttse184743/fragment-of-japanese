@@ -3,17 +3,19 @@ using FragmentOfJapanese.Core;
 
 namespace FragmentOfJapanese.Entities.Player;
 
-public partial class Player : CharacterBody3D
+public partial class Player : CharacterBody3D, IDamageable
 {
 	[Export] public PlayerData Data { get; set; }
 
 	[Signal] public delegate void HpChangedEventHandler(int current, int max);
+	[Signal] public delegate void ManaChangedEventHandler(int current, int max);
 	[Signal] public delegate void ExpChangedEventHandler(int current, int max, int level);
 	[Signal] public delegate void DiedEventHandler();
 
 	public override void _Ready()
 	{
 		Data ??= new PlayerData();
+		AddToGroup("player");   // để quái tự tìm được mục tiêu
 	}
 
 	public void TakeDamage(int amount)
@@ -28,6 +30,21 @@ public partial class Player : CharacterBody3D
 	{
 		Data.Hp = Mathf.Min(Data.MaxHp, Data.Hp + amount);
 		EmitSignal(SignalName.HpChanged, Data.Hp, Data.MaxHp);
+	}
+
+	/// <summary>Tiêu mana nếu đủ; trả về true nếu dùng được (cho phép thuật/skill sau này).</summary>
+	public bool UseMana(int amount)
+	{
+		if (Data.Mana < amount) return false;
+		Data.Mana -= amount;
+		EmitSignal(SignalName.ManaChanged, Data.Mana, Data.MaxMana);
+		return true;
+	}
+
+	public void RestoreMana(int amount)
+	{
+		Data.Mana = Mathf.Min(Data.MaxMana, Data.Mana + amount);
+		EmitSignal(SignalName.ManaChanged, Data.Mana, Data.MaxMana);
 	}
 
 	public void GainExp(int amount)
