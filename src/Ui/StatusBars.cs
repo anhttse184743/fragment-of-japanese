@@ -19,16 +19,35 @@ public partial class StatusBars : Control
     [Export] private TextureProgressBar _staminaBar;
     [Export] private Label              _staminaLabel;
 
-    public override void _Ready() => CallDeferred(nameof(Bind));
+    private bool   _bound;
+    private bool   _warned;
+    private double _waited;
 
-    private void Bind()
+    // Player có thể được SPAWN sau HUD (PlayerSpawn) → thử lại mỗi frame tới khi thấy rồi mới bind.
+    public override void _Ready() => SetProcess(true);
+
+    public override void _Process(double delta)
     {
-        if (GetTree().GetFirstNodeInGroup("player") is not Player player)
+        if (_bound) return;
+
+        if (GetTree().GetFirstNodeInGroup("player") is Player player)
         {
-            GD.PrintErr("[StatusBars] Không tìm thấy player (group \"player\").");
+            Bind(player);
+            _bound = true;
+            SetProcess(false);
             return;
         }
 
+        _waited += delta;
+        if (_waited > 5d && !_warned)   // cảnh báo 1 lần nếu chờ lâu mà vẫn chưa có player
+        {
+            _warned = true;
+            GD.PrintErr("[StatusBars] 5s rồi vẫn chưa thấy player — kiểm tra PlayerSpawn có spawn Player.tscn không.");
+        }
+    }
+
+    private void Bind(Player player)
+    {
         player.HpChanged      += UpdateHp;
         player.ManaChanged    += UpdateMana;
         player.StaminaChanged += UpdateStamina;

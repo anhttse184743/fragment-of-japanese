@@ -36,10 +36,13 @@ SkinManager="*res://src/Cosmetics/SkinManager.cs"
 AdManager="*res://src/Ads/AdManager.cs"
 InventoryUi="*res://src/Ui/InventoryUi.cs"
 ShopUi="*res://src/Ui/ShopUi.cs"
+LocaleManager="*res://src/Autoloads/LocaleManager.cs"
 SceneTransition="*res://src/Autoloads/SceneTransition.cs"
 ConfirmUi="*res://src/Ui/ConfirmUi.cs"
 DialogueUi="*res://src/Ui/DialogueUi.cs"
 ChallengeUi="*res://src/Ui/ChallengeUi.cs"
+SaveSystem="*res://src/Autoloads/SaveSystem.cs"
+GameManager="*res://src/Autoloads/GameManager.cs"
 
 [display]
 

@@ -53,7 +53,9 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/TopBar.tscn" id="52_lkldd"]
 [ext_resource type="PackedScene" uid="uid://oi2a05ifwrpt" path="res://scenes/ui/StatusBars.tscn" id="53_h1p51"]
 [ext_resource type="PackedScene" uid="uid://dbvd6w6fievxv" path="res://scenes/entities/Portal.tscn" id="54_kqqcm"]
-[ext_resource type="PackedScene" path="res://scenes/entities/PlayerSpawn.tscn" id="55_lkldd"]
+[ext_resource type="PackedScene" path="res://scenes/entities/PlayerSpawn.tscn" id="54_lkldd"]
+[ext_resource type="Script" uid="uid://cahyyj4fht02a" path="res://src/World/WorldController.cs" id="55_wctrl"]
+[ext_resource type="Script" uid="uid://c3bxm4nbdca0u" path="res://src/World/WorldBoundary.cs" id="56_wbnd"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lplgh"]
 render_priority = 0
@@ -13316,6 +13318,7 @@ shape = SubResource("CapsuleShape3D_ucybd")
 transform = Transform3D(0.56012183, 0, -0.9333617, 0, 1.0885314, 0, 0.9333617, 0, 0.56012183, 263.3426, 2.1409383, 212.23357)
 
 [node name="Visual" type="MeshInstance3D" parent="Props/Trees/Tree0662" unique_id=513365576]
+transform = Transform3D(1.0000002, 0, -2.9802322e-08, 0, 1, 0, 2.9802322e-08, 0, 1.0000002, 0.0002193451, -0.0030782223, 0.0017127991)
 mesh = SubResource("ArrayMesh_dobjl")
 
 [node name="Body" type="StaticBody3D" parent="Props/Trees/Tree0662" unique_id=21825548]
@@ -46791,7 +46794,7 @@ shape = SubResource("ConvexPolygonShape3D_bx40k")
 [node name="Fence side 1" type="Node3D" parent="Village_region/fences" unique_id=1601712928]
 
 [node name="fence" parent="Village_region/fences/Fence side 1" unique_id=349779411 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -9.547979, 3.0090055, -37.703373)
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -9.547979, 2.792253, -37.703373)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence/node_0" parent_id_path=PackedInt32Array(349779411, 300114942) index="0" unique_id=774054550]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46800,7 +46803,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence2" parent="Village_region/fences/Fence side 1" unique_id=1313659031 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, -7.4028435, 3.0090055, -37.694637)
+transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, -7.4028435, 2.6996639, -37.694637)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence2/node_0" parent_id_path=PackedInt32Array(1313659031, 300114942) index="0" unique_id=324391722]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46809,7 +46812,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence3" parent="Village_region/fences/Fence side 1" unique_id=403168706 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -13.744462, 3.0090055, -37.703373)
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -13.744462, 2.962872, -37.703373)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence3/node_0" parent_id_path=PackedInt32Array(403168706, 300114942) index="0" unique_id=836369807]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46818,7 +46821,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence14" parent="Village_region/fences/Fence side 1" unique_id=1805860331 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, -11.599326, 3.0090055, -37.694637)
+transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, -11.599326, 2.8822737, -37.694637)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence14/node_0" parent_id_path=PackedInt32Array(1805860331, 300114942) index="0" unique_id=884917084]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46827,7 +46830,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence15" parent="Village_region/fences/Fence side 1" unique_id=1770887827 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.7115803, 0, 1.382206, 0, 2.2, 0, -1.382206, 0, 1.7115803, -17.314848, 3.0090055, -35.632736)
+transform = Transform3D(1.7115803, 0, 1.382206, 0, 2.2, 0, -1.382206, 0, 1.7115803, -17.314848, 3.0494866, -35.632736)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence15/node_0" parent_id_path=PackedInt32Array(1770887827, 300114942) index="0" unique_id=642426591]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46845,7 +46848,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence17" parent="Village_region/fences/Fence side 1" unique_id=1875403820 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.7115803, 0, 1.382206, 0, 2.2, 0, -1.382206, 0, 1.7115803, -20.567532, 3.0090055, -32.981567)
+transform = Transform3D(1.7115803, 0, 1.382206, 0, 2.2, 0, -1.382206, 0, 1.7115803, -20.567532, 3.056696, -32.981567)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence17/node_0" parent_id_path=PackedInt32Array(1875403820, 300114942) index="0" unique_id=1754235055]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46854,7 +46857,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence18" parent="Village_region/fences/Fence side 1" unique_id=583462442 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.7115802, 0, -1.3822062, 0, 2.2, 0, 1.3822062, 0, -1.7115802, -18.893147, 3.0090055, -34.32251)
+transform = Transform3D(-1.7115802, 0, -1.3822062, 0, 2.2, 0, 1.3822062, 0, -1.7115802, -18.893147, 3.0402288, -34.32251)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence18/node_0" parent_id_path=PackedInt32Array(583462442, 300114942) index="0" unique_id=603505127]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46863,7 +46866,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence19" parent="Village_region/fences/Fence side 1" unique_id=1675116979 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.7115803, 0, 1.382206, 0, 2.2, 0, -1.382206, 0, 1.7115803, -23.822296, 3.0090055, -30.306877)
+transform = Transform3D(1.7115803, 0, 1.382206, 0, 2.2, 0, -1.382206, 0, 1.7115803, -23.822296, 3.045662, -30.306877)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence19/node_0" parent_id_path=PackedInt32Array(1675116979, 300114942) index="0" unique_id=740664248]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46872,7 +46875,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence20" parent="Village_region/fences/Fence side 1" unique_id=571491173 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.7115802, 0, -1.3822062, 0, 2.2, 0, 1.3822062, 0, -1.7115802, -22.147911, 3.0090055, -31.64782)
+transform = Transform3D(-1.7115802, 0, -1.3822062, 0, 2.2, 0, 1.3822062, 0, -1.7115802, -22.147911, 3.0646777, -31.64782)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence20/node_0" parent_id_path=PackedInt32Array(571491173, 300114942) index="0" unique_id=693614725]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46881,7 +46884,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence21" parent="Village_region/fences/Fence side 1" unique_id=255698921 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.8210653, 0, 1.2343913, 0, 2.2000003, 0, -1.2343913, 0, -1.8210653, 17.30793, 3.0090055, -35.893528)
+transform = Transform3D(-1.8210653, 0, 1.2343913, 0, 2.2000003, 0, -1.2343913, 0, -1.8210653, 17.30793, 2.13808, -35.893528)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence21/node_0" parent_id_path=PackedInt32Array(255698921, 300114942) index="0" unique_id=1365544772]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46890,7 +46893,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence22" parent="Village_region/fences/Fence side 1" unique_id=1153400414 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.8210654, 0, -1.2343912, 0, 2.2, 0, 1.2343912, 0, 1.8210654, 15.537177, 3.0090055, -37.104366)
+transform = Transform3D(1.8210654, 0, -1.2343912, 0, 2.2, 0, 1.2343912, 0, 1.8210654, 15.537177, 2.2474818, -37.104366)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence22/node_0" parent_id_path=PackedInt32Array(1153400414, 300114942) index="0" unique_id=1406153456]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46899,7 +46902,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence23" parent="Village_region/fences/Fence side 1" unique_id=1489085877 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.8210653, 0, 1.2343913, 0, 2.2000003, 0, -1.2343913, 0, -1.8210653, 20.792044, 3.0090055, -33.55481)
+transform = Transform3D(-1.8210653, 0, 1.2343913, 0, 2.2000003, 0, -1.2343913, 0, -1.8210653, 20.792044, 1.869467, -33.55481)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence23/node_0" parent_id_path=PackedInt32Array(1489085877, 300114942) index="0" unique_id=101106558]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46908,7 +46911,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence24" parent="Village_region/fences/Fence side 1" unique_id=1166296096 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.8210654, 0, -1.2343912, 0, 2.2, 0, 1.2343912, 0, 1.8210654, 19.021292, 3.0090055, -34.765648)
+transform = Transform3D(1.8210654, 0, -1.2343912, 0, 2.2, 0, 1.2343912, 0, 1.8210654, 19.021292, 1.9776964, -34.765648)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence24/node_0" parent_id_path=PackedInt32Array(1166296096, 300114942) index="0" unique_id=1821196782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46917,7 +46920,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence25" parent="Village_region/fences/Fence side 1" unique_id=817856135 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.8210653, 0, 1.2343913, 0, 2.2000003, 0, -1.2343913, 0, -1.8210653, 24.299269, 3.0090055, -31.22096)
+transform = Transform3D(-1.8210653, 0, 1.2343913, 0, 2.2000003, 0, -1.2343913, 0, -1.8210653, 24.299269, 1.7665062, -31.22096)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence25/node_0" parent_id_path=PackedInt32Array(817856135, 300114942) index="0" unique_id=1438186238]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46926,7 +46929,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence26" parent="Village_region/fences/Fence side 1" unique_id=1017783775 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.8210654, 0, -1.2343912, 0, 2.2, 0, 1.2343912, 0, 1.8210654, 22.528513, 3.0090055, -32.4318)
+transform = Transform3D(1.8210654, 0, -1.2343912, 0, 2.2, 0, 1.2343912, 0, 1.8210654, 22.528513, 1.7803235, -32.4318)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence26/node_0" parent_id_path=PackedInt32Array(1017783775, 300114942) index="0" unique_id=679345864]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46935,7 +46938,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence4" parent="Village_region/fences/Fence side 1" unique_id=916957823 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -5.3493214, 3.0090055, -37.703373)
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -5.3493214, 2.5870368, -37.703373)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence4/node_0" parent_id_path=PackedInt32Array(916957823, 300114942) index="0" unique_id=1765619075]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46944,7 +46947,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence5" parent="Village_region/fences/Fence side 1" unique_id=1842292173 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, -3.2041855, 3.0090055, -37.694637)
+transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, -3.2041855, 2.4973378, -37.694637)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence5/node_0" parent_id_path=PackedInt32Array(1842292173, 300114942) index="0" unique_id=943437714]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46953,7 +46956,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence6" parent="Village_region/fences/Fence side 1" unique_id=1031377083 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -1.157912, 3.0090055, -37.703373)
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -1.157912, 2.4399343, -37.703373)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence6/node_0" parent_id_path=PackedInt32Array(1031377083, 300114942) index="0" unique_id=979337927]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46962,7 +46965,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence7" parent="Village_region/fences/Fence side 1" unique_id=173546152 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 0.98722386, 3.0090055, -37.694637)
+transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 0.98722386, 2.3479776, -37.694637)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence7/node_0" parent_id_path=PackedInt32Array(173546152, 300114942) index="0" unique_id=1727824155]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46971,7 +46974,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence8" parent="Village_region/fences/Fence side 1" unique_id=799105264 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 3.040746, 3.0090055, -37.703373)
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 3.040746, 2.2906404, -37.703373)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence8/node_0" parent_id_path=PackedInt32Array(799105264, 300114942) index="0" unique_id=1480782407]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46980,7 +46983,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence9" parent="Village_region/fences/Fence side 1" unique_id=1814761159 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 5.1858816, 3.0090055, -37.694637)
+transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 5.1858816, 2.302176, -37.694637)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence9/node_0" parent_id_path=PackedInt32Array(1814761159, 300114942) index="0" unique_id=2014497796]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46989,7 +46992,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence10" parent="Village_region/fences/Fence side 1" unique_id=28010833 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 7.225192, 3.0090055, -37.703373)
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 7.225192, 2.2805986, -37.703373)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence10/node_0" parent_id_path=PackedInt32Array(28010833, 300114942) index="0" unique_id=822509263]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -46998,7 +47001,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence11" parent="Village_region/fences/Fence side 1" unique_id=1333299976 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 9.370328, 3.0090055, -37.694637)
+transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 9.370328, 2.3137264, -37.694637)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence11/node_0" parent_id_path=PackedInt32Array(1333299976, 300114942) index="0" unique_id=417060236]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47007,7 +47010,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence12" parent="Village_region/fences/Fence side 1" unique_id=366616701 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 11.42385, 3.0090055, -37.703373)
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 11.42385, 2.3434062, -37.703373)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence12/node_0" parent_id_path=PackedInt32Array(366616701, 300114942) index="0" unique_id=2035573347]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47016,7 +47019,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence13" parent="Village_region/fences/Fence side 1" unique_id=926770406 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 13.568986, 3.0090055, -37.694637)
+transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 13.568986, 2.3761237, -37.694637)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence13/node_0" parent_id_path=PackedInt32Array(926770406, 300114942) index="0" unique_id=1908298333]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47027,7 +47030,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="Fence side 2" type="Node3D" parent="Village_region/fences" unique_id=957271542]
 
 [node name="fence27" parent="Village_region/fences/Fence side 2" unique_id=215224044 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.69419, 3.0090055, 9.636609)
+transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.69419, 3.7783575, 9.636609)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence27/node_0" parent_id_path=PackedInt32Array(215224044, 300114942) index="0" unique_id=1979413704]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47036,7 +47039,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence28" parent="Village_region/fences/Fence side 2" unique_id=741385908 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.643517, 3.0090055, 7.492056)
+transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.643517, 3.7447243, 7.492056)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence28/node_0" parent_id_path=PackedInt32Array(741385908, 300114942) index="0" unique_id=1007151229]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47045,7 +47048,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence29" parent="Village_region/fences/Fence side 2" unique_id=1954068411 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.776207, 3.0090055, 13.83229)
+transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.776207, 3.8289227, 13.83229)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence29/node_0" parent_id_path=PackedInt32Array(1954068411, 300114942) index="0" unique_id=975079646]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47054,7 +47057,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence30" parent="Village_region/fences/Fence side 2" unique_id=1693191029 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.725548, 3.0090055, 11.687737)
+transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.725548, 3.8169765, 11.687737)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence30/node_0" parent_id_path=PackedInt32Array(1693191029, 300114942) index="0" unique_id=622977630]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47063,7 +47066,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence31" parent="Village_region/fences/Fence side 2" unique_id=677104607 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.3484864, 0, 1.7382708, 0, 2.2, 0, -1.7382708, 0, -1.3484864, -37.775757, 3.0090055, 17.442472)
+transform = Transform3D(-1.3484864, 0, 1.7382708, 0, 2.2, 0, -1.7382708, 0, -1.3484864, -37.775757, 3.7476501, 17.442472)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence31/node_0" parent_id_path=PackedInt32Array(677104607, 300114942) index="0" unique_id=811254471]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47072,7 +47075,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence32" parent="Village_region/fences/Fence side 2" unique_id=1491248313 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.3484869, 0, -1.7382704, 0, 2.2, 0, 1.7382704, 0, 1.3484869, -39.083725, 3.0090055, 15.742195)
+transform = Transform3D(1.3484869, 0, -1.7382704, 0, 2.2, 0, 1.7382704, 0, 1.3484869, -39.083725, 3.8295665, 15.742195)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence32/node_0" parent_id_path=PackedInt32Array(1491248313, 300114942) index="0" unique_id=1027946395]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47081,7 +47084,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence33" parent="Village_region/fences/Fence side 2" unique_id=1831428001 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.3484864, 0, 1.7382708, 0, 2.2, 0, -1.7382708, 0, -1.3484864, -35.188683, 3.0090055, 20.746355)
+transform = Transform3D(-1.3484864, 0, 1.7382708, 0, 2.2, 0, -1.7382708, 0, -1.3484864, -35.188683, 3.5460546, 20.746355)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence33/node_0" parent_id_path=PackedInt32Array(1831428001, 300114942) index="0" unique_id=1377766013]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47090,7 +47093,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence34" parent="Village_region/fences/Fence side 2" unique_id=1355867137 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.3484869, 0, -1.7382704, 0, 2.2, 0, 1.7382704, 0, 1.3484869, -36.496635, 3.0090055, 19.046074)
+transform = Transform3D(1.3484869, 0, -1.7382704, 0, 2.2, 0, 1.7382704, 0, 1.3484869, -36.496635, 3.6487253, 19.046074)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence34/node_0" parent_id_path=PackedInt32Array(1355867137, 300114942) index="0" unique_id=444537780]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47099,7 +47102,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence35" parent="Village_region/fences/Fence side 2" unique_id=94045623 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.3484864, 0, 1.7382708, 0, 2.2, 0, -1.7382708, 0, -1.3484864, -32.578117, 3.0090055, 24.052774)
+transform = Transform3D(-1.3484864, 0, 1.7382708, 0, 2.2, 0, -1.7382708, 0, -1.3484864, -32.578117, 3.2785463, 24.052774)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence35/node_0" parent_id_path=PackedInt32Array(94045623, 300114942) index="0" unique_id=391748038]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47108,7 +47111,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence36" parent="Village_region/fences/Fence side 2" unique_id=68159165 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.3484869, 0, -1.7382704, 0, 2.2, 0, 1.7382704, 0, 1.3484869, -33.88607, 3.0090055, 22.352499)
+transform = Transform3D(1.3484869, 0, -1.7382704, 0, 2.2, 0, 1.7382704, 0, 1.3484869, -33.88607, 3.404212, 22.352499)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence36/node_0" parent_id_path=PackedInt32Array(68159165, 300114942) index="0" unique_id=1790073302]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47117,7 +47120,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence37" parent="Village_region/fences/Fence side 2" unique_id=1583131906 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.269751, 0, -1.7965896, 0, 2.1999998, 0, 1.7965896, 0, -1.269751, -37.35975, 3.0090055, -17.17879)
+transform = Transform3D(-1.269751, 0, -1.7965896, 0, 2.1999998, 0, 1.7965896, 0, -1.269751, -37.35975, 3.152379, -17.17879)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence37/node_0" parent_id_path=PackedInt32Array(1583131906, 300114942) index="0" unique_id=1391034352]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47126,7 +47129,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence38" parent="Village_region/fences/Fence side 2" unique_id=1615236018 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.2697507, 0, 1.7965899, 0, 2.2, 0, -1.7965899, 0, 1.2697507, -38.604973, 3.0090055, -15.432046)
+transform = Transform3D(1.2697507, 0, 1.7965899, 0, 2.2, 0, -1.7965899, 0, 1.2697507, -38.604973, 3.1856747, -15.432046)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence38/node_0" parent_id_path=PackedInt32Array(1615236018, 300114942) index="0" unique_id=1768174620]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47135,7 +47138,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence39" parent="Village_region/fences/Fence side 2" unique_id=806381712 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.269751, 0, -1.7965896, 0, 2.1999998, 0, 1.7965896, 0, -1.269751, -34.953377, 3.0090055, -20.616526)
+transform = Transform3D(-1.269751, 0, -1.7965896, 0, 2.1999998, 0, 1.7965896, 0, -1.269751, -34.953377, 3.167729, -20.616526)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence39/node_0" parent_id_path=PackedInt32Array(806381712, 300114942) index="0" unique_id=1489750433]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47144,7 +47147,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence40" parent="Village_region/fences/Fence side 2" unique_id=627852033 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.2697507, 0, 1.7965899, 0, 2.2, 0, -1.7965899, 0, 1.2697507, -36.1986, 3.0090055, -18.869783)
+transform = Transform3D(1.2697507, 0, 1.7965899, 0, 2.2, 0, -1.7965899, 0, 1.2697507, -36.1986, 3.1611454, -18.869783)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence40/node_0" parent_id_path=PackedInt32Array(627852033, 300114942) index="0" unique_id=310893270]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47153,7 +47156,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence41" parent="Village_region/fences/Fence side 2" unique_id=1309638843 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.269751, 0, -1.7965896, 0, 2.1999998, 0, 1.7965896, 0, -1.269751, -32.551422, 3.0090055, -24.077461)
+transform = Transform3D(-1.269751, 0, -1.7965896, 0, 2.1999998, 0, 1.7965896, 0, -1.269751, -32.551422, 3.2047637, -24.077461)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence41/node_0" parent_id_path=PackedInt32Array(1309638843, 300114942) index="0" unique_id=1109319928]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47162,7 +47165,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence42" parent="Village_region/fences/Fence side 2" unique_id=180143023 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.2697507, 0, 1.7965899, 0, 2.2, 0, -1.7965899, 0, 1.2697507, -33.79664, 3.0090055, -22.330715)
+transform = Transform3D(1.2697507, 0, 1.7965899, 0, 2.2, 0, -1.7965899, 0, 1.2697507, -33.79664, 3.1629806, -22.330715)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence42/node_0" parent_id_path=PackedInt32Array(180143023, 300114942) index="0" unique_id=1499294497]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47171,7 +47174,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence43" parent="Village_region/fences/Fence side 2" unique_id=1765042312 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.61212, 3.0090055, 5.438754)
+transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.61212, 3.6975296, 5.438754)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence43/node_0" parent_id_path=PackedInt32Array(1765042312, 300114942) index="0" unique_id=869324354]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47180,7 +47183,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence44" parent="Village_region/fences/Fence side 2" unique_id=586176019 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.561455, 3.0090055, 3.2941988)
+transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.561455, 3.6510916, 3.2941988)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence44/node_0" parent_id_path=PackedInt32Array(586176019, 300114942) index="0" unique_id=442967841]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47189,7 +47192,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence45" parent="Village_region/fences/Fence side 2" unique_id=1555345712 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.53019, 3.0090055, 1.2481457)
+transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.53019, 3.585579, 1.2481457)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence45/node_0" parent_id_path=PackedInt32Array(1555345712, 300114942) index="0" unique_id=644873996]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47198,7 +47201,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence46" parent="Village_region/fences/Fence side 2" unique_id=1255136890 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.479523, 3.0090055, -0.89640933)
+transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.479523, 3.5066056, -0.89640933)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence46/node_0" parent_id_path=PackedInt32Array(1255136890, 300114942) index="0" unique_id=474238516]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47207,7 +47210,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence47" parent="Village_region/fences/Fence side 2" unique_id=789919328 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.44812, 3.0090055, -2.949711)
+transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.44812, 3.4079463, -2.949711)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence47/node_0" parent_id_path=PackedInt32Array(789919328, 300114942) index="0" unique_id=1294368779]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47216,7 +47219,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence48" parent="Village_region/fences/Fence side 2" unique_id=961121978 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.397453, 3.0090055, -5.0942655)
+transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.397453, 3.346723, -5.0942655)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence48/node_0" parent_id_path=PackedInt32Array(961121978, 300114942) index="0" unique_id=234308678]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47225,7 +47228,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence49" parent="Village_region/fences/Fence side 2" unique_id=1507672182 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.366325, 3.0090055, -7.133357)
+transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.366325, 3.2953646, -7.133357)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence49/node_0" parent_id_path=PackedInt32Array(1507672182, 300114942) index="0" unique_id=843843969]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47234,7 +47237,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence50" parent="Village_region/fences/Fence side 2" unique_id=1627891878 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.315666, 3.0090055, -9.277914)
+transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.315666, 3.2401586, -9.277914)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence50/node_0" parent_id_path=PackedInt32Array(1627891878, 300114942) index="0" unique_id=1975090608]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47243,7 +47246,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence51" parent="Village_region/fences/Fence side 2" unique_id=143582848 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.284256, 3.0090055, -11.331215)
+transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.284256, 3.2295496, -11.331215)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence51/node_0" parent_id_path=PackedInt32Array(143582848, 300114942) index="0" unique_id=1507238543]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47252,7 +47255,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence52" parent="Village_region/fences/Fence side 2" unique_id=1598594823 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.233597, 3.0090055, -13.47577)
+transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.233597, 3.218745, -13.47577)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence52/node_0" parent_id_path=PackedInt32Array(1598594823, 300114942) index="0" unique_id=659937247]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47263,7 +47266,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="Fence side 3" type="Node3D" parent="Village_region/fences" unique_id=875262550]
 
 [node name="fence27" parent="Village_region/fences/Fence side 3" unique_id=299156349 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 39.947002, 3.0090055, -9.3379)
+transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 39.947002, 3.0767064, -9.3379)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence27/node_0" parent_id_path=PackedInt32Array(299156349, 300114942) index="0" unique_id=457432100]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47272,7 +47275,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence28" parent="Village_region/fences/Fence side 3" unique_id=346382628 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 39.974243, 3.0090055, -7.19292)
+transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 39.974243, 2.8914447, -7.19292)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence28/node_0" parent_id_path=PackedInt32Array(346382628, 300114942) index="0" unique_id=166912085]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47281,7 +47284,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence29" parent="Village_region/fences/Fence side 3" unique_id=510919454 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 39.876617, 3.0090055, -13.533795)
+transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 39.876617, 3.4181433, -13.533795)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence29/node_0" parent_id_path=PackedInt32Array(510919454, 300114942) index="0" unique_id=891826650]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47290,7 +47293,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence30" parent="Village_region/fences/Fence side 3" unique_id=908937206 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 39.903862, 3.0090055, -11.388812)
+transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 39.903862, 3.2783363, -11.388812)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence30/node_0" parent_id_path=PackedInt32Array(908937206, 300114942) index="0" unique_id=325449234]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47299,7 +47302,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence31" parent="Village_region/fences/Fence side 3" unique_id=747757992 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.4107178, 0, -1.6881573, 0, 2.2, 0, 1.6881573, 0, 1.4107178, 37.74639, 3.0090055, -17.068949)
+transform = Transform3D(1.4107178, 0, -1.6881573, 0, 2.2, 0, 1.6881573, 0, 1.4107178, 37.74639, 3.1765356, -17.068949)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence31/node_0" parent_id_path=PackedInt32Array(747757992, 300114942) index="0" unique_id=1366569502]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47308,7 +47311,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence32" parent="Village_region/fences/Fence side 3" unique_id=1104555144 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.4107182, 0, 1.6881572, 0, 2.2, 0, -1.6881572, 0, -1.4107182, 39.115227, 3.0090055, -15.417289)
+transform = Transform3D(-1.4107182, 0, 1.6881572, 0, 2.2, 0, -1.6881572, 0, -1.4107182, 39.115227, 3.3602657, -15.417289)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence32/node_0" parent_id_path=PackedInt32Array(1104555144, 300114942) index="0" unique_id=583314433]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47317,7 +47320,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence33" parent="Village_region/fences/Fence side 3" unique_id=2099788482 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.4107178, 0, -1.6881573, 0, 2.2, 0, 1.6881573, 0, 1.4107178, 35.041046, 3.0090055, -20.276709)
+transform = Transform3D(1.4107178, 0, -1.6881573, 0, 2.2, 0, 1.6881573, 0, 1.4107178, 35.041046, 2.676825, -20.276709)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence33/node_0" parent_id_path=PackedInt32Array(2099788482, 300114942) index="0" unique_id=1977734103]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47326,7 +47329,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence34" parent="Village_region/fences/Fence side 3" unique_id=345912442 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.4107182, 0, 1.6881572, 0, 2.2, 0, -1.6881572, 0, -1.4107182, 36.40988, 3.0090055, -18.625051)
+transform = Transform3D(-1.4107182, 0, 1.6881572, 0, 2.2, 0, -1.6881572, 0, -1.4107182, 36.40988, 2.9325156, -18.625051)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence34/node_0" parent_id_path=PackedInt32Array(345912442, 300114942) index="0" unique_id=507787313]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47335,7 +47338,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence35" parent="Village_region/fences/Fence side 3" unique_id=79535346 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.4107178, 0, -1.6881573, 0, 2.2, 0, 1.6881573, 0, 1.4107178, 32.312138, 3.0090055, -23.486156)
+transform = Transform3D(1.4107178, 0, -1.6881573, 0, 2.2, 0, 1.6881573, 0, 1.4107178, 32.312138, 2.2558787, -23.486156)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence35/node_0" parent_id_path=PackedInt32Array(79535346, 300114942) index="0" unique_id=477501812]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47344,7 +47347,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence36" parent="Village_region/fences/Fence side 3" unique_id=1643380610 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.4107182, 0, 1.6881572, 0, 2.2, 0, -1.6881572, 0, -1.4107182, 33.680973, 3.0090055, -21.834497)
+transform = Transform3D(-1.4107182, 0, 1.6881572, 0, 2.2, 0, -1.6881572, 0, -1.4107182, 33.680973, 2.4654527, -21.834497)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence36/node_0" parent_id_path=PackedInt32Array(1643380610, 300114942) index="0" unique_id=1666862098]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47353,7 +47356,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence37" parent="Village_region/fences/Fence side 3" unique_id=721264629 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.203675, 0, 1.8415122, 0, 2.2000003, 0, -1.8415122, 0, 1.203675, 38.587833, 3.0090055, 17.544584)
+transform = Transform3D(1.203675, 0, 1.8415122, 0, 2.2000003, 0, -1.8415122, 0, 1.203675, 38.587833, 1.698062, 17.544584)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence37/node_0" parent_id_path=PackedInt32Array(721264629, 300114942) index="0" unique_id=364336375]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47362,7 +47365,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence38" parent="Village_region/fences/Fence side 3" unique_id=1146572683 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.203675, 0, -1.8415126, 0, 2.2000005, 0, 1.8415126, 0, -1.203675, 39.768803, 3.0090055, 15.753771)
+transform = Transform3D(-1.203675, 0, -1.8415126, 0, 2.2000005, 0, 1.8415126, 0, -1.203675, 39.768803, 1.6946564, 15.753771)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence38/node_0" parent_id_path=PackedInt32Array(1146572683, 300114942) index="0" unique_id=1453093025]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47371,7 +47374,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence39" parent="Village_region/fences/Fence side 3" unique_id=1958515263 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.203675, 0, 1.8415122, 0, 2.2000003, 0, -1.8415122, 0, 1.203675, 36.30788, 3.0090055, 21.067432)
+transform = Transform3D(1.203675, 0, 1.8415122, 0, 2.2000003, 0, -1.8415122, 0, 1.203675, 36.30788, 1.8780801, 21.067432)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence39/node_0" parent_id_path=PackedInt32Array(1958515263, 300114942) index="0" unique_id=2081217496]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47380,7 +47383,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence40" parent="Village_region/fences/Fence side 3" unique_id=608160507 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.203675, 0, -1.8415126, 0, 2.2000005, 0, 1.8415126, 0, -1.203675, 37.48885, 3.0090055, 19.276623)
+transform = Transform3D(-1.203675, 0, -1.8415126, 0, 2.2000005, 0, 1.8415126, 0, -1.203675, 37.48885, 1.756701, 19.276623)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence40/node_0" parent_id_path=PackedInt32Array(608160507, 300114942) index="0" unique_id=974969834]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47389,7 +47392,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence41" parent="Village_region/fences/Fence side 3" unique_id=128313107 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.203675, 0, 1.8415122, 0, 2.2000003, 0, -1.8415122, 0, 1.203675, 34.03318, 3.0090055, 24.613308)
+transform = Transform3D(1.203675, 0, 1.8415122, 0, 2.2000003, 0, -1.8415122, 0, 1.203675, 34.03318, 2.2445135, 24.613308)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence41/node_0" parent_id_path=PackedInt32Array(128313107, 300114942) index="0" unique_id=105605629]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47398,7 +47401,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence42" parent="Village_region/fences/Fence side 3" unique_id=1439216378 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.203675, 0, -1.8415126, 0, 2.2000005, 0, 1.8415126, 0, -1.203675, 35.21415, 3.0090055, 22.822493)
+transform = Transform3D(-1.203675, 0, -1.8415126, 0, 2.2000005, 0, 1.8415126, 0, -1.203675, 35.21415, 2.0612197, 22.822493)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence42/node_0" parent_id_path=PackedInt32Array(1439216378, 300114942) index="0" unique_id=834878837]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47407,7 +47410,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence43" parent="Village_region/fences/Fence side 3" unique_id=1318418629 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.017418, 3.0090055, -5.139834)
+transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.017418, 2.7181845, -5.139834)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence43/node_0" parent_id_path=PackedInt32Array(1318418629, 300114942) index="0" unique_id=1300395699]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47416,7 +47419,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence44" parent="Village_region/fences/Fence side 3" unique_id=1605818540 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.044662, 3.0090055, -2.994853)
+transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.044662, 2.5350597, -2.994853)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence44/node_0" parent_id_path=PackedInt32Array(1605818540, 300114942) index="0" unique_id=1119119336]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47425,7 +47428,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence45" parent="Village_region/fences/Fence side 3" unique_id=816420770 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.087715, 3.0090055, -0.94901276)
+transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.087715, 2.3520339, -0.94901276)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence45/node_0" parent_id_path=PackedInt32Array(816420770, 300114942) index="0" unique_id=127447093]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47434,7 +47437,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence46" parent="Village_region/fences/Fence side 3" unique_id=1825079294 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.114964, 3.0090055, 1.1959653)
+transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.114964, 2.1821268, 1.1959653)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence46/node_0" parent_id_path=PackedInt32Array(1825079294, 300114942) index="0" unique_id=198884179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47443,7 +47446,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence47" parent="Village_region/fences/Fence side 3" unique_id=18003210 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.15814, 3.0090055, 3.249054)
+transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.15814, 1.9978662, 3.249054)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence47/node_0" parent_id_path=PackedInt32Array(18003210, 300114942) index="0" unique_id=1386218161]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47452,7 +47455,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence48" parent="Village_region/fences/Fence side 3" unique_id=599167443 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.185383, 3.0090055, 5.3940325)
+transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.185383, 1.8400617, 5.3940325)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence48/node_0" parent_id_path=PackedInt32Array(599167443, 300114942) index="0" unique_id=54476622]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47461,7 +47464,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence49" parent="Village_region/fences/Fence side 3" unique_id=263727833 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.228317, 3.0090055, 7.43291)
+transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.228317, 1.7294605, 7.43291)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence49/node_0" parent_id_path=PackedInt32Array(263727833, 300114942) index="0" unique_id=920168243]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47470,7 +47473,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence50" parent="Village_region/fences/Fence side 3" unique_id=1756693881 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.25556, 3.0090055, 9.577892)
+transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.25556, 1.6809783, 9.577892)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence50/node_0" parent_id_path=PackedInt32Array(1756693881, 300114942) index="0" unique_id=605596388]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47479,7 +47482,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence51" parent="Village_region/fences/Fence side 3" unique_id=1249303591 instance=ExtResource("46_ers45")]
-transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.29874, 3.0090055, 11.63098)
+transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.29874, 1.6309028, 11.63098)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence51/node_0" parent_id_path=PackedInt32Array(1249303591, 300114942) index="0" unique_id=1839938179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47488,7 +47491,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence52" parent="Village_region/fences/Fence side 3" unique_id=823809435 instance=ExtResource("46_ers45")]
-transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.32598, 3.0090055, 13.775959)
+transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.32598, 1.6362619, 13.775959)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence52/node_0" parent_id_path=PackedInt32Array(823809435, 300114942) index="0" unique_id=875908469]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47499,7 +47502,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="Fence side 4" type="Node3D" parent="Village_region/fences" unique_id=1611817461]
 
 [node name="fence27" parent="Village_region/fences/Fence side 4" unique_id=1439084738 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 9.504891, 3.0090055, 40.838497)
+transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 9.504891, 2.078871, 40.838497)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence27/node_0" parent_id_path=PackedInt32Array(1439084738, 300114942) index="0" unique_id=1855917358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47508,7 +47511,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence28" parent="Village_region/fences/Fence side 4" unique_id=1326770845 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, 7.3603077, 3.0090055, 40.788998)
+transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, 7.3603077, 1.9598291, 40.788998)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence28/node_0" parent_id_path=PackedInt32Array(1326770845, 300114942) index="0" unique_id=1415243015]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47517,7 +47520,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence29" parent="Village_region/fences/Fence side 4" unique_id=1741940259 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 13.700617, 3.0090055, 40.91826)
+transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 13.700617, 2.2730982, 40.91826)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence29/node_0" parent_id_path=PackedInt32Array(1741940259, 300114942) index="0" unique_id=163621945]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47526,7 +47529,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence30" parent="Village_region/fences/Fence side 4" unique_id=1620916373 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, 11.556034, 3.0090055, 40.868755)
+transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, 11.556034, 2.1415288, 40.868755)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence30/node_0" parent_id_path=PackedInt32Array(1620916373, 300114942) index="0" unique_id=254103820]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47535,7 +47538,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence31" parent="Village_region/fences/Fence side 4" unique_id=1986018426 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.7375406, 0, -1.349427, 0, 2.2, 0, 1.349427, 0, -1.7375406, 17.30971, 3.0090055, 38.915848)
+transform = Transform3D(-1.7375406, 0, -1.349427, 0, 2.2, 0, 1.349427, 0, -1.7375406, 17.30971, 2.559338, 38.915848)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence31/node_0" parent_id_path=PackedInt32Array(1986018426, 300114942) index="0" unique_id=1484336657]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47544,7 +47547,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence32" parent="Village_region/fences/Fence side 4" unique_id=119243592 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.7375405, 0, 1.3494273, 0, 2.2, 0, -1.3494273, 0, 1.7375405, 15.610143, 3.0090055, 40.224728)
+transform = Transform3D(1.7375405, 0, 1.3494273, 0, 2.2, 0, -1.3494273, 0, 1.7375405, 15.610143, 2.3762171, 40.224728)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence32/node_0" parent_id_path=PackedInt32Array(119243592, 300114942) index="0" unique_id=2105001020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47553,7 +47556,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence33" parent="Village_region/fences/Fence side 4" unique_id=96040533 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.7375406, 0, -1.349427, 0, 2.2, 0, 1.349427, 0, -1.7375406, 20.612194, 3.0090055, 36.326977)
+transform = Transform3D(-1.7375406, 0, -1.349427, 0, 2.2, 0, 1.349427, 0, -1.7375406, 20.612194, 2.6711912, 36.326977)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence33/node_0" parent_id_path=PackedInt32Array(96040533, 300114942) index="0" unique_id=428251659]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47562,7 +47565,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence34" parent="Village_region/fences/Fence side 4" unique_id=279212295 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.7375405, 0, 1.3494273, 0, 2.2, 0, -1.3494273, 0, 1.7375405, 18.912626, 3.0090055, 37.635853)
+transform = Transform3D(1.7375405, 0, 1.3494273, 0, 2.2, 0, -1.3494273, 0, 1.7375405, 18.912626, 2.6079226, 37.635853)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence34/node_0" parent_id_path=PackedInt32Array(279212295, 300114942) index="0" unique_id=343053405]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47571,7 +47574,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence35" parent="Village_region/fences/Fence side 4" unique_id=1462565240 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.7375406, 0, -1.349427, 0, 2.2, 0, 1.349427, 0, -1.7375406, 23.917204, 3.0090055, 33.714626)
+transform = Transform3D(-1.7375406, 0, -1.349427, 0, 2.2, 0, 1.349427, 0, -1.7375406, 23.917204, 2.6205006, 33.714626)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence35/node_0" parent_id_path=PackedInt32Array(1462565240, 300114942) index="0" unique_id=1084916409]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47580,7 +47583,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence36" parent="Village_region/fences/Fence side 4" unique_id=2050947689 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.7375405, 0, 1.3494273, 0, 2.2, 0, -1.3494273, 0, 1.7375405, 22.217636, 3.0090055, 35.02351)
+transform = Transform3D(1.7375405, 0, 1.3494273, 0, 2.2, 0, -1.3494273, 0, 1.7375405, 22.217636, 2.6661541, 35.02351)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence36/node_0" parent_id_path=PackedInt32Array(2050947689, 300114942) index="0" unique_id=1384935445]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47589,7 +47592,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence37" parent="Village_region/fences/Fence side 4" unique_id=1061473661 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.7972763, 0, -1.2687786, 0, 2.1999998, 0, 1.2687786, 0, 1.7972763, -17.311771, 3.0090055, 38.518574)
+transform = Transform3D(1.7972763, 0, -1.2687786, 0, 2.1999998, 0, 1.2687786, 0, 1.7972763, -17.311771, 2.2391136, 38.518574)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence37/node_0" parent_id_path=PackedInt32Array(1061473661, 300114942) index="0" unique_id=434864425]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47598,7 +47601,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence38" parent="Village_region/fences/Fence side 4" unique_id=279240994 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.7972764, 0, 1.2687783, 0, 2.1999998, 0, -1.2687783, 0, -1.7972764, -15.564349, 3.0090055, 39.762844)
+transform = Transform3D(-1.7972764, 0, 1.2687783, 0, 2.1999998, 0, -1.2687783, 0, -1.7972764, -15.564349, 2.1147857, 39.762844)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence38/node_0" parent_id_path=PackedInt32Array(279240994, 300114942) index="0" unique_id=1632748305]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47607,7 +47610,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence39" parent="Village_region/fences/Fence side 4" unique_id=82082416 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.7972763, 0, -1.2687786, 0, 2.1999998, 0, 1.2687786, 0, 1.7972763, -20.750805, 3.0090055, 36.11406)
+transform = Transform3D(1.7972763, 0, -1.2687786, 0, 2.1999998, 0, 1.2687786, 0, 1.7972763, -20.750805, 2.6754801, 36.11406)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence39/node_0" parent_id_path=PackedInt32Array(82082416, 300114942) index="0" unique_id=1982467135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47616,7 +47619,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence40" parent="Village_region/fences/Fence side 4" unique_id=319493439 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.7972764, 0, 1.2687783, 0, 2.1999998, 0, -1.2687783, 0, -1.7972764, -19.003387, 3.0090055, 37.358334)
+transform = Transform3D(-1.7972764, 0, 1.2687783, 0, 2.1999998, 0, -1.2687783, 0, -1.7972764, -19.003387, 2.4656174, 37.358334)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence40/node_0" parent_id_path=PackedInt32Array(319493439, 300114942) index="0" unique_id=2009293534]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47625,7 +47628,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence41" parent="Village_region/fences/Fence side 4" unique_id=944246458 instance=ExtResource("46_ers45")]
-transform = Transform3D(1.7972763, 0, -1.2687786, 0, 2.1999998, 0, 1.2687786, 0, 1.7972763, -24.213041, 3.0090055, 33.713974)
+transform = Transform3D(1.7972763, 0, -1.2687786, 0, 2.1999998, 0, 1.2687786, 0, 1.7972763, -24.213041, 3.0165272, 33.713974)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence41/node_0" parent_id_path=PackedInt32Array(944246458, 300114942) index="0" unique_id=1496850450]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47634,7 +47637,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence42" parent="Village_region/fences/Fence side 4" unique_id=1703554639 instance=ExtResource("46_ers45")]
-transform = Transform3D(-1.7972764, 0, 1.2687783, 0, 2.1999998, 0, -1.2687783, 0, -1.7972764, -22.46562, 3.0090055, 34.958252)
+transform = Transform3D(-1.7972764, 0, 1.2687783, 0, 2.1999998, 0, -1.2687783, 0, -1.7972764, -22.46562, 2.8705547, 34.958252)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence42/node_0" parent_id_path=PackedInt32Array(1703554639, 300114942) index="0" unique_id=862044707]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47643,7 +47646,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence43" parent="Village_region/fences/Fence side 4" unique_id=1438382261 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 5.30699, 3.0090055, 40.7587)
+transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 5.30699, 1.8567035, 40.7587)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence43/node_0" parent_id_path=PackedInt32Array(1438382261, 300114942) index="0" unique_id=2043761110]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47652,7 +47655,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence44" parent="Village_region/fences/Fence side 4" unique_id=1760223069 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, 3.1624079, 3.0090055, 40.709198)
+transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, 3.1624079, 1.8163779, 40.709198)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence44/node_0" parent_id_path=PackedInt32Array(1760223069, 300114942) index="0" unique_id=1182898488]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47661,7 +47664,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence45" parent="Village_region/fences/Fence side 4" unique_id=188688840 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 1.116338, 3.0090055, 40.67904)
+transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 1.116338, 1.7644765, 40.67904)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence45/node_0" parent_id_path=PackedInt32Array(188688840, 300114942) index="0" unique_id=769874369]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47670,7 +47673,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence46" parent="Village_region/fences/Fence side 4" unique_id=931935331 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -1.0282444, 3.0090055, 40.62954)
+transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -1.0282444, 1.7644765, 40.62954)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence46/node_0" parent_id_path=PackedInt32Array(931935331, 300114942) index="0" unique_id=977314334]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47679,7 +47682,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence47" parent="Village_region/fences/Fence side 4" unique_id=867164015 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, -3.0815616, 3.0090055, 40.599243)
+transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, -3.0815616, 1.7644765, 40.599243)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence47/node_0" parent_id_path=PackedInt32Array(867164015, 300114942) index="0" unique_id=908038346]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47688,7 +47691,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence48" parent="Village_region/fences/Fence side 4" unique_id=1597315854 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -5.226144, 3.0090055, 40.54974)
+transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -5.226144, 1.7644765, 40.54974)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence48/node_0" parent_id_path=PackedInt32Array(1597315854, 300114942) index="0" unique_id=1515009763]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47697,7 +47700,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence49" parent="Village_region/fences/Fence side 4" unique_id=865690486 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, -7.265252, 3.0090055, 40.51972)
+transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, -7.265252, 1.8398521, 40.51972)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence49/node_0" parent_id_path=PackedInt32Array(865690486, 300114942) index="0" unique_id=1153509003]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47706,7 +47709,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence50" parent="Village_region/fences/Fence side 4" unique_id=1048419180 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -9.409834, 3.0090055, 40.470215)
+transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -9.409834, 1.7644765, 40.470215)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence50/node_0" parent_id_path=PackedInt32Array(1048419180, 300114942) index="0" unique_id=1324487]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47715,7 +47718,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence51" parent="Village_region/fences/Fence side 4" unique_id=1723723724 instance=ExtResource("46_ers45")]
-transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, -11.46315, 3.0090055, 40.439922)
+transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, -11.46315, 1.8963065, 40.439922)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence51/node_0" parent_id_path=PackedInt32Array(1723723724, 300114942) index="0" unique_id=356162703]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47724,7 +47727,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="fence52" parent="Village_region/fences/Fence side 4" unique_id=1235906981 instance=ExtResource("46_ers45")]
-transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -13.607734, 3.0090055, 40.390415)
+transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -13.607734, 1.996283, 40.390415)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence52/node_0" parent_id_path=PackedInt32Array(1235906981, 300114942) index="0" unique_id=344139690]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
@@ -47981,7 +47984,7 @@ shape = SubResource("ConvexPolygonShape3D_832t1")
 shape = SubResource("ConvexPolygonShape3D_2dsb8")
 
 [node name="horizontal_boulder2" parent="." unique_id=1015098842 instance=ExtResource("18_d0ueh")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -40.4555, 1.7527609, -13.7502575)
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -41.44794, 1.7527609, -13.7502575)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="horizontal_boulder2/node_0" parent_id_path=PackedInt32Array(1015098842, 1690721187) index="0" unique_id=1228999090]
 
@@ -48026,14 +48029,18 @@ ScenePath = "uid://cy0w7oqd3ynky"
 
 [node name="Forest_Portal" parent="." unique_id=936682418 instance=ExtResource("54_kqqcm")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 169.78352, 9, 166.50723)
-ScenePath = "uid://uygpwcw344i4"
 
 [node name="Castle_Portal" parent="." unique_id=997421894 instance=ExtResource("54_kqqcm")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -169.41512, 3.871373, 166.79712)
-ScenePath = "uid://cv3bxpybryyxv"
 
-[node name="PlayerSpawn" parent="." unique_id=1675570455 instance=ExtResource("55_lkldd")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.427132, 0)
+[node name="PlayerSpawn" parent="." unique_id=1629409674 instance=ExtResource("54_lkldd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25182772, 8.832642, -0.2843628)
+
+[node name="WorldController" type="Node3D" parent="." unique_id=316626236]
+script = ExtResource("55_wctrl")
+
+[node name="WorldBoundary" type="Node3D" parent="." unique_id=1105233830]
+script = ExtResource("56_wbnd")
 
 [editable path="Magic_castle_region/Castle"]
 [editable path="Magic_castle_region/Gate"]

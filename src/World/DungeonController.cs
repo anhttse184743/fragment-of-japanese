@@ -47,6 +47,11 @@ public partial class DungeonController : Node3D
     [Export] public float ReadingDamageMult { get; set; } = 1.25f;  // mỗi lần đúng × sát thương
     [Export] public float ReadingDamageCap  { get; set; } = 2.0f;   // trần so với sát thương gốc
 
+    // Loot rơi mỗi khi hạ 1 quái: EXP (chỉ lên cấp) + Vàng + 1–2 Tai Goblin.
+    [Export] public string LootItemId  { get; set; } = "item_goblin_ear";
+    [Export] public int    LootDropMin { get; set; } = 1;
+    [Export] public int    LootDropMax { get; set; } = 2;
+
     private readonly List<GameKind> _defeated = new();
     private readonly RandomNumberGenerator _rng = new();
     private PlayerEntity _player;
@@ -55,6 +60,8 @@ public partial class DungeonController : Node3D
     private int  _alive;
     private int  _reinforcements;
     private int  _bonusGold;
+    private int  _goldEarned;
+    private int  _earsDropped;
     private bool _resolved;
 
     public override void _Ready()
@@ -77,9 +84,10 @@ public partial class DungeonController : Node3D
             if (c is EnemyEntity e) enemies.Add(e);
 
         int target = _rng.RandiRange(MinEnemies, MaxEnemies);
+        Vector3 origin = _player?.GlobalPosition ?? GlobalPosition;
         if (EnemyScene != null)
             while (enemies.Count < target)
-                enemies.Add(SpawnEnemyAt(GlobalPosition));
+                enemies.Add(SpawnEnemyAt(origin));
 
         foreach (var e in enemies) Register(e);
         _alive = enemies.Count;
@@ -158,7 +166,7 @@ public partial class DungeonController : Node3D
         ChallengeUi.Instance.RunQuiz(target, pool, showMeaning, QuizTimeout, (correct, ms) =>
         {
             lt.Record(ItemKind.Vocab, target.Id, correct, ms);
-            if (correct) { _player?.GainExp(enemy.ExpReward); QuestManager.Instance?.Report("learn"); }
+            if (correct) QuestManager.Instance?.Report("learn");
             enemy.ResolveChallenge(correct);
         });
     }
@@ -179,7 +187,7 @@ public partial class DungeonController : Node3D
         ChallengeUi.Instance.RunGrammar(g, stage, pool, QuizTimeout, (correct, ms) =>
         {
             lt.Record(ItemKind.Grammar, g.Id, correct, ms);
-            if (correct) { _player?.GainExp(enemy.ExpReward); QuestManager.Instance?.Report("learn"); }
+            if (correct) QuestManager.Instance?.Report("learn");
             if (stage > 0)
             {
                 bool spawn = correct ? _rng.Randf() < GrammarCorrectSpawnChance : true;
@@ -208,7 +216,6 @@ public partial class DungeonController : Node3D
             {
                 _bonusGold += ReadingBonusGold;          // bonus thưởng
                 ApplyReadingDamageBonus();               // bonus damage cả lượt ải
-                _player?.GainExp(enemy.ExpReward);
                 QuestManager.Instance?.Report("learn");
                 enemy.ResolveChallenge(true);            // chết
             }
@@ -229,7 +236,7 @@ public partial class DungeonController : Node3D
         var k = db.HiraganaStrokes[(int)(_rng.Randi() % (uint)db.HiraganaStrokes.Count)];
         ChallengeUi.Instance.RunDraw(k, KanaGlyph(db, k.Romaji), QuizTimeout, (correct, ms) =>
         {
-            if (correct) { _player?.GainExp(enemy.ExpReward); QuestManager.Instance?.Report("learn"); }
+            if (correct) QuestManager.Instance?.Report("learn");
             enemy.ResolveChallenge(correct);   // đúng → chết; sai/hết giờ → hồi (như quiz)
         });
     }
@@ -276,18 +283,34 @@ public partial class DungeonController : Node3D
     private void OnEnemyDied(EnemyEntity enemy)
     {
         _defeated.Add(enemy.Challenge);
+        GrantKillLoot(enemy);
         _alive--;
         if (_alive <= 0) Win();
+    }
+
+    /// <summary>Hạ 1 quái → EXP + Vàng + 1–2 Tai Goblin vào túi.
+    /// EXP challenge enemy cộng ở đây; Challenge=None đã cộng bởi AttackZone khi hp về 0.</summary>
+    private void GrantKillLoot(EnemyEntity enemy)
+    {
+        if (enemy.Challenge != GameKind.None) _player?.GainExp(enemy.ExpReward);
+
+        int gold = Mathf.RoundToInt(RewardCalculator.BaseGoldPerEnemy
+                   * RewardCalculator.KindMult(enemy.Challenge) * PortalCoeff);
+        Wallet.Instance?.AddGold(gold);
+        _goldEarned += gold;
+
+        int ears = _rng.RandiRange(LootDropMin, LootDropMax);
+        if (ears > 0) { Inventory.Instance?.Add(LootItemId, ears); _earsDropped += ears; }
     }
 
     private void Win()
     {
         if (_resolved) return;
         _resolved = true;
-        int gold = Mathf.Min(RewardCalculator.RunCap, RewardCalculator.RunGold(_defeated, PortalCoeff) + _bonusGold);
-        Wallet.Instance?.AddGold(gold);
-        GD.Print($"[Dungeon] WIN — +{gold} Vàng ({_defeated.Count} quái, bonus đọc {_bonusGold})");
-        ShowBanner($"🏆 Hoàn thành ải!   +{gold} Vàng");
+        // Vàng/EXP/Tai đã cấp NGAY mỗi lần hạ quái (GrantKillLoot). Win chỉ cộng bonus đọc + tổng kết.
+        if (_bonusGold > 0) { Wallet.Instance?.AddGold(_bonusGold); _goldEarned += _bonusGold; }
+        GD.Print($"[Dungeon] WIN — tổng +{_goldEarned} Vàng, +{_earsDropped} Tai Goblin ({_defeated.Count} quái).");
+        ShowBanner($"🏆 Hoàn thành ải!   +{_goldEarned} Vàng · +{_earsDropped} Tai Goblin");
         Leave();
     }
 
@@ -296,6 +319,8 @@ public partial class DungeonController : Node3D
         if (_resolved) return;
         _resolved = true;
         _player?.RestoreFull();
+        // Xóa vị trí cổng → World sẽ hồi sinh tại PlayerSpawn mặc định (không phải cổng).
+        SceneTransition.PlayerStartPosition = null;
         GD.Print("[Dungeon] Người chơi gục — về World, hồi sinh tại spawn.");
         ShowBanner("💀 Bạn đã gục... quay về làng.");
         Leave();

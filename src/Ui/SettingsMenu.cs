@@ -8,6 +8,9 @@ namespace FragmentOfJapanese.Ui;
 /// </summary>
 public partial class SettingsMenu : Control
 {
+    /// <summary>Scene để quay về khi bấm Quay lại. TopBar gán World; MainMenu gán MainMenu.</summary>
+    public static string BackScene { get; set; } = "res://scenes/ui/MainMenu.tscn";
+
     [Export] private OptionButton _languageDropdown;
     [Export] private HSlider      _bgmSlider;
     [Export] private HSlider      _sfxSlider;
@@ -35,5 +38,5 @@ public partial class SettingsMenu : Control
         => LocaleManager.Instance.SetLocale(LocaleManager.SupportedLocales[index]);
 
     private void OnBack()
-        => SceneTransition.Instance.GoTo("res://scenes/ui/MainMenu.tscn");
+        => SceneTransition.Instance.GoTo(BackScene);
 }

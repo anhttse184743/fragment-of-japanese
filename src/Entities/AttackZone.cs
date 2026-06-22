@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using FragmentOfJapanese.Combat;
 using FragmentOfJapanese.Core;
 using PlayerEntity = FragmentOfJapanese.Entities.Player.Player;
 using EnemyEntity  = FragmentOfJapanese.Entities.Enemy.Enemy;
@@ -77,14 +78,18 @@ public partial class AttackZone : Node3D
         {
             if (body == OwnerBody) continue;
             if (body is not IDamageable d) continue;
+            // Quái không đánh quái (friendly fire)
+            if (OwnerBody is EnemyEntity && body is EnemyEntity) continue;
 
-            int hpBefore = body is EnemyEntity pre ? pre.Hp : 1;
             d.TakeDamage(Damage);
             Hit?.Invoke(body.GlobalPosition + Vector3.Up * 1.0f);
 
-            // Người chơi giáng đòn KẾT LIỄU quái → cộng EXP (hpBefore>0 để khỏi cộng lặp trên xác)
-            if (OwnerBody is PlayerEntity player && body is EnemyEntity enemy && hpBefore > 0 && enemy.Hp == 0)
-                player.GainExp(enemy.ExpReward);
+            // EXP chỉ cộng khi player giết quái ở NGOÀI dungeon (không có DungeonController).
+            // Trong dungeon, DungeonController.GrantKillLoot lo EXP cho challenge enemy.
+            // Challenge=None trong dungeon: hp về 0 → AttackZone cộng; GrantKillLoot bỏ qua (xem DungeonController).
+            if (OwnerBody is PlayerEntity player && body is EnemyEntity killed
+                && killed.Hp <= 0 && killed.Challenge == GameKind.None)
+                player.GainExp(killed.ExpReward);
         }
     }
 }

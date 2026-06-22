@@ -2,7 +2,12 @@
 
 [ext_resource type="PackedScene" uid="uid://ccy8pxkgjsstq" path="res://scenes/entities/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://6qfiflgckue6" path="res://scenes/entities/Goblin.tscn" id="3_goblin"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ActionButtons.tscn" id="4_1risp"]
 [ext_resource type="MeshLibrary" uid="uid://dgbsojhvhr0q7" path="res://assets/world/arena_tiles.meshlib" id="4_tiles"]
+[ext_resource type="PackedScene" path="res://scenes/ui/GameHud.tscn" id="5_mub3y"]
+[ext_resource type="PackedScene" path="res://scenes/ui/VirtualJoystick.tscn" id="6_86yal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/TopBar.tscn" id="7_xxevc"]
+[ext_resource type="PackedScene" uid="uid://oi2a05ifwrpt" path="res://scenes/ui/StatusBars.tscn" id="8_gk5sh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
 sky_top_color = Color(0.3, 0.55, 0.9, 1)
@@ -50,3 +55,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.2, 3)
 
 [node name="Goblin3" parent="." unique_id=1289305366 instance=ExtResource("3_goblin")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.2, -4)
+
+[node name="UI" type="Node" parent="." unique_id=1212440218]
+
+[node name="ActionButtons" parent="UI" unique_id=1570160350 instance=ExtResource("4_1risp")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameHud" parent="UI" unique_id=1385301391 instance=ExtResource("5_mub3y")]
+
+[node name="JoystickLayer" parent="UI" unique_id=2004581675 instance=ExtResource("6_86yal")]
+
+[node name="TopBar" parent="UI" unique_id=1878504802 instance=ExtResource("7_xxevc")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatusBars" parent="UI" unique_id=1324890494 instance=ExtResource("8_gk5sh")]
+grow_horizontal = 2
+grow_vertical = 2

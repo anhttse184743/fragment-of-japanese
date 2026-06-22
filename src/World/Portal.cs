@@ -48,9 +48,12 @@ public partial class Portal : Interactable
 			return;
 		}
 
+		// Lưu vị trí cổng: khi thắng dungeon sẽ về World và đứng ngay chỗ cổng này.
+		SceneTransition.PlayerStartPosition = GlobalPosition;
+
 		if (SceneTransition.Instance != null)
 			SceneTransition.Instance.GoTo(ScenePath);
 		else
-			GetTree().ChangeSceneToFile(ScenePath);   // dự phòng nếu chưa autoload SceneTransition
+			GetTree().ChangeSceneToFile(ScenePath);
 	}
 }

@@ -37,7 +37,11 @@ public partial class PlayerController : Node
 
     private bool _jumpRequested;
 
-    public override void _Ready() => EnsureInputActions();
+    public override void _Ready()
+    {
+        EnsureInputActions();
+        _camera?.MakeCurrent();
+    }
 
     // ───── API cho nút cảm ứng mobile (gọi sau) ─────
     public void ToggleRun()    => IsRunning = !IsRunning;

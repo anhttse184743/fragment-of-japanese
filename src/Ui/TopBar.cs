@@ -1,4 +1,5 @@
 using Godot;
+using FragmentOfJapanese.Autoloads;
 
 namespace FragmentOfJapanese.Ui;
 
@@ -23,7 +24,7 @@ public partial class TopBar : Control
 
     private void OnOpts()
     {
-        GD.Print("[TopBar] OPTS — menu cài đặt trong game chưa làm (placeholder).");
-        UiKit.Toast(this, "Cài đặt: sắp có");
+        SettingsMenu.BackScene = "res://scenes/world/World.tscn";
+        SceneTransition.Instance?.GoTo("res://scenes/ui/SettingsMenu.tscn");
     }
 }

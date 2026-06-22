@@ -30,8 +30,6 @@ public partial class ActionButtons : Control
         jump.ButtonDown  += () => Ctrl()?.RequestJump();
         atk.ButtonDown   += () => Ctrl()?.RequestAttack();
         _fastBtn.Pressed += OnFast;
-        voice.Pressed    += () => UiKit.Toast(this, "Đọc (voice): sắp có");
-        draw.Pressed     += () => UiKit.Toast(this, "Viết (draw): sắp có");
     }
 
     private void OnFast()

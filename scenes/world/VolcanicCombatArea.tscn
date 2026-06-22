@@ -3,6 +3,12 @@
 [ext_resource type="MeshLibrary" uid="uid://dgbsojhvhr0q7" path="res://assets/world/arena_tiles.meshlib" id="1_7vlov"]
 [ext_resource type="PackedScene" uid="uid://ccy8pxkgjsstq" path="res://scenes/entities/Player.tscn" id="2_soe2u"]
 [ext_resource type="PackedScene" uid="uid://6qfiflgckue6" path="res://scenes/entities/Goblin.tscn" id="3_08bs7"]
+[ext_resource type="Script" uid="uid://bu18ecnmb5uhj" path="res://src/World/DungeonController.cs" id="4_ctrl"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ActionButtons.tscn" id="5_ltnji"]
+[ext_resource type="PackedScene" path="res://scenes/ui/GameHud.tscn" id="6_4mmim"]
+[ext_resource type="PackedScene" path="res://scenes/ui/VirtualJoystick.tscn" id="7_jnfdt"]
+[ext_resource type="PackedScene" path="res://scenes/ui/TopBar.tscn" id="8_kyqci"]
+[ext_resource type="PackedScene" uid="uid://oi2a05ifwrpt" path="res://scenes/ui/StatusBars.tscn" id="9_vggeh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
 sky_top_color = Color(0.3, 0.55, 0.9, 1)
@@ -22,6 +28,10 @@ fog_light_color = Color(0.75, 0.85, 0.95, 1)
 fog_density = 0.001
 
 [node name="CombatArena" type="Node3D" unique_id=523398156]
+script = ExtResource("4_ctrl")
+EnemyScene = ExtResource("3_08bs7")
+PortalCoeff = 1.6
+AllowReading = true
 
 [node name="Env" type="WorldEnvironment" parent="." unique_id=248172581]
 environment = SubResource("Env_res")
@@ -50,3 +60,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.2, 3)
 
 [node name="Goblin3" parent="." unique_id=1289305366 instance=ExtResource("3_08bs7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.2, -4)
+
+[node name="UI" type="Node" parent="." unique_id=1359371267]
+
+[node name="ActionButtons" parent="UI" unique_id=598835190 instance=ExtResource("5_ltnji")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameHud" parent="UI" unique_id=23125996 instance=ExtResource("6_4mmim")]
+
+[node name="JoystickLayer" parent="UI" unique_id=767184520 instance=ExtResource("7_jnfdt")]
+
+[node name="TopBar" parent="UI" unique_id=1135068114 instance=ExtResource("8_kyqci")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatusBars" parent="UI" unique_id=1324890494 instance=ExtResource("9_vggeh")]
+grow_horizontal = 2
+grow_vertical = 2

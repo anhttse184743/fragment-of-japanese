@@ -6,6 +6,12 @@ public partial class SceneTransition : Node
 {
     public static SceneTransition Instance { get; private set; }
 
+    /// <summary>
+    /// Vị trí người chơi cần đứng khi World load lại. Portal gán trước khi GoTo arena;
+    /// Spawner đọc + xóa sau khi tạo Player. Null = dùng vị trí PlayerSpawn mặc định (khi chết).
+    /// </summary>
+    public static Vector3? PlayerStartPosition { get; set; }
+
     private ColorRect _overlay;
     private Tween     _tween;
     private bool      _transitioning;   // chặn gọi GoTo chồng → tránh kẹt/đổi scene đôi

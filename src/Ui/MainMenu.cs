@@ -17,9 +17,8 @@ public partial class MainMenu : Control
         _btnSettings?.Connect(Button.SignalName.Pressed, Callable.From(OnSettings));
         _btnQuit?.Connect(Button.SignalName.Pressed,     Callable.From(OnQuit));
 
-        // Ẩn nút Continue nếu chưa có save
         if (_btnContinue != null)
-            _btnContinue.Disabled = !SaveSystem.Instance.HasSave();
+            _btnContinue.Disabled = !FileAccess.FileExists("user://player.json");
 
         // Banner quảng cáo hiển thị ở menu (ẩn khi vào chơi)
         Ads.AdManager.Instance?.ShowBanner();
@@ -28,9 +27,13 @@ public partial class MainMenu : Control
     private void OnNewGame()
     {
         Ads.AdManager.Instance?.HideBanner();
-        SceneTransition.Instance.GoTo("res://scenes/world/WorldMap.tscn");
+        SceneTransition.Instance.GoTo("res://scenes/world/World.tscn");
     }
-    private void OnContinue() { /* TODO: Load save rồi GoTo */ }
+    private void OnContinue()
+    {
+        Ads.AdManager.Instance?.HideBanner();
+        SceneTransition.Instance.GoTo("res://scenes/world/World.tscn");
+    }
     private void OnSettings() => SceneTransition.Instance.GoTo("res://scenes/ui/SettingsMenu.tscn");
     private void OnQuit()     => GetTree().Quit();
 }

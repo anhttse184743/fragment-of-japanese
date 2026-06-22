@@ -1,4 +1,6 @@
 using Godot;
+using System;
+using System.Text.Json;
 using FragmentOfJapanese.Core;
 
 namespace FragmentOfJapanese.Entities.Player;
@@ -6,6 +8,8 @@ namespace FragmentOfJapanese.Entities.Player;
 public partial class Player : CharacterBody3D, IDamageable
 {
 	[Export] public PlayerData Data { get; set; }
+
+	private const string SavePath = "user://player.json";
 
 	// Hồi máu khi không bị đánh đủ lâu
 	[Export] public float RegenDelay  { get; set; } = 60f;   // giây không bị đánh thì bắt đầu hồi
@@ -22,8 +26,11 @@ public partial class Player : CharacterBody3D, IDamageable
 	public override void _Ready()
 	{
 		Data ??= new PlayerData();
-		AddToGroup("player");   // để quái tự tìm được mục tiêu
+		LoadData();
+		AddToGroup("player");
 	}
+
+	public override void _ExitTree() => SaveData();
 
 	private float _sinceDamage;
 	private float _regenTimer;
@@ -125,17 +132,57 @@ public partial class Player : CharacterBody3D, IDamageable
 
 	private void LevelUp()
 	{
-		Data.Level++;
-		Data.Exp    -= Data.MaxExp;
-		Data.MaxExp  = (int)(Data.MaxExp * 1.25f);
-		Data.MaxHp      += 15;
-		Data.Hp          = Data.MaxHp;
-		Data.MaxStamina += 10;
-		Data.Stamina     = Data.MaxStamina;
-		Data.Attack     += 3;
-		EmitSignal(SignalName.HpChanged, Data.Hp, Data.MaxHp);              // HUD cập nhật máu sau khi hồi đầy
-		EmitSignal(SignalName.StaminaChanged, Data.Stamina, Data.MaxStamina);
-		EmitSignal(SignalName.LeveledUp);
-		GD.Print($"[Player] Level up → {Data.Level}");
+		while (Data.Exp >= Data.MaxExp)
+		{
+			Data.Level++;
+			Data.Exp   -= Data.MaxExp;
+			Data.MaxExp = (int)(Data.MaxExp * 1.25f);
+			EmitSignal(SignalName.LeveledUp);
+		}
+	}
+
+	public void SaveData()
+	{
+		if (Data == null) return;
+		try
+		{
+			var json = JsonSerializer.Serialize(new
+			{
+				Data.PlayerName,
+				Data.Level, Data.Exp, Data.MaxExp,
+				Data.Hp, Data.MaxHp,
+				Data.Mana, Data.MaxMana,
+				Data.Stamina, Data.MaxStamina,
+				Data.Attack, Data.Defense,
+			});
+			using var f = FileAccess.Open(SavePath, FileAccess.ModeFlags.Write);
+			f?.StoreString(json);
+		}
+		catch (Exception e) { GD.PushWarning($"[Player] Save lỗi: {e.Message}"); }
+	}
+
+	private void LoadData()
+	{
+		if (!FileAccess.FileExists(SavePath)) return;
+		try
+		{
+			using var f = FileAccess.Open(SavePath, FileAccess.ModeFlags.Read);
+			var doc = JsonDocument.Parse(f?.GetAsText() ?? "{}");
+			var r = doc.RootElement;
+			Data ??= new PlayerData();
+			if (r.TryGetProperty("PlayerName", out var v)) Data.PlayerName = v.GetString() ?? Data.PlayerName;
+			if (r.TryGetProperty("Level",      out v))     Data.Level      = v.GetInt32();
+			if (r.TryGetProperty("Exp",        out v))     Data.Exp        = v.GetInt32();
+			if (r.TryGetProperty("MaxExp",     out v))     Data.MaxExp     = v.GetInt32();
+			if (r.TryGetProperty("Hp",         out v))     Data.Hp         = v.GetInt32();
+			if (r.TryGetProperty("MaxHp",      out v))     Data.MaxHp      = v.GetInt32();
+			if (r.TryGetProperty("Mana",       out v))     Data.Mana       = v.GetInt32();
+			if (r.TryGetProperty("MaxMana",    out v))     Data.MaxMana    = v.GetInt32();
+			if (r.TryGetProperty("Stamina",    out v))     Data.Stamina    = v.GetInt32();
+			if (r.TryGetProperty("MaxStamina", out v))     Data.MaxStamina = v.GetInt32();
+			if (r.TryGetProperty("Attack",     out v))     Data.Attack     = v.GetInt32();
+			if (r.TryGetProperty("Defense",    out v))     Data.Defense    = v.GetInt32();
+		}
+		catch (Exception e) { GD.PushWarning($"[Player] Load lỗi: {e.Message}"); }
 	}
 }

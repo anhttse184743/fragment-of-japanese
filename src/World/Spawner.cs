@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Godot;
+using FragmentOfJapanese.Autoloads;
 
 namespace FragmentOfJapanese.World;
 
@@ -35,7 +36,9 @@ public partial class Spawner : Node3D
         foreach (var c in GetChildren())            // ẩn marker khi chơi
             if (c is Node3D n) n.Visible = false;
 
-        if (SpawnOnReady) Wave();
+        // Defer đợt spawn ĐẦU: trong _Ready, cha (World) còn "bận dựng con" → add_child() bị chặn.
+        // Hoãn tới idle (cha dựng xong) thì AddChild + đặt vị trí mới chạy được.
+        if (SpawnOnReady) CallDeferred(nameof(Wave));
         if (Interval <= 0f) SetProcess(false);      // one-shot → khỏi tick
     }
 
@@ -64,8 +67,6 @@ public partial class Spawner : Node3D
         for (int i = 0; i < budget; i++)
         {
             var inst = Scene.Instantiate<Node3D>();
-            parent.AddChild(inst);
-
             var pos = GlobalPosition;
             if (ScatterRadius > 0f)
             {
@@ -74,6 +75,16 @@ public partial class Spawner : Node3D
                 pos += new Vector3(Mathf.Cos(a) * r, 0f, Mathf.Sin(a) * r);
             }
             inst.GlobalPosition = pos;
+            
+            parent.AddChild(inst);
+
+            // Thắng dungeon → về World đứng sát cổng đã vào; chết → về PlayerSpawn (null).
+            if (SceneTransition.PlayerStartPosition.HasValue && inst.IsInGroup("player"))
+            {
+                inst.GlobalPosition = SceneTransition.PlayerStartPosition.Value;
+                SceneTransition.PlayerStartPosition = null;
+            }
+
             _alive.Add(inst);
         }
     }
