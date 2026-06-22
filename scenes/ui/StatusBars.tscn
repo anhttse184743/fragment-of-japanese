@@ -1,0 +1,179 @@
+[gd_scene format=3 uid="uid://oi2a05ifwrpt"]
+
+[ext_resource type="Script" uid="uid://djvq06c72a1d6" path="res://src/Ui/StatusBars.cs" id="1_status"]
+[ext_resource type="Texture2D" uid="uid://bidyv46twv362" path="res://assets/ui/Player_status_ui/default_status_bar.png" id="2_frame"]
+[ext_resource type="Texture2D" uid="uid://bwlip4qnetm4r" path="res://assets/ui/Player_status_ui/blank_bar.png" id="3_blank"]
+[ext_resource type="Texture2D" uid="uid://ciit5umyftxo1" path="res://assets/ui/Player_status_ui/full_hp_bar.png" id="4_hpfull"]
+[ext_resource type="Texture2D" uid="uid://xh5mewatqd1a" path="res://assets/ui/Player_status_ui/full_mana_bar.png" id="5_mpfull"]
+[ext_resource type="Texture2D" uid="uid://bv3rae0ny3ubu" path="res://assets/ui/Player_status_ui/full_stamina_bar.png" id="6_spfull"]
+[ext_resource type="Texture2D" uid="uid://cs7wdejjfoijt" path="res://assets/ui/Player_status_ui/exp bar.png" id="7_exp"]
+[ext_resource type="Texture2D" uid="uid://t844wogolb3m" path="res://assets/ui/Player_status_ui/hp.png" id="8_hpic"]
+[ext_resource type="Texture2D" uid="uid://daxcx64mb3hoa" path="res://assets/ui/Player_status_ui/mana.png" id="9_mpic"]
+[ext_resource type="Texture2D" uid="uid://ce5f2mn40jo8a" path="res://assets/ui/Player_status_ui/stamina.png" id="10_spic"]
+
+[node name="StatusBars" type="Control" unique_id=1324890494 node_paths=PackedStringArray("_levelLabel", "_expBar", "_hpBar", "_hpLabel", "_manaBar", "_manaLabel", "_staminaBar", "_staminaLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_status")
+_levelLabel = NodePath("Panel/LvLabel")
+_expBar = NodePath("Panel/ExpBar")
+_hpBar = NodePath("Panel/HpBar")
+_hpLabel = NodePath("Panel/HpLabel")
+_manaBar = NodePath("Panel/ManaBar")
+_manaLabel = NodePath("Panel/ManaLabel")
+_staminaBar = NodePath("Panel/StaminaBar")
+_staminaLabel = NodePath("Panel/StaminaLabel")
+
+[node name="Panel" type="Control" parent="." unique_id=1121081761]
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 620.0
+offset_bottom = 286.0
+scale = Vector2(0.7, 0.7)
+mouse_filter = 2
+
+[node name="Frame" type="TextureRect" parent="Panel" unique_id=1405217616]
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 270.0
+mouse_filter = 2
+texture = ExtResource("2_frame")
+expand_mode = 1
+
+[node name="HpBar" type="TextureProgressBar" parent="Panel" unique_id=1474930887]
+layout_mode = 0
+offset_left = 101.42858
+offset_top = 74.28571
+offset_right = 587.4286
+offset_bottom = 128.2857
+scale = Vector2(0.9765587, 0.77461857)
+mouse_filter = 2
+max_value = 150.0
+value = 150.0
+texture_under = ExtResource("3_blank")
+texture_progress = ExtResource("4_hpfull")
+
+[node name="ManaBar" type="TextureProgressBar" parent="Panel" unique_id=96411102]
+layout_mode = 0
+offset_left = 101.42857
+offset_top = 138.57143
+offset_right = 587.4286
+offset_bottom = 192.57143
+scale = Vector2(0.9774082, 0.777165)
+mouse_filter = 2
+value = 100.0
+texture_under = ExtResource("3_blank")
+texture_progress = ExtResource("5_mpfull")
+
+[node name="StaminaBar" type="TextureProgressBar" parent="Panel" unique_id=1308305486]
+layout_mode = 0
+offset_left = 101.42857
+offset_top = 204.28575
+offset_right = 587.4286
+offset_bottom = 258.28577
+scale = Vector2(0.9767547, 0.7653454)
+mouse_filter = 2
+value = 100.0
+texture_under = ExtResource("3_blank")
+texture_progress = ExtResource("6_spfull")
+
+[node name="ExpBar" type="TextureProgressBar" parent="Panel" unique_id=1527694975]
+layout_mode = 0
+offset_left = 228.57144
+offset_top = 44.285713
+offset_right = 530.0
+offset_bottom = 50.285713
+mouse_filter = 2
+texture_progress = ExtResource("7_exp")
+
+[node name="HpIcon" type="TextureRect" parent="Panel" unique_id=120256381]
+layout_mode = 0
+offset_left = 25.714283
+offset_top = 71.42857
+offset_right = 75.71428
+offset_bottom = 121.42857
+mouse_filter = 2
+texture = ExtResource("8_hpic")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ManaIcon" type="TextureRect" parent="Panel" unique_id=462116924]
+layout_mode = 0
+offset_left = 25.714285
+offset_top = 135.7143
+offset_right = 75.71429
+offset_bottom = 185.7143
+mouse_filter = 2
+texture = ExtResource("9_mpic")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StaminaIcon" type="TextureRect" parent="Panel" unique_id=764068090]
+layout_mode = 0
+offset_left = 27.142855
+offset_top = 202.85715
+offset_right = 77.14285
+offset_bottom = 252.85715
+mouse_filter = 2
+texture = ExtResource("10_spic")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LvLabel" type="Label" parent="Panel" unique_id=769545644]
+layout_mode = 0
+offset_left = 74.28571
+offset_top = 17.142857
+offset_right = 148.57141
+offset_bottom = 48.142857
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "1"
+vertical_alignment = 1
+
+[node name="HpLabel" type="Label" parent="Panel" unique_id=1563399939]
+layout_mode = 0
+offset_left = 101.42857
+offset_top = 74.28572
+offset_right = 575.7143
+offset_bottom = 115.714294
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "150/150"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ManaLabel" type="Label" parent="Panel" unique_id=843942587]
+layout_mode = 0
+offset_left = 101.42857
+offset_top = 138.57143
+offset_right = 575.7143
+offset_bottom = 181.14285
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaminaLabel" type="Label" parent="Panel" unique_id=494247714]
+layout_mode = 0
+offset_left = 101.42857
+offset_top = 204.28572
+offset_right = 575.7143
+offset_bottom = 245.7143
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1

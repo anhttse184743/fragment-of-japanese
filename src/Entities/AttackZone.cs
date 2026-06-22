@@ -1,5 +1,8 @@
+using System;
 using Godot;
 using FragmentOfJapanese.Core;
+using PlayerEntity = FragmentOfJapanese.Entities.Player.Player;
+using EnemyEntity  = FragmentOfJapanese.Entities.Enemy.Enemy;
 
 namespace FragmentOfJapanese.Entities;
 
@@ -21,6 +24,9 @@ public partial class AttackZone : Node3D
     [Export(PropertyHint.Layers3DPhysics)] public uint TargetMask = 1;  // layer của mục tiêu
     [Export] public bool  ShowDebug     = true;     // vùng đỏ mờ để quan sát
     [Export] public float TurnThreshold = 0.15f;    // tốc độ tối thiểu để xoay hướng
+
+    /// <summary>Phát mỗi khi đòn đánh trúng 1 mục tiêu, kèm vị trí trúng (cho hiệu ứng tia trúng).</summary>
+    public event Action<Vector3> Hit;
 
     private Area3D _area;
     private float  _facingYaw;
@@ -70,7 +76,15 @@ public partial class AttackZone : Node3D
         foreach (var body in _area.GetOverlappingBodies())
         {
             if (body == OwnerBody) continue;
-            if (body is IDamageable d) d.TakeDamage(Damage);
+            if (body is not IDamageable d) continue;
+
+            int hpBefore = body is EnemyEntity pre ? pre.Hp : 1;
+            d.TakeDamage(Damage);
+            Hit?.Invoke(body.GlobalPosition + Vector3.Up * 1.0f);
+
+            // Người chơi giáng đòn KẾT LIỄU quái → cộng EXP (hpBefore>0 để khỏi cộng lặp trên xác)
+            if (OwnerBody is PlayerEntity player && body is EnemyEntity enemy && hpBefore > 0 && enemy.Hp == 0)
+                player.GainExp(enemy.ExpReward);
         }
     }
 }

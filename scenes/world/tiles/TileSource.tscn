@@ -1,0 +1,114 @@
+[gd_scene load_steps=19 format=3 uid="uid://btilesrc4arena"]
+
+; ============================================================================
+; SCENE NGUỒN TILE — chỉ để Export thành MeshLibrary, KHÔNG kéo vào game.
+; Cách dùng: mở scene này → menu Scene → Export As... → MeshLibrary... →
+;            lưu ĐÈ lên res://assets/world/arena_tiles.meshlib
+; Lưu ý: 6 tile xếp chồng tại gốc toạ độ là CỐ Ý. Đừng kéo chúng ra xa nhau —
+;        nếu lệch gốc thì khi vẽ trong GridMap tile sẽ bị lệch ô.
+; ============================================================================
+
+[ext_resource type="Texture2D" path="res://assets/textures/terrain/grass.png" id="1"]
+[ext_resource type="Texture2D" path="res://assets/textures/terrain/dirt.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/textures/terrain/stone.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/textures/terrain/sand.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/textures/terrain/oak_plank.png" id="5"]
+
+[sub_resource type="StandardMaterial3D" id="mat_grass"]
+albedo_texture = ExtResource("1")
+
+[sub_resource type="StandardMaterial3D" id="mat_dirt"]
+albedo_texture = ExtResource("2")
+
+[sub_resource type="StandardMaterial3D" id="mat_stone"]
+albedo_texture = ExtResource("3")
+
+[sub_resource type="StandardMaterial3D" id="mat_sand"]
+albedo_texture = ExtResource("4")
+
+[sub_resource type="StandardMaterial3D" id="mat_oak"]
+albedo_texture = ExtResource("5")
+
+[sub_resource type="StandardMaterial3D" id="mat_fog"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.82, 0.86, 0.92, 0.8)
+cull_mode = 2
+depth_draw_mode = 2
+
+[sub_resource type="BoxMesh" id="box_grass"]
+material = SubResource("mat_grass")
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxMesh" id="box_dirt"]
+material = SubResource("mat_dirt")
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxMesh" id="box_stone"]
+material = SubResource("mat_stone")
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxMesh" id="box_sand"]
+material = SubResource("mat_sand")
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxMesh" id="box_oak"]
+material = SubResource("mat_oak")
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxMesh" id="box_fog"]
+material = SubResource("mat_fog")
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxShape3D" id="box_shape"]
+size = Vector3(2, 2, 2)
+
+[node name="TileSource" type="Node3D"]
+
+[node name="grass" type="MeshInstance3D" parent="."]
+mesh = SubResource("box_grass")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="grass"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="grass/StaticBody3D"]
+shape = SubResource("box_shape")
+
+[node name="dirt" type="MeshInstance3D" parent="."]
+mesh = SubResource("box_dirt")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="dirt"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="dirt/StaticBody3D"]
+shape = SubResource("box_shape")
+
+[node name="stone" type="MeshInstance3D" parent="."]
+mesh = SubResource("box_stone")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="stone"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="stone/StaticBody3D"]
+shape = SubResource("box_shape")
+
+[node name="sand" type="MeshInstance3D" parent="."]
+mesh = SubResource("box_sand")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="sand"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="sand/StaticBody3D"]
+shape = SubResource("box_shape")
+
+[node name="oak_plank" type="MeshInstance3D" parent="."]
+mesh = SubResource("box_oak")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="oak_plank"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="oak_plank/StaticBody3D"]
+shape = SubResource("box_shape")
+
+[node name="fog" type="MeshInstance3D" parent="."]
+mesh = SubResource("box_fog")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="fog"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="fog/StaticBody3D"]
+shape = SubResource("box_shape")

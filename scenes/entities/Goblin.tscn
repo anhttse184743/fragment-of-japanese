@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bgyi8pudmhicg" path="res://src/Entities/CharacterAnimator.cs" id="3_anim"]
 [ext_resource type="Script" uid="uid://c8xpeb3lhqugw" path="res://src/Entities/AttackZone.cs" id="4_zone"]
 [ext_resource type="Script" uid="uid://cqr5mwsk1phtx" path="res://src/Entities/Enemy/EnemyAi.cs" id="5_ai"]
+[ext_resource type="Script" path="res://src/Entities/Enemy/EnemyHealthBar.cs" id="6_hp"]
 
 [sub_resource type="CapsuleShape3D" id="cap_goblin"]
 radius = 0.3
@@ -48,3 +49,8 @@ _enemy = NodePath("..")
 _animator = NodePath("../Animator")
 _attackZone = NodePath("../AttackZone")
 DetectRange = 10.0
+
+[node name="HealthBar" type="Node3D" parent="." node_paths=PackedStringArray("_enemy")]
+script = ExtResource("6_hp")
+_enemy = NodePath("..")
+Offset = Vector3(0, 1.9, 0)

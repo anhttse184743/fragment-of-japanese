@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Ui/VirtualJoystick.cs" id="1_joy"]
+
+[node name="JoystickLayer" type="CanvasLayer" groups=["hud"]]
+
+[node name="Joystick" type="Control" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = -300.0
+offset_right = 280.0
+offset_bottom = -80.0
+mouse_filter = 2
+script = ExtResource("1_joy")

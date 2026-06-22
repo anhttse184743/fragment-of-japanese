@@ -13,11 +13,16 @@ public partial class JapaneseDB : Node
 	private List<VocabularyEntry> _hiragana = new();
 	private List<VocabularyEntry> _katakana = new();
 	private List<LessonInfo>      _lessons  = new();
+	private List<GrammarPoint>    _grammar  = new();
+	private List<ReadingPassage>  _readings = new();
+	private List<KanaStrokes>     _hiraganaStrokes = new();
 
 	public IReadOnlyList<VocabularyEntry> VocabN5  => _vocabN5;
 	public IReadOnlyList<VocabularyEntry> Hiragana => _hiragana;
 	public IReadOnlyList<VocabularyEntry> Katakana => _katakana;
 	public IReadOnlyList<LessonInfo>      Lessons  => _lessons;
+	public IReadOnlyList<GrammarPoint>    Grammar  => _grammar;
+	public IReadOnlyList<ReadingPassage>  Readings => _readings;
 
 	public override void _Ready()
 	{
@@ -31,7 +36,11 @@ public partial class JapaneseDB : Node
 		_hiragana = LoadJson<VocabularyEntry>("res://data/japanese/hiragana.json");
 		_katakana = LoadJson<VocabularyEntry>("res://data/japanese/katakana.json");
 		_lessons  = LoadJson<LessonInfo>("res://data/japanese/lessons.json");
-		GD.Print($"[JapaneseDB] Loaded — N5: {_vocabN5.Count}, Hiragana: {_hiragana.Count}, Katakana: {_katakana.Count}, Lessons: {_lessons.Count}");
+		_grammar  = LoadJson<GrammarPoint>("res://data/japanese/grammar.json");
+		_readings = LoadJson<ReadingPassage>("res://data/japanese/readings.json");
+		_hiraganaStrokes = LoadJson<KanaStrokes>("res://data/japanese/hiragana_strokes.json");
+		GD.Print($"[JapaneseDB] Loaded — N5: {_vocabN5.Count}, Hiragana: {_hiragana.Count}, Katakana: {_katakana.Count}, "
+		       + $"Lessons: {_lessons.Count}, Grammar: {_grammar.Count}, Readings: {_readings.Count}, Strokes: {_hiraganaStrokes.Count}");
 	}
 
 	private static List<T> LoadJson<T>(string path)
@@ -60,6 +69,20 @@ public partial class JapaneseDB : Node
 	/// <summary>Metadata của một bài (tên, ngữ pháp); null nếu chưa có.</summary>
 	public LessonInfo GetLesson(int lesson)
 		=> _lessons.Find(l => l.Lesson == lesson);
+
+	/// <summary>Các điểm ngữ pháp của một bài.</summary>
+	public List<GrammarPoint> GetGrammarByLesson(int lesson)
+		=> _grammar.FindAll(g => g.Lesson == lesson);
+
+	/// <summary>Các đoạn đọc hiểu của một bài.</summary>
+	public List<ReadingPassage> GetReadingsByLesson(int lesson)
+		=> _readings.FindAll(r => r.Lesson == lesson);
+
+	/// <summary>Mẫu nét của một kana theo romaji (game vẽ chữ); null nếu chưa có.</summary>
+	public KanaStrokes GetStrokes(string romaji)
+		=> _hiraganaStrokes.Find(k => k.Romaji == romaji);
+
+	public IReadOnlyList<KanaStrokes> HiraganaStrokes => _hiraganaStrokes;
 
 	/// <summary>True nếu chuỗi chỉ gồm hiragana (đọc được ở giai đoạn mới học hiragana).</summary>
 	public static bool IsHiraganaOnly(string kana)

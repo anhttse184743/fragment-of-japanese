@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="FRAGMENT OF JAPANESE"
-run/main_scene="uid://hpvxob4tu4iq"
+run/main_scene="res://scenes/ui/AuthScreen.tscn"
 config/features=PackedStringArray("4.6", "C#", "Mobile")
 config/icon="res://icon.svg"
 
@@ -22,15 +22,24 @@ driver/enable_input=true
 [autoload]
 
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
+AccountManager="*res://src/Autoloads/AccountManager.cs"
 ItemDatabase="*res://src/Autoloads/ItemDatabase.cs"
 JapaneseDB="*res://src/Autoloads/JapaneseDB.cs"
 Inventory="*res://src/Items/Inventory.cs"
 Wallet="*res://src/Items/Wallet.cs"
 Shop="*res://src/Items/Shop.cs"
+Gacha="*res://src/Items/Gacha.cs"
+RedeemManager="*res://src/Items/RedeemManager.cs"
+QuestManager="*res://src/Quests/QuestManager.cs"
+LearningTracker="*res://src/Learning/LearningTracker.cs"
+SkinManager="*res://src/Cosmetics/SkinManager.cs"
+AdManager="*res://src/Ads/AdManager.cs"
 InventoryUi="*res://src/Ui/InventoryUi.cs"
 ShopUi="*res://src/Ui/ShopUi.cs"
 SceneTransition="*res://src/Autoloads/SceneTransition.cs"
 ConfirmUi="*res://src/Ui/ConfirmUi.cs"
+DialogueUi="*res://src/Ui/DialogueUi.cs"
+ChallengeUi="*res://src/Ui/ChallengeUi.cs"
 
 [display]
 

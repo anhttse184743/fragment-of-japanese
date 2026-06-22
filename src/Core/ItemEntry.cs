@@ -11,6 +11,9 @@ public enum ItemType
     Equipment,    // trang bị: vũ khí / giáp (sắp ra mắt)
 }
 
+/// <summary>Độ hiếm vật phẩm — dùng cho gacha.</summary>
+public enum Rarity { Common, Rare, Epic, Legendary }
+
 /// <summary>
 /// Định nghĩa 1 loại vật phẩm (đọc từ data/items.json).
 /// Model thuần — giống <see cref="VocabularyEntry"/>, không phải Node.
@@ -46,5 +49,17 @@ public class ItemEntry
         "trade"     => ItemType.Trade,
         "equipment" => ItemType.Equipment,
         _           => ItemType.Consumable,
+    };
+
+    /// <summary>Độ hiếm — chuỗi "common"/"rare"/"epic"/"legendary".</summary>
+    [JsonPropertyName("rarity")] public string RarityId { get; set; } = "common";
+
+    [JsonIgnore]
+    public Rarity Rarity => RarityId?.ToLowerInvariant() switch
+    {
+        "rare"      => Rarity.Rare,
+        "epic"      => Rarity.Epic,
+        "legendary" => Rarity.Legendary,
+        _           => Rarity.Common,
     };
 }

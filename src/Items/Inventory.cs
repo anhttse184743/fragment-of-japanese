@@ -135,7 +135,7 @@ public partial class Inventory : Node
         Add("item_potion",        5);   // tiêu hao
         Add("item_hi_potion",     2);
         Add("item_scroll",        3);
-        Add("item_silver_key",    4);   // chìa khóa (gacha)
+        Add("item_silver_key",   30);   // chìa khóa (gacha)
         Add("item_golden_key",    1);
         Add("item_goblin_ear",   12);   // đổi / bán
         Add("item_wolf_pelt",     3);

@@ -9,6 +9,7 @@
 [ext_resource type="SpriteFrames" path="res://assets/sprites/player/player_frames.tres" id="7_frames"]
 [ext_resource type="Script" uid="uid://br776t024ji3u" path="res://src/Entities/Player/PlayerAnimator.cs" id="8_anim"]
 [ext_resource type="Script" path="res://src/Entities/AttackZone.cs" id="9_zone"]
+[ext_resource type="Script" path="res://src/Entities/Player/PlayerCosmetics.cs" id="10_cos"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_player"]
 radius = 0.35
@@ -57,6 +58,13 @@ Damage = 14
 Range = 1.6
 Width = 1.4
 Height = 1.6
+
+[node name="Cosmetics" type="Node" parent="Player" node_paths=PackedStringArray("_player", "_visual", "_controller", "_attackZone")]
+script = ExtResource("10_cos")
+_player = NodePath("..")
+_visual = NodePath("../Visual")
+_controller = NodePath("../Controller")
+_attackZone = NodePath("../AttackZone")
 
 [node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=1818356730 node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true

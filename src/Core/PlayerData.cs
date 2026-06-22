@@ -14,6 +14,8 @@ public partial class PlayerData : Resource
     [Export] public int    MaxHp       { get; set; } = 150;
     [Export] public int    Mana        { get; set; } = 100;
     [Export] public int    MaxMana     { get; set; } = 100;
+    [Export] public int    Stamina     { get; set; } = 100;   // thể lực — dùng để chạy/né/skill (wire sau)
+    [Export] public int    MaxStamina  { get; set; } = 100;
     [Export] public int    Attack      { get; set; } = 10;
     [Export] public int    Defense     { get; set; } = 5;
 

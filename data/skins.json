@@ -1,0 +1,27 @@
+[
+  { "id": "player_default",  "category": "Player",      "name": "Mặc định",   "color": "#ffffff", "frames": "res://assets/sprites/player/player_frames.tres" },
+  { "id": "player_crimson",  "category": "Player",      "name": "Đỏ thẫm",    "color": "#ff7a7a", "frames": "res://assets/sprites/player/player_frames.tres" },
+  { "id": "player_azure",    "category": "Player",      "name": "Thiên thanh","color": "#8ac0ff", "frames": "res://assets/sprites/player/player_frames.tres" },
+  { "id": "player_emerald",  "category": "Player",      "name": "Lục bảo",    "color": "#86e0a4", "frames": "res://assets/sprites/player/player_frames.tres" },
+
+  { "id": "slash_silver",    "category": "AttackSwing", "name": "Bạc",        "color": "#f2f2f2" },
+  { "id": "slash_crimson",   "category": "AttackSwing", "name": "Huyết",      "color": "#ff5a5a" },
+  { "id": "slash_gold",      "category": "AttackSwing", "name": "Hoàng kim",  "color": "#ffd24a" },
+  { "id": "slash_cyan",      "category": "AttackSwing", "name": "Lam quang",  "color": "#5af0ff" },
+
+  { "id": "dust_earth",      "category": "RunDust",     "name": "Đất",        "color": "#c8a06a" },
+  { "id": "dust_ash",        "category": "RunDust",     "name": "Tro",        "color": "#b4b4b4" },
+  { "id": "dust_grass",      "category": "RunDust",     "name": "Cỏ",         "color": "#8fd49a" },
+
+  { "id": "spark_gold",      "category": "HitSpark",    "name": "Vàng",       "color": "#ffe066" },
+  { "id": "spark_crimson",   "category": "HitSpark",    "name": "Đỏ",         "color": "#ff6060" },
+  { "id": "spark_violet",    "category": "HitSpark",    "name": "Tím",        "color": "#c08aff" },
+
+  { "id": "aura_gold",       "category": "LevelUpAura", "name": "Hoàng kim",  "color": "#ffd24a" },
+  { "id": "aura_azure",      "category": "LevelUpAura", "name": "Thiên thanh","color": "#6ab8ff" },
+  { "id": "aura_emerald",    "category": "LevelUpAura", "name": "Lục",        "color": "#7be0a0" },
+
+  { "id": "step_shadow",     "category": "Footstep",    "name": "Bóng mờ",    "color": "#202020" },
+  { "id": "step_glow",       "category": "Footstep",    "name": "Phát sáng",  "color": "#ffe066" },
+  { "id": "step_crimson",    "category": "Footstep",    "name": "Đỏ",         "color": "#ff6060" }
+]

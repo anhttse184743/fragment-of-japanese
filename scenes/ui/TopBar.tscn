@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Ui/TopBar.cs" id="1_topbar"]
+
+[node name="TopBar" type="Control" node_paths=PackedStringArray("_shopBtn", "_bagBtn", "_optsBtn")]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_topbar")
+_shopBtn = NodePath("Buttons/ShopBtn")
+_bagBtn = NodePath("Buttons/BagBtn")
+_optsBtn = NodePath("Buttons/OptsBtn")
+
+[node name="Buttons" type="HBoxContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -290.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = 54.0
+grow_horizontal = 0
+alignment = 2
+theme_override_constants/separation = 8
+
+[node name="ShopBtn" type="Button" parent="Buttons"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "SHOP"
+
+[node name="BagBtn" type="Button" parent="Buttons"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "BAG"
+
+[node name="OptsBtn" type="Button" parent="Buttons"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "OPTS"

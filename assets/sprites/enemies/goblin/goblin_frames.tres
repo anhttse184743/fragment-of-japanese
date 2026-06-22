@@ -58,22 +58,22 @@ animations = [{
 "frames": [{"duration": 1.0, "texture": ExtResource("g1")}, {"duration": 1.0, "texture": ExtResource("g2")}, {"duration": 1.0, "texture": ExtResource("g3")}, {"duration": 1.0, "texture": ExtResource("g4")}, {"duration": 1.0, "texture": ExtResource("g5")}],
 "loop": true,
 "name": &"idle_down",
-"speed": 8.0
+"speed": 3.0
 }, {
 "frames": [{"duration": 1.0, "texture": ExtResource("g6")}, {"duration": 1.0, "texture": ExtResource("g7")}, {"duration": 1.0, "texture": ExtResource("g8")}, {"duration": 1.0, "texture": ExtResource("g9")}, {"duration": 1.0, "texture": ExtResource("g10")}],
 "loop": true,
 "name": &"idle_up",
-"speed": 8.0
+"speed": 3.0
 }, {
 "frames": [{"duration": 1.0, "texture": ExtResource("g11")}, {"duration": 1.0, "texture": ExtResource("g12")}, {"duration": 1.0, "texture": ExtResource("g13")}, {"duration": 1.0, "texture": ExtResource("g14")}, {"duration": 1.0, "texture": ExtResource("g15")}],
 "loop": true,
 "name": &"idle_left",
-"speed": 8.0
+"speed": 3.0
 }, {
 "frames": [{"duration": 1.0, "texture": ExtResource("g16")}, {"duration": 1.0, "texture": ExtResource("g17")}, {"duration": 1.0, "texture": ExtResource("g18")}, {"duration": 1.0, "texture": ExtResource("g19")}, {"duration": 1.0, "texture": ExtResource("g20")}],
 "loop": true,
 "name": &"idle_right",
-"speed": 8.0
+"speed": 3.0
 }, {
 "frames": [{"duration": 1.0, "texture": ExtResource("g21")}, {"duration": 1.0, "texture": ExtResource("g22")}, {"duration": 1.0, "texture": ExtResource("g23")}, {"duration": 1.0, "texture": ExtResource("g24")}],
 "loop": true,

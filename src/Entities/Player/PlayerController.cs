@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using FragmentOfJapanese.Ui;
 
 namespace FragmentOfJapanese.Entities.Player;
 
@@ -50,16 +51,11 @@ public partial class PlayerController : Node
         float dt = (float)delta;
         var velocity = _player.Velocity;
 
-        // Toggle chạy nhanh: Shift nhấn 1 lần (hoặc nút mobile gọi ToggleRun)
-        if (Input.IsActionJustPressed("run_toggle"))
-            IsRunning = !IsRunning;
+        bool locked = DialogueUi.Active;   // đang thoại → khoá điều khiển (vẫn rơi do trọng lực)
 
-        // Tấn công
-        if (Input.IsActionJustPressed("attack"))
-        {
-            AttackPressed?.Invoke();   // → animation
-            _attackZone?.Attack();     // → sát thương vùng trước mặt
-        }
+        // Toggle chạy nhanh: Shift nhấn 1 lần (hoặc nút mobile gọi ToggleRun)
+        if (!locked && Input.IsActionJustPressed("run_toggle"))
+            IsRunning = !IsRunning;
 
         bool onFloor = _player.IsOnFloor();
 
@@ -68,14 +64,16 @@ public partial class PlayerController : Node
             velocity.Y -= Gravity * dt;
 
         // Nhảy (chỉ khi đang trên mặt đất)
-        bool wantJump = Input.IsActionJustPressed("jump") || _jumpRequested;
+        bool wantJump = !locked && (Input.IsActionJustPressed("jump") || _jumpRequested);
         _jumpRequested = false;
         if (wantJump && onFloor)
             velocity.Y = JumpSpeed;
 
         // Input ngang: bàn phím hoặc joystick cảm ứng
-        Vector2 input = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-        if (input == Vector2.Zero && TouchInput != Vector2.Zero)
+        Vector2 input = locked
+            ? Vector2.Zero
+            : Input.GetVector("move_left", "move_right", "move_up", "move_down");
+        if (input == Vector2.Zero && TouchInput != Vector2.Zero && !locked)
             input = TouchInput;
 
         float speed = IsRunning ? RunSpeed : MoveSpeed;
@@ -84,8 +82,9 @@ public partial class PlayerController : Node
         {
             // "tiến" (W) = ra xa camera → xoay input theo yaw camera
             var move = new Vector3(input.X, 0f, input.Y);
+            if (move.Length() > 1f) move = move.Normalized();   // chặn chéo bàn phím; GIỮ độ lớn analog joystick
             float camYaw = _camera != null ? _camera.GlobalRotation.Y : 0f;
-            move = move.Rotated(Vector3.Up, camYaw).Normalized();
+            move = move.Rotated(Vector3.Up, camYaw);
             velocity.X = move.X * speed;
             velocity.Z = move.Z * speed;
         }
@@ -97,6 +96,17 @@ public partial class PlayerController : Node
 
         _player.Velocity = velocity;
         _player.MoveAndSlide();
+    }
+
+    public override void _UnhandledInput(InputEvent ev)
+    {
+        // Đánh ở _UnhandledInput để UI (joystick) "nuốt" được sự kiện → không đánh nhầm khi chạm joystick.
+        if (DialogueUi.Active) return;     // đang thoại → không đánh
+        if (ev.IsActionPressed("attack"))
+        {
+            AttackPressed?.Invoke();   // → animation
+            _attackZone?.Attack();     // → sát thương vùng trước mặt
+        }
     }
 
     /// <summary>Đăng ký input action nếu project chưa khai báo — để test bàn phím ngay.</summary>

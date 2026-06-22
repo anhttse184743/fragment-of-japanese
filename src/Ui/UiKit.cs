@@ -9,7 +9,9 @@ namespace FragmentOfJapanese.Ui;
 /// </summary>
 public static class UiKit
 {
-    public const string GoldIconPath = "res://assets/sprites/items/gold.png";
+    public const string GoldIconPath  = "res://assets/sprites/items/gold.png";
+    public const string AetherIconPath = "res://assets/sprites/items/aetherstone.png";
+    public const string NoIconPath     = "res://assets/sprites/items/no_icon.png";
 
     // ----- Bảng màu -----
     public static readonly Color Gold     = new(1.00f, 0.82f, 0.30f);
@@ -21,6 +23,22 @@ public static class UiKit
     public static readonly Color BuyGreen = new(0.22f, 0.55f, 0.32f);
     public static readonly Color BuyGreenHi = new(0.28f, 0.68f, 0.40f);
     public static readonly Color TextDim  = new(0.62f, 0.64f, 0.72f);
+
+    // ----- Tông nâu da (túi đồ) -----
+    public static readonly Color BrownPanel   = new(0.64f, 0.50f, 0.36f);   // nâu da chủ đạo
+    public static readonly Color BrownDark    = new(0.38f, 0.27f, 0.17f);   // header / bảng chi tiết
+    public static readonly Color BrownSlot    = new(0.50f, 0.38f, 0.26f);   // ô vật phẩm
+    public static readonly Color BrownBorder  = new(0.28f, 0.19f, 0.11f);
+    public static readonly Color BrownText    = new(0.97f, 0.93f, 0.85f);   // kem
+    public static readonly Color BrownTextDim = new(0.86f, 0.79f, 0.68f);
+
+    // ----- Tông nâu gỗ (shop) -----
+    public static readonly Color WoodPanel   = new(0.38f, 0.26f, 0.15f);   // gỗ chủ đạo
+    public static readonly Color WoodDark    = new(0.24f, 0.16f, 0.09f);   // sidebar / thanh / pill
+    public static readonly Color WoodCard    = new(0.47f, 0.34f, 0.21f);   // card / banner
+    public static readonly Color WoodBorder  = new(0.16f, 0.10f, 0.05f);
+    public static readonly Color WoodText    = new(0.97f, 0.91f, 0.79f);   // kem
+    public static readonly Color WoodTextDim = new(0.80f, 0.71f, 0.57f);
 
     /// <summary>Màu nhấn theo nhóm vật phẩm — tạo sự đa dạng thị giác.</summary>
     public static Color TypeColor(ItemType t) => t switch
@@ -39,6 +57,22 @@ public static class UiKit
         ItemType.Trade      => "ĐỔI / BÁN",
         ItemType.Equipment  => "TRANG BỊ",
         _                   => "",
+    };
+
+    public static Color RarityColor(Rarity r) => r switch
+    {
+        Rarity.Rare      => new Color(0.35f, 0.62f, 0.95f),
+        Rarity.Epic      => new Color(0.72f, 0.42f, 0.92f),
+        Rarity.Legendary => new Color(1.00f, 0.74f, 0.25f),
+        _                => new Color(0.78f, 0.78f, 0.82f),
+    };
+
+    public static string RarityName(Rarity r) => r switch
+    {
+        Rarity.Rare      => "HIẾM",
+        Rarity.Epic      => "SỬ THI",
+        Rarity.Legendary => "HUYỀN THOẠI",
+        _                => "THƯỜNG",
     };
 
     /// <summary>StyleBoxFlat bo góc, tùy chọn viền + content margin.</summary>
@@ -78,9 +112,11 @@ public static class UiKit
     {
         var holder = new CenterContainer { CustomMinimumSize = new Vector2(0, size + 2) };
 
-        if (def != null && !string.IsNullOrEmpty(def.Icon) && ResourceLoader.Exists(def.Icon))
+        // Dùng icon riêng nếu có, không thì fallback no_icon.png
+        string path = def != null && !string.IsNullOrEmpty(def.Icon) ? def.Icon : NoIconPath;
+        if (ResourceLoader.Exists(path))
         {
-            var tex = GD.Load<Texture2D>(def.Icon);
+            var tex = GD.Load<Texture2D>(path);
             if (tex != null)
             {
                 holder.AddChild(new TextureRect
@@ -94,6 +130,7 @@ public static class UiKit
             }
         }
 
+        // Fallback cuối (khi cả no_icon.png cũng thiếu): ô màu + chữ cái đầu
         var box = new PanelContainer { CustomMinimumSize = new Vector2(size, size) };
         box.AddThemeStyleboxOverride("panel", Box(Fade(accent, 0.22f), 10, accent, 2));
 
@@ -115,5 +152,35 @@ public static class UiKit
     {
         c.A = alpha;
         return c;
+    }
+
+    /// <summary>
+    /// Hiện thông báo ngắn (toast) căn giữa, hơi trên đáy màn hình rồi tự mờ dần.
+    /// Tiện cho nút placeholder ("sắp có") — gọi <c>UiKit.Toast(this, "...")</c> từ một Control phủ-toàn-màn.
+    /// </summary>
+    public static void Toast(Control host, string msg, float seconds = 1.4f)
+    {
+        if (host == null || !GodotObject.IsInstanceValid(host)) return;
+
+        var label = new Label
+        {
+            Text                = msg,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center,
+            MouseFilter         = Control.MouseFilterEnum.Ignore,
+        };
+        label.SetAnchorsPreset(Control.LayoutPreset.BottomWide);
+        label.OffsetTop    = -180;
+        label.OffsetBottom = -130;
+        label.AddThemeColorOverride("font_color", Accent);
+        label.AddThemeColorOverride("font_outline_color", new Color(0f, 0f, 0f, 0.9f));
+        label.AddThemeConstantOverride("outline_size", 6);
+        label.AddThemeFontSizeOverride("font_size", 18);
+        host.AddChild(label);
+
+        var tw = label.CreateTween();
+        tw.TweenInterval(seconds);
+        tw.TweenProperty(label, "modulate:a", 0f, 0.4);
+        tw.TweenCallback(Callable.From(label.QueueFree));
     }
 }

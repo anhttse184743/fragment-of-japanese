@@ -1,22 +1,32 @@
 [
   {
-    "id": "quest_001",
-    "name_vi": "Bước đầu tiên",
-    "name_en": "First Step",
-    "name_ja": "最初の一歩",
-    "description_vi": "Hãy học 5 chữ Hiragana đầu tiên",
-    "type": "learn",
-    "condition": {"vocab_tag": "hiragana", "count": 5},
-    "reward": {"exp": 30, "item_id": "item_potion"}
+    "id": "daily_learn",  "name_vi": "Học chăm chỉ",        "name_en": "Diligent Study",     "name_ja": "毎日の勉強",
+    "description_vi": "Học 5 từ mới hôm nay.",
+    "period": "daily",  "type": "learn",  "target": 5,  "target_key": "",
+    "reward": {"exp": 20, "gold": 100, "ma_thach": 0, "item_id": "item_silver_key", "item_count": 1}
   },
   {
-    "id": "quest_002",
-    "name_vi": "Chiến binh từ vựng",
-    "name_en": "Vocab Warrior",
-    "name_ja": "単語の戦士",
-    "description_vi": "Đánh bại 3 Ma Hiragana",
-    "type": "battle",
-    "condition": {"enemy_id": "enemy_hiragana_ghost", "count": 3},
-    "reward": {"exp": 50, "item_id": "item_scroll"}
+    "id": "daily_battle", "name_vi": "Luyện kiếm",           "name_en": "Sword Practice",     "name_ja": "毎日の戦い",
+    "description_vi": "Thắng 3 trận đấu hôm nay.",
+    "period": "daily",  "type": "battle", "target": 3,  "target_key": "",
+    "reward": {"exp": 30, "gold": 150, "ma_thach": 0, "item_id": "", "item_count": 0}
+  },
+  {
+    "id": "daily_voice",  "name_vi": "Luyện phát âm",         "name_en": "Pronunciation Drill", "name_ja": "発音練習",
+    "description_vi": "Đọc đúng 5 từ bằng giọng nói.",
+    "period": "daily",  "type": "voice",  "target": 5,  "target_key": "",
+    "reward": {"exp": 25, "gold": 0,   "ma_thach": 0, "item_id": "item_silver_key", "item_count": 1}
+  },
+  {
+    "id": "weekly_learn", "name_vi": "Bậc thầy từ vựng",      "name_en": "Vocab Master",       "name_ja": "週間マスター",
+    "description_vi": "Học 30 từ trong tuần này.",
+    "period": "weekly", "type": "learn",  "target": 30, "target_key": "",
+    "reward": {"exp": 100, "gold": 500, "ma_thach": 0, "item_id": "item_golden_key", "item_count": 1}
+  },
+  {
+    "id": "weekly_battle","name_vi": "Chiến binh huyền thoại","name_en": "Legendary Warrior",  "name_ja": "週間の戦士",
+    "description_vi": "Thắng 20 trận trong tuần này.",
+    "period": "weekly", "type": "battle", "target": 20, "target_key": "",
+    "reward": {"exp": 150, "gold": 0,  "ma_thach": 0, "item_id": "item_golden_key", "item_count": 1}
   }
 ]

@@ -1,0 +1,166 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://cw5tejkc4idjf"]
+
+[ext_resource type="Texture2D" uid="uid://dm2uwlfkf2lht" path="res://assets/sprites/npcs/hiragana_sensei/hiragana_sensei.png" id="1"]
+
+[sub_resource type="AtlasTexture" id="dn0"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="dn1"]
+atlas = ExtResource("1")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="dn2"]
+atlas = ExtResource("1")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="dn3"]
+atlas = ExtResource("1")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="dn4"]
+atlas = ExtResource("1")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="lf0"]
+atlas = ExtResource("1")
+region = Rect2(0, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="lf1"]
+atlas = ExtResource("1")
+region = Rect2(128, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="lf2"]
+atlas = ExtResource("1")
+region = Rect2(256, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="lf3"]
+atlas = ExtResource("1")
+region = Rect2(384, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="lf4"]
+atlas = ExtResource("1")
+region = Rect2(512, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="rt0"]
+atlas = ExtResource("1")
+region = Rect2(0, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="rt1"]
+atlas = ExtResource("1")
+region = Rect2(128, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="rt2"]
+atlas = ExtResource("1")
+region = Rect2(256, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="rt3"]
+atlas = ExtResource("1")
+region = Rect2(384, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="rt4"]
+atlas = ExtResource("1")
+region = Rect2(512, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="up0"]
+atlas = ExtResource("1")
+region = Rect2(0, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="up1"]
+atlas = ExtResource("1")
+region = Rect2(128, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="up2"]
+atlas = ExtResource("1")
+region = Rect2(256, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="up3"]
+atlas = ExtResource("1")
+region = Rect2(384, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="up4"]
+atlas = ExtResource("1")
+region = Rect2(512, 256, 128, 128)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("dn0")
+}, {
+"duration": 1.0,
+"texture": SubResource("dn1")
+}, {
+"duration": 1.0,
+"texture": SubResource("dn2")
+}, {
+"duration": 1.0,
+"texture": SubResource("dn3")
+}, {
+"duration": 1.0,
+"texture": SubResource("dn4")
+}],
+"loop": true,
+"name": &"idle_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("lf0")
+}, {
+"duration": 1.0,
+"texture": SubResource("lf1")
+}, {
+"duration": 1.0,
+"texture": SubResource("lf2")
+}, {
+"duration": 1.0,
+"texture": SubResource("lf3")
+}, {
+"duration": 1.0,
+"texture": SubResource("lf4")
+}],
+"loop": true,
+"name": &"idle_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("rt0")
+}, {
+"duration": 1.0,
+"texture": SubResource("rt1")
+}, {
+"duration": 1.0,
+"texture": SubResource("rt2")
+}, {
+"duration": 1.0,
+"texture": SubResource("rt3")
+}, {
+"duration": 1.0,
+"texture": SubResource("rt4")
+}],
+"loop": true,
+"name": &"idle_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("up0")
+}, {
+"duration": 1.0,
+"texture": SubResource("up1")
+}, {
+"duration": 1.0,
+"texture": SubResource("up2")
+}, {
+"duration": 1.0,
+"texture": SubResource("up3")
+}, {
+"duration": 1.0,
+"texture": SubResource("up4")
+}],
+"loop": true,
+"name": &"idle_up",
+"speed": 5.0
+}]

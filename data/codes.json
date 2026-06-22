@@ -1,0 +1,6 @@
+[
+  {"code":"WELCOME",      "gold":500,  "aetherstone":10, "items":[{"id":"item_potion","count":5}]},
+  {"code":"GACHA10",      "items":[{"id":"item_silver_key","count":10}]},
+  {"code":"NIHONGO",      "items":[{"id":"item_scroll","count":3}]},
+  {"code":"FRAGMENT2026", "gold":1000, "aetherstone":50}
+]

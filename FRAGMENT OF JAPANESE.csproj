@@ -8,4 +8,15 @@
   <ItemGroup>
     <PackageReference Include="Vosk" Version="0.3.38" />
   </ItemGroup>
+
+  <!--
+    BẬT QUẢNG CÁO THẬT (AdMob): bỏ comment khối dưới SAU KHI đã cài plugin
+    "Poing Studios godot-admob-plugin" qua AssetLib (xem docs/ADMOB_SETUP.md).
+    Khi bật, AdMobProvider.cs mới được biên dịch (chỉ cho bản Android);
+    desktop/editor vẫn dùng MockAdProvider để test.
+
+  <PropertyGroup Condition=" '$(GodotTargetPlatform)' == 'android' ">
+    <DefineConstants>$(DefineConstants);ADMOB_ENABLED</DefineConstants>
+  </PropertyGroup>
+  -->
 </Project>
