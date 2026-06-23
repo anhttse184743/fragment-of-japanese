@@ -1,15 +1,18 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://cl5ibfcoebma1"]
 
-[ext_resource type="Script" path="res://src/Ui/VirtualJoystick.cs" id="1_joy"]
+[ext_resource type="Script" uid="uid://ctd523ucb7yw6" path="res://src/Ui/VirtualJoystick.cs" id="1_joy"]
 
-[node name="JoystickLayer" type="CanvasLayer" groups=["hud"]]
+[node name="JoystickLayer" type="CanvasLayer" unique_id=331573918 groups=["hud"]]
 
-[node name="Joystick" type="Control" parent="."]
+[node name="Joystick" type="Control" parent="." unique_id=495710997]
+layout_mode = 3
+anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 60.0
-offset_top = -300.0
-offset_right = 280.0
+offset_top = -464.0
+offset_right = 444.0
 offset_bottom = -80.0
+grow_vertical = 0
 mouse_filter = 2
 script = ExtResource("1_joy")

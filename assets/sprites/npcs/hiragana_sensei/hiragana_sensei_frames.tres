@@ -100,7 +100,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("dn4")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_down",
 "speed": 5.0
 }, {
@@ -120,7 +120,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("lf4")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_left",
 "speed": 5.0
 }, {
@@ -140,7 +140,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("rt4")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_right",
 "speed": 5.0
 }, {
@@ -160,7 +160,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("up4")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_up",
 "speed": 5.0
 }]
