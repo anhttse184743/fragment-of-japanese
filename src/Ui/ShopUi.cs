@@ -98,7 +98,19 @@ public partial class ShopUi : CanvasLayer
         _shopRoot.Visible = true;
         ResizePanel();
         RefreshWallet();
-        if (Wallet.Instance != null) { await Wallet.Instance.SyncAsync(); RefreshWallet(); }   // cập nhật sau thanh toán
+        if (Wallet.Instance != null) { await Wallet.Instance.SyncAsync(); RefreshWallet(); }
+
+        // Xác nhận giao dịch PayOS đã trả (server hỏi PayOS API) → cộng Ma Thạch nếu có.
+        if (Shop.Instance != null)
+        {
+            int credited = await Shop.Instance.ConfirmPendingPaymentsAsync();
+            if (credited > 0 && Wallet.Instance != null)
+            {
+                await Wallet.Instance.SyncAsync();
+                RefreshWallet();
+                ShowFeedback("✓ Đã cộng Ma Thạch từ giao dịch!", true);
+            }
+        }
     }
     public void Close()  { _shopRoot.Visible = false; }
 
@@ -438,7 +450,40 @@ public partial class ShopUi : CanvasLayer
         packsGrid.AddChild(loading);
 
         _ = FillPacks(packsGrid);
+
+        // Nút xác nhận sau khi trả tiền (tự thử lại để chờ PayOS settle vài giây).
+        var confirmBtn = new Button { Text = "✓ Tôi đã thanh toán xong → Cộng Ma Thạch", CustomMinimumSize = new Vector2(0, 46) };
+        UiKit.StyleButton(confirmBtn, UiKit.WoodCard, UiKit.Fade(UiKit.MaThach, 0.22f), UiKit.MaThach);
+        confirmBtn.AddThemeColorOverride("font_color", UiKit.WoodText);
+        confirmBtn.Pressed += () => OnConfirmPayment(confirmBtn);
+        v.AddChild(confirmBtn);
+
         return v;
+    }
+
+    private async void OnConfirmPayment(Button btn)
+    {
+        if (Shop.Instance == null) return;
+        btn.Disabled = true;
+        int credited = 0;
+        for (int attempt = 0; attempt < 3; attempt++)
+        {
+            ShowFeedback(attempt == 0 ? "Đang kiểm tra giao dịch..." : $"Chờ PayOS xác nhận... (lần {attempt + 1})", true);
+            credited = await Shop.Instance.ConfirmPendingPaymentsAsync();
+            if (credited > 0) break;
+            if (attempt < 2) await ToSignal(GetTree().CreateTimer(4.0), SceneTreeTimer.SignalName.Timeout);
+        }
+
+        if (credited > 0)
+        {
+            if (Wallet.Instance != null) { await Wallet.Instance.SyncAsync(); RefreshWallet(); }
+            ShowFeedback($"✓ Đã cộng Ma Thạch từ {credited} giao dịch!", true);
+        }
+        else
+        {
+            ShowFeedback("Chưa thấy giao dịch đã trả. Nếu vừa trả xong, đợi vài giây rồi bấm lại.", false);
+        }
+        if (GodotObject.IsInstanceValid(btn)) btn.Disabled = false;
     }
 
     private async System.Threading.Tasks.Task FillPacks(GridContainer grid)

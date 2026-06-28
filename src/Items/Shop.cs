@@ -155,6 +155,18 @@ public partial class Shop : Node
         return packs;
     }
 
+    private class ConfirmDto { public int Credited { get; set; } }
+
+    /// <summary>Xác nhận các đơn PayOS đã trả nhưng chưa cộng (server hỏi PayOS API). Trả số đơn vừa cộng.</summary>
+    public async System.Threading.Tasks.Task<int> ConfirmPendingPaymentsAsync()
+    {
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return 0;
+        var res = await ApiClient.Instance.PostAsync("/api/payment/payos/confirm", new { });
+        if (!res.IsSuccessStatusCode) return 0;
+        var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<ConfirmDto>>(res);
+        return data?.Data?.Credited ?? 0;
+    }
+
     /// <summary>Tạo link thanh toán PayOS cho 1 gói. Trả (url, lỗi). url rỗng nếu lỗi.</summary>
     public async System.Threading.Tasks.Task<(string url, string error)> CreatePayOsLinkAsync(string productId)
     {

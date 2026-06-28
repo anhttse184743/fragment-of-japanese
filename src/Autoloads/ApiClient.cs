@@ -19,9 +19,9 @@ public partial class ApiClient : Node
     private readonly System.Net.Http.HttpClient _http;
     public string AccessToken { get; private set; }
     
-    /// <summary>URL backend mặc định (dev). Khi deploy, đặt biến môi trường FOJ_API_URL
-    /// (vd https://foj-api.onrender.com) là tự dùng — không cần sửa code.</summary>
-    private const string DefaultBaseUrl = "http://localhost:5044";
+    /// <summary>URL backend mặc định = bản deploy Render (cloud, chung DB Supabase).
+    /// Muốn test với backend chạy máy: đặt biến môi trường FOJ_API_URL=http://localhost:5044.</summary>
+    private const string DefaultBaseUrl = "https://foj-backend.onrender.com";
 
     public static string BaseUrl
     {
@@ -36,7 +36,7 @@ public partial class ApiClient : Node
     {
         _http = new System.Net.Http.HttpClient();
         _http.BaseAddress = new Uri(BaseUrl);
-        _http.Timeout = TimeSpan.FromSeconds(15);
+        _http.Timeout = TimeSpan.FromSeconds(40);   // chịu cold-start Render free (server ngủ dậy ~30-50s)
     }
 
     public override void _Ready()
