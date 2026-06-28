@@ -15,9 +15,14 @@ public partial class ChallengeUi : CanvasLayer
 {
     public static ChallengeUi Instance { get; private set; }
 
-    private Control        _root;
-    private VBoxContainer  _content;
-    private Label          _title, _timer, _feedback;
+    // Khung lấy từ ChallengeUi.tscn (chỉnh nền/panel/tiêu đề/đồng hồ/feedback trong editor).
+    [Export] private Control       _root;
+    [Export] private VBoxContainer _content;
+    [Export] private Label         _title;
+    [Export] private Label         _timer;
+    [Export] private Label         _feedback;
+    [Export] private PackedScene   _answerBtnScene;   // mẫu nút đáp án (AnswerButton.tscn)
+
     private readonly QuizEngine _engine = new();
     private readonly RandomNumberGenerator _rng = new();
 
@@ -29,12 +34,9 @@ public partial class ChallengeUi : CanvasLayer
 
     public override void _Ready()
     {
-        Instance    = this;
-        Layer       = 128;
-        ProcessMode = ProcessModeEnum.Always;
+        Instance = this;        // Layer 128 + ProcessMode=Always đặt trong ChallengeUi.tscn
         _rng.Randomize();
-        BuildShell();
-        _root.Visible = false;
+        if (_root != null) _root.Visible = false;
         SetProcess(false);
     }
 
@@ -265,6 +267,13 @@ public partial class ChallengeUi : CanvasLayer
 
     private Button MkButton(string text)
     {
+        if (_answerBtnScene != null)
+        {
+            var btn = _answerBtnScene.Instantiate<Button>();   // mẫu chỉnh trong AnswerButton.tscn
+            btn.Text = text;
+            return btn;
+        }
+        // fallback nếu chưa gán mẫu
         var b = new Button { Text = text };
         b.AddThemeFontSizeOverride("font_size", 20);
         UiKit.StyleButton(b, UiKit.CardBg, UiKit.Fade(UiKit.Accent, 0.5f), UiKit.Accent);
@@ -296,44 +305,4 @@ public partial class ChallengeUi : CanvasLayer
         }
     }
 
-    private void BuildShell()
-    {
-        _root = new Control { MouseFilter = Control.MouseFilterEnum.Stop };
-        _root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        AddChild(_root);
-
-        var dim = new ColorRect { Color = new Color(0, 0, 0, 0.6f), MouseFilter = Control.MouseFilterEnum.Stop };
-        dim.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        _root.AddChild(dim);
-
-        var center = new CenterContainer();
-        center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        _root.AddChild(center);
-
-        var panel = new PanelContainer();
-        panel.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.PanelBg, 16, UiKit.Accent, 2));
-        center.AddChild(panel);
-
-        var margin = new MarginContainer();
-        foreach (var s in new[] { "margin_left", "margin_right", "margin_top", "margin_bottom" })
-            margin.AddThemeConstantOverride(s, 28);
-        panel.AddChild(margin);
-
-        var vb = new VBoxContainer { CustomMinimumSize = new Vector2(580, 0) };
-        vb.AddThemeConstantOverride("separation", 14);
-        margin.AddChild(vb);
-
-        _title = MkLabel("", 20, UiKit.Accent);
-        vb.AddChild(_title);
-
-        _content = new VBoxContainer();
-        _content.AddThemeConstantOverride("separation", 12);
-        vb.AddChild(_content);
-
-        _timer = MkLabel("", 18, UiKit.Gold);
-        vb.AddChild(_timer);
-
-        _feedback = MkLabel("", 18, UiKit.TextDim);
-        vb.AddChild(_feedback);
-    }
 }

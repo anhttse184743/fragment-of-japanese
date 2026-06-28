@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Text.Json;
 using FragmentOfJapanese.Core;
+using FragmentOfJapanese.Items;
 
 namespace FragmentOfJapanese.Entities.Player;
 
@@ -28,9 +29,49 @@ public partial class Player : CharacterBody3D, IDamageable
 		Data ??= new PlayerData();
 		LoadData();
 		AddToGroup("player");
+
+		if (Inventory.Instance != null) Inventory.Instance.ItemUsed += OnItemUsed;
+
+		_ = SyncFromServerAsync();
 	}
 
-	public override void _ExitTree() => SaveData();
+	/// <summary>Áp hiệu ứng khi dùng vật phẩm tiêu hao (máu/mana là giá trị runtime → xử lý ở client).</summary>
+	private void OnItemUsed(ItemEntry item)
+	{
+		switch (item.Effect)
+		{
+			case "heal": Heal(item.Value); break;
+			case "mana": RestoreMana(item.Value); break;
+		}
+	}
+
+	public async System.Threading.Tasks.Task SyncFromServerAsync()
+	{
+		if (string.IsNullOrEmpty(Autoloads.ApiClient.Instance.AccessToken)) return;
+		var res = await Autoloads.ApiClient.Instance.GetAsync("/api/player/profile");
+		if (res.IsSuccessStatusCode)
+		{
+			var data = await Autoloads.ApiClient.Instance.ReadAsAsync<Autoloads.AccountManager.ApiResponse<PlayerProfileDto>>(res);
+			if (data?.Data != null)
+			{
+				Data.Level = data.Data.Level;
+				Data.Exp = data.Data.Exp;
+				EmitSignal(SignalName.ExpChanged, Data.Exp, Data.MaxExp, Data.Level);
+			}
+		}
+	}
+
+	private class PlayerProfileDto
+	{
+		public int Level { get; set; }
+		public int Exp { get; set; }
+	}
+
+	public override void _ExitTree()
+	{
+		if (Inventory.Instance != null) Inventory.Instance.ItemUsed -= OnItemUsed;
+		SaveData();
+	}
 
 	private float _sinceDamage;
 	private float _regenTimer;
@@ -128,6 +169,7 @@ public partial class Player : CharacterBody3D, IDamageable
 		Data.Exp += amount;
 		if (Data.Exp >= Data.MaxExp) LevelUp();
 		EmitSignal(SignalName.ExpChanged, Data.Exp, Data.MaxExp, Data.Level);
+		_ = AwardAsync(amount, 0);   // bền hóa exp qua server (có trần, server tự lên cấp)
 	}
 
 	private void LevelUp()
@@ -139,6 +181,17 @@ public partial class Player : CharacterBody3D, IDamageable
 			Data.MaxExp = (int)(Data.MaxExp * 1.25f);
 			EmitSignal(SignalName.LeveledUp);
 		}
+	}
+
+	/// <summary>Gửi phần thưởng exp/gold lên server (có trần) rồi đồng bộ lại số dư.</summary>
+	public async System.Threading.Tasks.Task AwardAsync(int exp, int gold)
+	{
+		if (exp <= 0 && gold <= 0) return;
+		if (string.IsNullOrEmpty(Autoloads.ApiClient.Instance.AccessToken)) return;
+
+		var res = await Autoloads.ApiClient.Instance.PostAsync("/api/player/reward", new { Exp = exp, Gold = gold });
+		if (res.IsSuccessStatusCode)
+			_ = FragmentOfJapanese.Items.Wallet.Instance?.SyncAsync();   // gold đổi → làm mới ví
 	}
 
 	public void SaveData()

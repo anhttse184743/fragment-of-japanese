@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="SphereMesh" id="mesh_es"]
+radius = 0.4
+height = 0.8
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="mat_es"]
+shading_mode = 0
+albedo_color = Color(0.9, 0.2, 0.2, 0.7)
+transparency = 1
+
+[node name="EnemySpawn" type="Node3D" groups=["enemy_spawn"]]
+
+[node name="Marker" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+mesh = SubResource("mesh_es")
+material_override = SubResource("mat_es")

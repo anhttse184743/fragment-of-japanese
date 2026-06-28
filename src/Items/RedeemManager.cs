@@ -1,103 +1,58 @@
 using Godot;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using FragmentOfJapanese.Autoloads;
 
 namespace FragmentOfJapanese.Items;
 
-public class RewardItem
-{
-    [JsonPropertyName("id")]    public string Id    { get; set; } = "";
-    [JsonPropertyName("count")] public int    Count { get; set; } = 1;
-}
-
-public class RedeemReward
-{
-    [JsonPropertyName("code")]        public string           Code        { get; set; } = "";
-    [JsonPropertyName("gold")]        public int              Gold        { get; set; } = 0;
-    [JsonPropertyName("aetherstone")] public int              Aetherstone { get; set; } = 0;
-    [JsonPropertyName("items")]       public List<RewardItem> Items       { get; set; } = new();
-}
-
 /// <summary>
-/// Quản lý mã quà tặng (redeem code) — autoload.
-/// Nạp danh sách mã từ data/codes.json; mỗi mã thưởng Vàng / Aetherstone / vật phẩm.
-/// Mỗi mã chỉ dùng 1 lần — lưu user://redeemed_codes.json để không nhập lại sau khi tắt game.
+/// Đổi mã quà tặng — server-authoritative. Mã + lần đã đổi nằm ở DB (bảng redeem_codes /
+/// code_redemptions), nên không thể dùng lại bằng cách cài lại game, và phần thưởng do server cộng.
 /// </summary>
 public partial class RedeemManager : Node
 {
     public static RedeemManager Instance { get; private set; }
 
-    public enum Result { Success, NotFound, AlreadyUsed }
+    public override void _Ready() => Instance = this;
 
-    private const string DataPath = "res://data/codes.json";
-    private const string SavePath = "user://redeemed_codes.json";
-
-    private readonly Dictionary<string, RedeemReward> _codes = new();   // key = mã CHỮ HOA
-    private readonly HashSet<string>                  _used  = new();
-
-    public override void _Ready()
+    private class RedeemResponseDto
     {
-        Instance = this;
-        LoadCodes();
-        LoadUsed();
+        public string Message { get; set; } = "";
+        public int Gold { get; set; }
+        public int PremiumCurrency { get; set; }
+        public string ItemStringId { get; set; }
+        public int ItemQuantity { get; set; }
     }
 
-    /// <summary>Đổi mã. Trả kết quả; nếu Success thì <paramref name="reward"/> mô tả quà nhận được.</summary>
-    public Result Redeem(string code, out string reward)
+    /// <summary>Đổi mã qua server. Trả (thành công, thông điệp để hiển thị).</summary>
+    public async Task<(bool ok, string message)> RedeemAsync(string code)
     {
-        reward = "";
-        string key = (code ?? "").Trim().ToUpperInvariant();
-        if (key.Length == 0 || !_codes.TryGetValue(key, out var r)) return Result.NotFound;
-        if (_used.Contains(key)) return Result.AlreadyUsed;
+        if (string.IsNullOrWhiteSpace(code)) return (false, "Hãy nhập mã.");
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return (false, "Bạn cần đăng nhập trước.");
+
+        var res = await ApiClient.Instance.PostAsync("/api/redeem", new { Code = code.Trim() });
+        var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<RedeemResponseDto>>(res);
+
+        if (!res.IsSuccessStatusCode || data == null || !data.Success)
+            return (false, data?.Message ?? "Đổi mã thất bại.");
+
+        // Phần thưởng đã được server cộng → đồng bộ lại ví + túi để hiện đúng.
+        _ = Wallet.Instance?.SyncAsync();
+        _ = Inventory.Instance?.SyncAsync();
 
         var parts = new List<string>();
-        if (r.Gold > 0)        { Wallet.Instance?.AddGold(r.Gold);           parts.Add($"{r.Gold:N0} Vàng"); }
-        if (r.Aetherstone > 0) { Wallet.Instance?.AddMaThach(r.Aetherstone); parts.Add($"{r.Aetherstone:N0} Aetherstone"); }
-        foreach (var it in r.Items)
+        var r = data.Data;
+        if (r != null)
         {
-            if (string.IsNullOrEmpty(it.Id) || it.Count <= 0) continue;
-            Inventory.Instance?.Add(it.Id, it.Count);
-            var def = ItemDatabase.Instance?.Get(it.Id);
-            parts.Add($"{it.Count}x {def?.NameVi ?? it.Id}");
+            if (r.Gold > 0)            parts.Add($"{r.Gold:N0} Vàng");
+            if (r.PremiumCurrency > 0) parts.Add($"{r.PremiumCurrency:N0} Ma Thạch");
+            if (!string.IsNullOrEmpty(r.ItemStringId) && r.ItemQuantity > 0)
+            {
+                var def = ItemDatabase.Instance?.Get(r.ItemStringId);
+                parts.Add($"{r.ItemQuantity}x {def?.NameVi ?? r.ItemStringId}");
+            }
         }
-
-        _used.Add(key);
-        SaveUsed();
-        reward = parts.Count > 0 ? string.Join(", ", parts) : "(không có quà)";
-        return Result.Success;
-    }
-
-    private void LoadCodes()
-    {
-        if (!FileAccess.FileExists(DataPath))
-        {
-            GD.PushWarning($"[RedeemManager] File not found: {DataPath}");
-            return;
-        }
-        using var file = FileAccess.Open(DataPath, FileAccess.ModeFlags.Read);
-        var list = JsonSerializer.Deserialize<List<RedeemReward>>(file.GetAsText(),
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
-
-        foreach (var r in list)
-            if (!string.IsNullOrWhiteSpace(r.Code))
-                _codes[r.Code.Trim().ToUpperInvariant()] = r;
-
-        GD.Print($"[RedeemManager] Loaded {_codes.Count} codes.");
-    }
-
-    private void LoadUsed()
-    {
-        if (!FileAccess.FileExists(SavePath)) return;
-        using var file = FileAccess.Open(SavePath, FileAccess.ModeFlags.Read);
-        var list = JsonSerializer.Deserialize<List<string>>(file.GetAsText()) ?? new();
-        foreach (var c in list) _used.Add(c);
-    }
-
-    private void SaveUsed()
-    {
-        using var file = FileAccess.Open(SavePath, FileAccess.ModeFlags.Write);
-        file?.StoreString(JsonSerializer.Serialize(new List<string>(_used)));
+        string reward = parts.Count > 0 ? string.Join(", ", parts) : "phần thưởng";
+        return (true, $"Đổi mã thành công! Nhận: {reward}.");
     }
 }

@@ -18,6 +18,9 @@ height = 1.75
 [sub_resource type="Resource" id="Resource_h683u"]
 script = ExtResource("5_lfoco")
 
+[sub_resource type="SphereShape3D" id="Sphere_cam"]
+radius = 0.3
+
 [node name="PlayerRig" type="Node3D" unique_id=2069311076]
 
 [node name="Player" type="CharacterBody3D" parent="." unique_id=47495964]
@@ -65,15 +68,20 @@ _attackZone = NodePath("../AttackZone")
 
 [node name="PlayerPhantomCamera3D" type="Node3D" parent="." unique_id=1818356730 node_paths=PackedStringArray("follow_target")]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.9335804, 0.35836798, 0, -0.35836798, 0.9335804, 0, 2.5085757, 6.535063)
+transform = Transform3D(1, 0, 0, 0, 0.9170601, 0.39874905, 0, -0.39874905, 0.9170601, 0, 4.0912437, 6.4194202)
 script = ExtResource("4_pcam")
 priority = 10
 follow_mode = 6
 follow_target = NodePath("../Player")
 tween_resource = SubResource("Resource_h683u")
+follow_offset = Vector3(0, 1.3, 0)
+follow_damping = true
+follow_damping_value = Vector3(0.2, 0.05, 0.2)
 follow_distance = 7.0
-vertical_rotation_offset = 0.3665191429188092
+vertical_rotation_offset = 0.41015237421866746
 spring_length = 7.0
+shape = SubResource("Sphere_cam")
+margin = 0.06
 align_transform_with_view = Callable()
 align_position_with_view = Callable()
 align_rotation_with_view = Callable()
@@ -81,7 +89,7 @@ align_rotation_with_view = Callable()
 [node name="MainCamera3D" type="Camera3D" parent="." unique_id=1624152271]
 unique_name_in_owner = true
 physics_interpolation_mode = 1
-transform = Transform3D(1, 0, 0, 0, 0.9335804, 0.35836798, 0, -0.35836798, 0.9335804, 0, 2.5085757, 6.535063)
+transform = Transform3D(1, 0, 0, 0, 0.9170601, 0.39874905, 0, -0.39874905, 0.9170601, 0, 4.0912437, 6.4194202)
 top_level = true
 current = true
 fov = 82.0

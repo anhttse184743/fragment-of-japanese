@@ -42,15 +42,15 @@
 [ext_resource type="PackedScene" uid="uid://c0lh1pmmr81dv" path="res://assets/models/constructions/village/schoolboard.glb" id="36_l5iln"]
 [ext_resource type="PackedScene" uid="uid://6qfiflgckue6" path="res://scenes/entities/Goblin.tscn" id="37_2vkyy"]
 [ext_resource type="PackedScene" uid="uid://csqljctoldjhs" path="res://assets/models/constructions/village/well.glb" id="37_qxjis"]
-[ext_resource type="PackedScene" path="res://scenes/ui/VirtualJoystick.tscn" id="38_nres0"]
+[ext_resource type="PackedScene" uid="uid://cl5ibfcoebma1" path="res://scenes/ui/VirtualJoystick.tscn" id="38_nres0"]
 [ext_resource type="PackedScene" uid="uid://gffhdwvccigl" path="res://assets/models/constructions/village/village _house_t1.glb" id="39_bmjh4"]
 [ext_resource type="PackedScene" uid="uid://3sbp24ayfihf" path="res://assets/models/constructions/village/fence.glb" id="46_ers45"]
 [ext_resource type="PackedScene" path="res://scenes/entities/VillageChief.tscn" id="47_khbuy"]
 [ext_resource type="PackedScene" path="res://scenes/entities/HiraganaSensei.tscn" id="48_117vm"]
 [ext_resource type="PackedScene" path="res://scenes/entities/GoblinSpawn.tscn" id="49_bpf53"]
-[ext_resource type="PackedScene" path="res://scenes/ui/ActionButtons.tscn" id="49_cp7di"]
+[ext_resource type="PackedScene" uid="uid://bwdo7rdgivyk2" path="res://scenes/ui/ActionButtons.tscn" id="49_cp7di"]
 [ext_resource type="PackedScene" path="res://scenes/ui/GameHud.tscn" id="50_kqqcm"]
-[ext_resource type="PackedScene" path="res://scenes/ui/TopBar.tscn" id="52_lkldd"]
+[ext_resource type="PackedScene" uid="uid://krs3l4ytcxd3" path="res://scenes/ui/TopBar.tscn" id="52_lkldd"]
 [ext_resource type="PackedScene" uid="uid://oi2a05ifwrpt" path="res://scenes/ui/StatusBars.tscn" id="53_h1p51"]
 [ext_resource type="PackedScene" uid="uid://dbvd6w6fievxv" path="res://scenes/entities/Portal.tscn" id="54_kqqcm"]
 [ext_resource type="PackedScene" path="res://scenes/entities/PlayerSpawn.tscn" id="54_lkldd"]
@@ -46211,7 +46211,7 @@ shadow_enabled = true
 [node name="Castle" parent="Magic_castle_region" unique_id=762066918 instance=ExtResource("14_fe1rh")]
 transform = Transform3D(-37.6151, 0, 59.03477, 0, 70, 0, -59.03477, 0, -37.6151, -171.98383, 1.9584775, 172.15471)
 
-[node name="node_0" parent="Magic_castle_region/Castle" index="0" unique_id=1913542383]
+[node name="node_0" parent="Magic_castle_region/Castle" index="0" unique_id=2004287854]
 transform = Transform3D(0.9869374, 0.16110432, 0, 0, 0, -0.99999964, -0.16110432, 0.9869374, 0, -0.03353262, 0, -0.37391186)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Castle/node_0" index="0" unique_id=1144610048]
@@ -46222,7 +46222,7 @@ shape = SubResource("ConvexPolygonShape3D_fe1rh")
 [node name="Gate" parent="Magic_castle_region" unique_id=926117179 instance=ExtResource("15_wryly")]
 transform = Transform3D(17.664886, 0, -24.247713, 0, 29.999998, 0, 24.247713, 0, 17.664886, -152.84517, 3.6111119, 139.2463)
 
-[node name="node_0" parent="Magic_castle_region/Gate" index="0" unique_id=1699945617]
+[node name="node_0" parent="Magic_castle_region/Gate" index="0" unique_id=221326248]
 transform = Transform3D(0.9836595, 0.18003851, 0, 0, 0, -1, -0.18003851, 0.9836595, 0, 0.1487248, -0.0060473755, -0.49275923)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Gate/node_0" index="0" unique_id=1489810602]
@@ -46233,7 +46233,7 @@ shape = SubResource("ConcavePolygonShape3D_400s5")
 [node name="Rampart" parent="Magic_castle_region" unique_id=874032956 instance=ExtResource("16_400s5")]
 transform = Transform3D(6.0507994, 0, 29.383457, 0, 29.999998, 0, -29.383457, 0, 6.0507994, -161.38388, 3.6976457, 122.29231)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Rampart/node_0" parent_id_path=PackedInt32Array(874032956, 1075081064) index="0" unique_id=1916626546]
+[node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Rampart/node_0" parent_id_path=PackedInt32Array(874032956, 198579911) index="0" unique_id=1916626546]
 visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Magic_castle_region/Rampart/node_0/StaticBody3D" unique_id=303780926]
@@ -46242,7 +46242,7 @@ shape = SubResource("ConvexPolygonShape3D_0duuj")
 [node name="Rampart4" parent="Magic_castle_region" unique_id=652159764 instance=ExtResource("16_400s5")]
 transform = Transform3D(-27.630053, 0, -11.686736, 0, 30.000002, 0, 11.686736, 0, -27.630053, -124.13817, 3.6976457, 155.8386)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Rampart4/node_0" parent_id_path=PackedInt32Array(652159764, 1075081064) index="0" unique_id=1116933310]
+[node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Rampart4/node_0" parent_id_path=PackedInt32Array(652159764, 198579911) index="0" unique_id=1116933310]
 visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Magic_castle_region/Rampart4/node_0/StaticBody3D" unique_id=1932948124]
@@ -46251,7 +46251,7 @@ shape = SubResource("ConvexPolygonShape3D_0duuj")
 [node name="Rampart5" parent="Magic_castle_region" unique_id=2126033023 instance=ExtResource("16_400s5")]
 transform = Transform3D(29.943682, 0, 1.8372078, 0, 30.000002, 0, -1.8372078, 0, 29.943682, -115.97227, 4.0865054, 190.31593)
 
-[node name="node_0" parent="Magic_castle_region/Rampart5" index="0" unique_id=1075081064]
+[node name="node_0" parent="Magic_castle_region/Rampart5" index="0" unique_id=198579911]
 transform = Transform3D(0.9770642, -0.21294516, 0, 0, 0, -1, 0.21294516, 0.9770642, 0, -0.13196564, 0, -0.010577679)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Rampart5/node_0" index="0" unique_id=1736018069]
@@ -46263,7 +46263,7 @@ shape = SubResource("ConvexPolygonShape3D_0duuj")
 [node name="Rampart6" parent="Magic_castle_region" unique_id=1170210805 instance=ExtResource("16_400s5")]
 transform = Transform3D(28.809242, 0, -8.368219, 0, 30.000002, 0, 8.368219, 0, 28.809242, -115.97227, 4.0865054, 190.31593)
 
-[node name="node_0" parent="Magic_castle_region/Rampart6" index="0" unique_id=1075081064]
+[node name="node_0" parent="Magic_castle_region/Rampart6" index="0" unique_id=198579911]
 transform = Transform3D(-0.94049025, 0.33982167, 0, 0, 0, -1, -0.33982167, -0.94049025, 0, -0.23652303, 0.02440545, 1.0294442)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Rampart6/node_0" index="0" unique_id=177306862]
@@ -46275,7 +46275,7 @@ shape = SubResource("ConvexPolygonShape3D_0duuj")
 [node name="Rampart2" parent="Magic_castle_region" unique_id=1219623237 instance=ExtResource("16_400s5")]
 transform = Transform3D(-8.069612, 0, 28.894314, 0, 29.999998, 0, -28.894314, 0, -8.069612, -196.78117, 3.8119388, 121.42982)
 
-[node name="node_0" parent="Magic_castle_region/Rampart2" index="0" unique_id=1075081064]
+[node name="node_0" parent="Magic_castle_region/Rampart2" index="0" unique_id=198579911]
 transform = Transform3D(-0.99287856, 0.11913181, 0, 0, 0, -1, -0.11913181, -0.99287856, 0, 0, 0, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Rampart2/node_0" index="0" unique_id=2128961727]
@@ -46287,7 +46287,7 @@ shape = SubResource("ConvexPolygonShape3D_0duuj")
 [node name="Rampart3" parent="Magic_castle_region" unique_id=267442669 instance=ExtResource("16_400s5")]
 transform = Transform3D(18.488407, 0, -23.625807, 0, 29.999998, 0, 23.625807, 0, 18.488407, -225.3392, 3.6976457, 131.60098)
 
-[node name="node_0" parent="Magic_castle_region/Rampart3" index="0" unique_id=1075081064]
+[node name="node_0" parent="Magic_castle_region/Rampart3" index="0" unique_id=198579911]
 transform = Transform3D(-0.9928787, 0.119131655, 0, 0, 0, -1.0000002, -0.119131655, -0.9928787, 0, 0, 0.044136308, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Rampart3/node_0" index="0" unique_id=1157796470]
@@ -46299,7 +46299,7 @@ shape = SubResource("ConvexPolygonShape3D_0duuj")
 [node name="Watchtower" parent="Magic_castle_region" unique_id=204521005 instance=ExtResource("17_0duuj")]
 transform = Transform3D(20.5992, 0, -14.165911, 0, 25, 0, 14.165911, 0, 20.5992, -150.09354, 6.3045692, 236.14076)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Watchtower/node_0" parent_id_path=PackedInt32Array(204521005, 295265003) index="0" unique_id=1136595977]
+[node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Watchtower/node_0" parent_id_path=PackedInt32Array(204521005, 1375233394) index="0" unique_id=1136595977]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Magic_castle_region/Watchtower/node_0/StaticBody3D" unique_id=1006301618]
 shape = SubResource("ConvexPolygonShape3D_d0ueh")
@@ -46307,7 +46307,7 @@ shape = SubResource("ConvexPolygonShape3D_d0ueh")
 [node name="Watchtower2" parent="Magic_castle_region" unique_id=711260070 instance=ExtResource("17_0duuj")]
 transform = Transform3D(-16.346743, 0, 18.915182, 0, 25.000004, 0, -18.915182, 0, -16.346743, -243.52545, 8.270855, 149.41437)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Watchtower2/node_0" parent_id_path=PackedInt32Array(711260070, 295265003) index="0" unique_id=678740903]
+[node name="StaticBody3D" type="StaticBody3D" parent="Magic_castle_region/Watchtower2/node_0" parent_id_path=PackedInt32Array(711260070, 1375233394) index="0" unique_id=678740903]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Magic_castle_region/Watchtower2/node_0/StaticBody3D" unique_id=1338596704]
 shape = SubResource("ConvexPolygonShape3D_d0ueh")
@@ -46317,7 +46317,7 @@ shape = SubResource("ConvexPolygonShape3D_d0ueh")
 [node name="square_desert_relic" parent="Acient_relics_region" unique_id=923760295 instance=ExtResource("18_juaju")]
 transform = Transform3D(42, 0, 0, 0, 49, 0, 0, 0, 42, -181.31258, 2.0102649, -180.0501)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/square_desert_relic/node_0" parent_id_path=PackedInt32Array(923760295, 1712485469) index="0" unique_id=172134090]
+[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/square_desert_relic/node_0" parent_id_path=PackedInt32Array(923760295, 1145982079) index="0" unique_id=172134090]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Acient_relics_region/square_desert_relic/node_0/StaticBody3D" unique_id=1661932624]
 shape = SubResource("ConvexPolygonShape3D_dobjl")
@@ -46325,7 +46325,7 @@ shape = SubResource("ConvexPolygonShape3D_dobjl")
 [node name="desert_relic_with_gate_1" parent="Acient_relics_region" unique_id=41464094 instance=ExtResource("19_lplgh")]
 transform = Transform3D(38, 0, 0, 0, 29, 0, 0, 0, 38, -146.00175, 0.64052963, -146.33037)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_1/node_0" parent_id_path=PackedInt32Array(41464094, 689380842) index="0" unique_id=179562342]
+[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_1/node_0" parent_id_path=PackedInt32Array(41464094, 62086533) index="0" unique_id=179562342]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Acient_relics_region/desert_relic_with_gate_1/node_0/StaticBody3D" unique_id=1822630105]
 shape = SubResource("ConvexPolygonShape3D_iehkj")
@@ -46333,7 +46333,7 @@ shape = SubResource("ConvexPolygonShape3D_iehkj")
 [node name="desert_relic_with_gate_2" parent="Acient_relics_region" unique_id=1356677622 instance=ExtResource("20_d6tky")]
 transform = Transform3D(-1.5298986e-06, 0, 35, 0, 29, 0, -35, 0, -1.5298986e-06, -207.8745, -0.9800408, -217.5778)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_2/node_0" parent_id_path=PackedInt32Array(1356677622, 752662999) index="0" unique_id=99068733]
+[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_2/node_0" parent_id_path=PackedInt32Array(1356677622, 319603166) index="0" unique_id=99068733]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Acient_relics_region/desert_relic_with_gate_2/node_0/StaticBody3D" unique_id=2038515660]
 shape = SubResource("ConvexPolygonShape3D_iqxvy")
@@ -46341,7 +46341,7 @@ shape = SubResource("ConvexPolygonShape3D_iqxvy")
 [node name="desert_relic_with_gate_7" parent="Acient_relics_region" unique_id=1001247558 instance=ExtResource("20_d6tky")]
 transform = Transform3D(-35, 0, -5.284853e-06, 0, 27, 0, 5.284853e-06, 0, -35, -221.36493, 0.25145984, -148.26688)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_7/node_0" parent_id_path=PackedInt32Array(1001247558, 752662999) index="0" unique_id=1195659597]
+[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_7/node_0" parent_id_path=PackedInt32Array(1001247558, 319603166) index="0" unique_id=1195659597]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Acient_relics_region/desert_relic_with_gate_7/node_0/StaticBody3D" unique_id=452312172]
 shape = SubResource("ConvexPolygonShape3D_iqxvy")
@@ -46349,7 +46349,7 @@ shape = SubResource("ConvexPolygonShape3D_iqxvy")
 [node name="desert_relic_1" parent="Acient_relics_region" unique_id=1277764875 instance=ExtResource("21_6mhxi")]
 transform = Transform3D(38, 0, 0, 0, 28, 0, 0, 0, 38, -176.4879, -0.19283462, -215.04488)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_1/node_0" parent_id_path=PackedInt32Array(1277764875, 1283584455) index="0" unique_id=1103768279]
+[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_1/node_0" parent_id_path=PackedInt32Array(1277764875, 495792121) index="0" unique_id=1103768279]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Acient_relics_region/desert_relic_1/node_0/StaticBody3D" unique_id=466182643]
 shape = SubResource("ConvexPolygonShape3D_pi2y4")
@@ -46357,7 +46357,7 @@ shape = SubResource("ConvexPolygonShape3D_pi2y4")
 [node name="desert_relic_with_gate_3" parent="Acient_relics_region" unique_id=2072386090 instance=ExtResource("22_xclow")]
 transform = Transform3D(38, 0, 0, 0, 32, 0, 0, 0, 38, -144.53812, -0.17052221, -181.12393)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_3/node_0" parent_id_path=PackedInt32Array(2072386090, 1731017177) index="0" unique_id=2061025292]
+[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_3/node_0" parent_id_path=PackedInt32Array(2072386090, 72653891) index="0" unique_id=2061025292]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Acient_relics_region/desert_relic_with_gate_3/node_0/StaticBody3D" unique_id=31875119]
 shape = SubResource("ConvexPolygonShape3D_xokg7")
@@ -46365,7 +46365,7 @@ shape = SubResource("ConvexPolygonShape3D_xokg7")
 [node name="desert_relic_with_gate_6" parent="Acient_relics_region" unique_id=379159748 instance=ExtResource("22_xclow")]
 transform = Transform3D(38, 0, 0, 0, 32, 0, 0, 0, 38, -182.9844, -0.343956, -144.65012)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_6/node_0" parent_id_path=PackedInt32Array(379159748, 1731017177) index="0" unique_id=827462755]
+[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_6/node_0" parent_id_path=PackedInt32Array(379159748, 72653891) index="0" unique_id=827462755]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Acient_relics_region/desert_relic_with_gate_6/node_0/StaticBody3D" unique_id=1849997388]
 shape = SubResource("ConvexPolygonShape3D_xokg7")
@@ -46373,7 +46373,7 @@ shape = SubResource("ConvexPolygonShape3D_xokg7")
 [node name="desert_relic_with_gate_4" parent="Acient_relics_region" unique_id=979521349 instance=ExtResource("23_hon07")]
 transform = Transform3D(38, 0, 0, 0, 30, 0, 0, 0, 38, -144.90196, -0.4053948, -212.54964)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_4/node_0" parent_id_path=PackedInt32Array(979521349, 690613115) index="0" unique_id=1162003284]
+[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_4/node_0" parent_id_path=PackedInt32Array(979521349, 1836219753) index="0" unique_id=1162003284]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Acient_relics_region/desert_relic_with_gate_4/node_0/StaticBody3D" unique_id=447640078]
 shape = SubResource("ConvexPolygonShape3D_hk3qm")
@@ -46381,7 +46381,7 @@ shape = SubResource("ConvexPolygonShape3D_hk3qm")
 [node name="desert_relic_with_gate_5" parent="Acient_relics_region" unique_id=890947662 instance=ExtResource("23_hon07")]
 transform = Transform3D(-40, 0, -3.4969112e-06, 0, 32, 0, 3.4969112e-06, 0, -40, -218.13954, -0.9456551, -179.00206)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_5/node_0" parent_id_path=PackedInt32Array(890947662, 690613115) index="0" unique_id=347881471]
+[node name="StaticBody3D" type="StaticBody3D" parent="Acient_relics_region/desert_relic_with_gate_5/node_0" parent_id_path=PackedInt32Array(890947662, 1836219753) index="0" unique_id=347881471]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Acient_relics_region/desert_relic_with_gate_5/node_0/StaticBody3D" unique_id=1324602762]
 shape = SubResource("ConvexPolygonShape3D_hk3qm")
@@ -46391,7 +46391,7 @@ shape = SubResource("ConvexPolygonShape3D_hk3qm")
 [node name="god_tree" parent="Echoing_forest_region" unique_id=261602920 instance=ExtResource("24_iehkj")]
 transform = Transform3D(-17.424522, 0, -15.012862, 0, 23, 0, 15.012862, 0, -17.424522, 181.33902, 9.491998, 178.60399)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/god_tree/node_0" parent_id_path=PackedInt32Array(261602920, 138336898) index="0" unique_id=1656355740]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/god_tree/node_0" parent_id_path=PackedInt32Array(261602920, 661790555) index="0" unique_id=1656355740]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/god_tree/node_0/StaticBody3D" unique_id=1782097043]
 shape = SubResource("ConvexPolygonShape3D_nres0")
@@ -46399,7 +46399,7 @@ shape = SubResource("ConvexPolygonShape3D_nres0")
 [node name="ancient_tree_darkgreen" parent="Echoing_forest_region" unique_id=1549331304 instance=ExtResource("25_iqxvy")]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 200.46164, 7.394552, 168.92393)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen/node_0" parent_id_path=PackedInt32Array(1549331304, 152203491) index="0" unique_id=142080374]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen/node_0" parent_id_path=PackedInt32Array(1549331304, 849629543) index="0" unique_id=142080374]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen/node_0/StaticBody3D" unique_id=1743634342]
 shape = SubResource("ConvexPolygonShape3D_bmjh4")
@@ -46407,7 +46407,7 @@ shape = SubResource("ConvexPolygonShape3D_bmjh4")
 [node name="ancient_tree_darkgreen3" parent="Echoing_forest_region" unique_id=1903649101 instance=ExtResource("25_iqxvy")]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 200.46164, 7.394552, 180.77104)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen3/node_0" parent_id_path=PackedInt32Array(1903649101, 152203491) index="0" unique_id=1009856628]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen3/node_0" parent_id_path=PackedInt32Array(1903649101, 849629543) index="0" unique_id=1009856628]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen3/node_0/StaticBody3D" unique_id=1064717556]
 shape = SubResource("ConvexPolygonShape3D_bmjh4")
@@ -46415,7 +46415,7 @@ shape = SubResource("ConvexPolygonShape3D_bmjh4")
 [node name="ancient_tree_darkgreen4" parent="Echoing_forest_region" unique_id=1608780395 instance=ExtResource("25_iqxvy")]
 transform = Transform3D(8.242055, 0, 18.222748, 0.773258, 19.981987, -0.3497406, -18.206335, 0.8486733, 8.234632, 182.60083, 7.394552, 199.87024)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen4/node_0" parent_id_path=PackedInt32Array(1608780395, 152203491) index="0" unique_id=1538740913]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen4/node_0" parent_id_path=PackedInt32Array(1608780395, 849629543) index="0" unique_id=1538740913]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen4/node_0/StaticBody3D" unique_id=584746933]
 shape = SubResource("ConvexPolygonShape3D_bmjh4")
@@ -46423,7 +46423,7 @@ shape = SubResource("ConvexPolygonShape3D_bmjh4")
 [node name="ancient_tree_darkgreen2" parent="Echoing_forest_region" unique_id=841210089 instance=ExtResource("25_iqxvy")]
 transform = Transform3D(6.1365004, 0, 19.035316, 0, 20.000002, 0, -19.035316, 0, 6.1365004, 195.90854, 7.181526, 157.24797)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen2/node_0" parent_id_path=PackedInt32Array(841210089, 152203491) index="0" unique_id=761439849]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen2/node_0" parent_id_path=PackedInt32Array(841210089, 849629543) index="0" unique_id=761439849]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen2/node_0/StaticBody3D" unique_id=1781135491]
 shape = SubResource("ConvexPolygonShape3D_bmjh4")
@@ -46431,7 +46431,7 @@ shape = SubResource("ConvexPolygonShape3D_bmjh4")
 [node name="ancient_tree_darkgreen5" parent="Echoing_forest_region" unique_id=1100481792 instance=ExtResource("25_iqxvy")]
 transform = Transform3D(-3.4206996, 0, 19.705297, 0, 20.000004, 0, -19.705297, 0, -3.4206996, 187.10857, 4.3444977, 128.71144)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen5/node_0" parent_id_path=PackedInt32Array(1100481792, 152203491) index="0" unique_id=628949424]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen5/node_0" parent_id_path=PackedInt32Array(1100481792, 849629543) index="0" unique_id=628949424]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen5/node_0/StaticBody3D" unique_id=1875514979]
 shape = SubResource("ConvexPolygonShape3D_bmjh4")
@@ -46439,7 +46439,7 @@ shape = SubResource("ConvexPolygonShape3D_bmjh4")
 [node name="ancient_tree_darkgreen6" parent="Echoing_forest_region" unique_id=723794394 instance=ExtResource("25_iqxvy")]
 transform = Transform3D(-8.419449, 0, 18.141468, 0, 20.000002, 0, -18.141468, 0, -8.419449, 198.23315, 5.464319, 133.62656)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen6/node_0" parent_id_path=PackedInt32Array(723794394, 152203491) index="0" unique_id=1338185281]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen6/node_0" parent_id_path=PackedInt32Array(723794394, 849629543) index="0" unique_id=1338185281]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen6/node_0/StaticBody3D" unique_id=1987173308]
 shape = SubResource("ConvexPolygonShape3D_bmjh4")
@@ -46447,7 +46447,7 @@ shape = SubResource("ConvexPolygonShape3D_bmjh4")
 [node name="ancient_tree_darkgreen7" parent="Echoing_forest_region" unique_id=1056062383 instance=ExtResource("25_iqxvy")]
 transform = Transform3D(-10.06016, -0.50888324, 17.278141, -0.25605536, 19.99353, 0.43977043, -17.28374, 6.961107e-10, -10.0634165, 134.74133, 4.8456697, 171.92938)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen7/node_0" parent_id_path=PackedInt32Array(1056062383, 152203491) index="0" unique_id=134120338]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen7/node_0" parent_id_path=PackedInt32Array(1056062383, 849629543) index="0" unique_id=134120338]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen7/node_0/StaticBody3D" unique_id=1006307398]
 shape = SubResource("ConvexPolygonShape3D_bmjh4")
@@ -46455,7 +46455,7 @@ shape = SubResource("ConvexPolygonShape3D_bmjh4")
 [node name="ancient_tree_darkgreen8" parent="Echoing_forest_region" unique_id=1345257554 instance=ExtResource("25_iqxvy")]
 transform = Transform3D(9.013052, -1.4901621, 17.79169, 0.4628838, 19.943022, 1.4358573, -17.847986, -0.23529874, 9.021863, 135.93544, 4.1283913, 160.58258)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen8/node_0" parent_id_path=PackedInt32Array(1345257554, 152203491) index="0" unique_id=678954416]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen8/node_0" parent_id_path=PackedInt32Array(1345257554, 849629543) index="0" unique_id=678954416]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen8/node_0/StaticBody3D" unique_id=1908236134]
 shape = SubResource("ConvexPolygonShape3D_bmjh4")
@@ -46463,7 +46463,7 @@ shape = SubResource("ConvexPolygonShape3D_bmjh4")
 [node name="ancient_tree_darkgreen_2" parent="Echoing_forest_region" unique_id=435411528 instance=ExtResource("26_pi2y4")]
 transform = Transform3D(18, 0, 0, 0, 18, 0, 0, 0, 18, 158.24866, 9.294485, 179.84288)
 
-[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_2" index="0" unique_id=270076984]
+[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_2" index="0" unique_id=2062641453]
 transform = Transform3D(-0.20317109, 0.97823834, 0.042084545, -0.008558018, 0.041205216, -0.9991136, -0.9791058, -0.20335129, 7.2724106e-08, 0.032722473, -0.051537305, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_2/node_0" index="0" unique_id=312238702]
@@ -46474,7 +46474,7 @@ shape = SubResource("ConvexPolygonShape3D_i6axg")
 [node name="ancient_tree_darkgreen_4" parent="Echoing_forest_region" unique_id=1126305158 instance=ExtResource("26_pi2y4")]
 transform = Transform3D(15.662842, 0, 8.869911, 0, 18, 0, -8.869911, 0, 15.662842, 163.61584, 9.294485, 190.96817)
 
-[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_4" index="0" unique_id=270076984]
+[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_4" index="0" unique_id=2062641453]
 transform = Transform3D(-0.20317109, 0.97823834, 0.042084545, -0.008558018, 0.041205216, -0.9991136, -0.9791058, -0.20335129, 7.2724106e-08, 0.032722473, -0.051537305, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_4/node_0" index="0" unique_id=210315612]
@@ -46485,7 +46485,7 @@ shape = SubResource("ConvexPolygonShape3D_i6axg")
 [node name="ancient_tree_darkgreen_5" parent="Echoing_forest_region" unique_id=1286889280 instance=ExtResource("26_pi2y4")]
 transform = Transform3D(11.953491, 0, 13.45786, 0, 18.000002, 0, -13.45786, 0, 11.953491, 171.0565, 9.294485, 197.75249)
 
-[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_5" index="0" unique_id=270076984]
+[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_5" index="0" unique_id=2062641453]
 transform = Transform3D(-0.20317109, 0.97823834, 0.042084545, -0.008558018, 0.041205216, -0.9991136, -0.9791058, -0.20335129, 7.2724106e-08, 0.032722473, -0.051537305, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_5/node_0" index="0" unique_id=1150604409]
@@ -46496,7 +46496,7 @@ shape = SubResource("ConvexPolygonShape3D_i6axg")
 [node name="ancient_tree_darkgreen_6" parent="Echoing_forest_region" unique_id=1002583788 instance=ExtResource("26_pi2y4")]
 transform = Transform3D(-9.221349, 0.7670072, 15.439509, 0.9335585, 17.972643, -0.33527517, -15.430332, 0.62899977, -9.247114, 192.54453, 8.535705, 193.73154)
 
-[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_6" index="0" unique_id=270076984]
+[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_6" index="0" unique_id=2062641453]
 transform = Transform3D(-0.20317125, 0.9782384, 0.042084552, -0.008558018, 0.041205227, -0.9991136, -0.97910595, -0.20335138, 6.7055225e-08, 0.025478363, -0.05224538, -0.05812311)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_6/node_0" index="0" unique_id=1519499230]
@@ -46507,7 +46507,7 @@ shape = SubResource("ConvexPolygonShape3D_i6axg")
 [node name="ancient_tree_darkgreen_9" parent="Echoing_forest_region" unique_id=1722602133 instance=ExtResource("26_pi2y4")]
 transform = Transform3D(-11.242657, 0.84573734, 14.031657, 0.93355846, 17.972641, -0.3352751, -14.026086, 0.51833266, -11.269434, 198.204, 8.535705, 188.60387)
 
-[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_9" index="0" unique_id=270076984]
+[node name="node_0" parent="Echoing_forest_region/ancient_tree_darkgreen_9" index="0" unique_id=2062641453]
 transform = Transform3D(-0.20317109, 0.97823834, 0.042084545, -0.008558018, 0.041205216, -0.9991136, -0.9791058, -0.20335129, 7.2724106e-08, 0.032722473, -0.051537305, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_9/node_0" index="0" unique_id=187762513]
@@ -46518,7 +46518,7 @@ shape = SubResource("ConvexPolygonShape3D_i6axg")
 [node name="ancient_tree_darkgreen_3" parent="Echoing_forest_region" unique_id=306089158 instance=ExtResource("27_xokg7")]
 transform = Transform3D(17.97112, -0.9632274, 0.33310264, 0.91820294, 17.854454, 2.0917296, -0.44234318, -2.0713823, 17.874947, 172.59674, 6.7581406, 138.79366)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_3/node_0" parent_id_path=PackedInt32Array(306089158, 985980024) index="0" unique_id=1119660407]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_3/node_0" parent_id_path=PackedInt32Array(306089158, 6989495) index="0" unique_id=1119660407]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen_3/node_0/StaticBody3D" unique_id=351125261]
 shape = SubResource("ConvexPolygonShape3D_rqyvg")
@@ -46526,7 +46526,7 @@ shape = SubResource("ConvexPolygonShape3D_rqyvg")
 [node name="ancient_tree_darkgreen_7" parent="Echoing_forest_region" unique_id=1377761968 instance=ExtResource("27_xokg7")]
 transform = Transform3D(20.89753, -0.2137321, 6.8736835, -0.77312326, 21.776958, 3.0276055, -6.8334093, -3.1174402, 20.678154, 163.20334, 6.6092167, 143.95274)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_7/node_0" parent_id_path=PackedInt32Array(1377761968, 985980024) index="0" unique_id=1612950862]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_7/node_0" parent_id_path=PackedInt32Array(1377761968, 6989495) index="0" unique_id=1612950862]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen_7/node_0/StaticBody3D" unique_id=367488622]
 shape = SubResource("ConvexPolygonShape3D_rqyvg")
@@ -46534,7 +46534,7 @@ shape = SubResource("ConvexPolygonShape3D_rqyvg")
 [node name="ancient_tree_darkgreen_8" parent="Echoing_forest_region" unique_id=1878814277 instance=ExtResource("27_xokg7")]
 transform = Transform3D(13.687564, -2.484582, 11.422676, 0.3569411, 17.669361, 3.4156022, -11.684316, -2.3707795, 13.485402, 153.34738, 6.294842, 149.92804)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_8/node_0" parent_id_path=PackedInt32Array(1878814277, 985980024) index="0" unique_id=977655227]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/ancient_tree_darkgreen_8/node_0" parent_id_path=PackedInt32Array(1878814277, 6989495) index="0" unique_id=977655227]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/ancient_tree_darkgreen_8/node_0/StaticBody3D" unique_id=895114929]
 shape = SubResource("ConvexPolygonShape3D_rqyvg")
@@ -46542,7 +46542,7 @@ shape = SubResource("ConvexPolygonShape3D_rqyvg")
 [node name="dome_stone_with _grass" parent="Echoing_forest_region" unique_id=43765094 instance=ExtResource("28_hk3qm")]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 129.50562, 3.9847326, 207.89677)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/dome_stone_with _grass/node_0" parent_id_path=PackedInt32Array(43765094, 1542993448) index="0" unique_id=609625864]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/dome_stone_with _grass/node_0" parent_id_path=PackedInt32Array(43765094, 1351618049) index="0" unique_id=609625864]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0062047243, 0.0044568926, -0.36498052)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/dome_stone_with _grass/node_0/StaticBody3D" unique_id=1499439438]
@@ -46551,7 +46551,7 @@ shape = SubResource("BoxShape3D_qv6fn")
 [node name="double_stone_grass" parent="Echoing_forest_region" unique_id=1025049266 instance=ExtResource("29_g82e4")]
 transform = Transform3D(7.147285, -3.7252903e-08, -3.5939279, 0.30460736, 9.964017, 0.605776, 3.5809963, -0.84756106, 7.1215672, 135.55252, 6.7292776, 165.70285)
 
-[node name="node_0" parent="Echoing_forest_region/double_stone_grass" index="0" unique_id=872765902]
+[node name="node_0" parent="Echoing_forest_region/double_stone_grass" index="0" unique_id=870432631]
 transform = Transform3D(1.0000001, 0, 3.7252903e-09, 1.8626451e-09, -3.6507845e-07, -0.99999994, 0, 0.99999994, -3.501773e-07, -0.0037269592, -0.07801992, -0.007411003)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/double_stone_grass/node_0" index="0" unique_id=679687189]
@@ -46562,7 +46562,7 @@ shape = SubResource("ConvexPolygonShape3D_0qn2w")
 [node name="double_stone_grass2" parent="Echoing_forest_region" unique_id=117655484 instance=ExtResource("29_g82e4")]
 transform = Transform3D(4.809239, 0.6559495, -7.597126, 0.34268326, 14.946026, 0.68149817, 7.5995917, -1.0890546, 4.7769485, 194.98439, 6.7292776, 192.82777)
 
-[node name="node_0" parent="Echoing_forest_region/double_stone_grass2" index="0" unique_id=872765902]
+[node name="node_0" parent="Echoing_forest_region/double_stone_grass2" index="0" unique_id=870432631]
 transform = Transform3D(1.0000001, 0, 3.7252903e-09, 1.8626451e-09, -3.6507845e-07, -0.99999994, 0, 0.99999994, -3.501773e-07, -0.0037269592, -0.07801992, -0.007411003)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/double_stone_grass2/node_0" index="0" unique_id=626348758]
@@ -46573,7 +46573,7 @@ shape = SubResource("ConvexPolygonShape3D_0qn2w")
 [node name="slope_stone" parent="Echoing_forest_region" unique_id=795362626 instance=ExtResource("30_2vkyy")]
 transform = Transform3D(-8.691586, 0, 4.945336, 0, 10, 0, -4.945336, 0, -8.691586, 201.04384, 7.2807727, 161.12637)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone/node_0" parent_id_path=PackedInt32Array(795362626, 544512886) index="0" unique_id=358945429]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone/node_0" parent_id_path=PackedInt32Array(795362626, 721095951) index="0" unique_id=358945429]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/slope_stone/node_0/StaticBody3D" unique_id=1995904570]
 shape = SubResource("ConvexPolygonShape3D_l5iln")
@@ -46581,7 +46581,7 @@ shape = SubResource("ConvexPolygonShape3D_l5iln")
 [node name="slope_stone2" parent="Echoing_forest_region" unique_id=852129048 instance=ExtResource("30_2vkyy")]
 transform = Transform3D(-5.7996387, 0, 8.146422, 0, 10, 0, -8.146422, 0, -5.7996387, 203.77747, 6.6558394, 174.80368)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone2/node_0" parent_id_path=PackedInt32Array(852129048, 544512886) index="0" unique_id=2130657422]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone2/node_0" parent_id_path=PackedInt32Array(852129048, 721095951) index="0" unique_id=2130657422]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/slope_stone2/node_0/StaticBody3D" unique_id=1060816332]
 shape = SubResource("ConvexPolygonShape3D_l5iln")
@@ -46589,7 +46589,7 @@ shape = SubResource("ConvexPolygonShape3D_l5iln")
 [node name="slope_stone3" parent="Echoing_forest_region" unique_id=120919271 instance=ExtResource("30_2vkyy")]
 transform = Transform3D(1.3239479, 0, 9.911971, 0, 10, 0, -9.911971, 0, 1.3239479, 203.09941, 6.6558394, 187.38547)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone3/node_0" parent_id_path=PackedInt32Array(120919271, 544512886) index="0" unique_id=959448356]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone3/node_0" parent_id_path=PackedInt32Array(120919271, 721095951) index="0" unique_id=959448356]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/slope_stone3/node_0/StaticBody3D" unique_id=949269659]
 shape = SubResource("ConvexPolygonShape3D_l5iln")
@@ -46597,7 +46597,7 @@ shape = SubResource("ConvexPolygonShape3D_l5iln")
 [node name="slope_stone4" parent="Echoing_forest_region" unique_id=1427757616 instance=ExtResource("30_2vkyy")]
 transform = Transform3D(1.3239479, 0, 9.911971, 0, 10, 0, -9.911971, 0, 1.3239479, 189.91945, 6.6558394, 199.86626)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone4/node_0" parent_id_path=PackedInt32Array(1427757616, 544512886) index="0" unique_id=1162502009]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone4/node_0" parent_id_path=PackedInt32Array(1427757616, 721095951) index="0" unique_id=1162502009]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/slope_stone4/node_0/StaticBody3D" unique_id=1690501026]
 shape = SubResource("ConvexPolygonShape3D_l5iln")
@@ -46605,7 +46605,7 @@ shape = SubResource("ConvexPolygonShape3D_l5iln")
 [node name="slope_stone5" parent="Echoing_forest_region" unique_id=647613378 instance=ExtResource("30_2vkyy")]
 transform = Transform3D(8.99352, 0, 4.3722577, 0, 10, 0, -4.3722577, 0, 8.99352, 175.87094, 6.878941, 202.3147)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone5/node_0" parent_id_path=PackedInt32Array(647613378, 544512886) index="0" unique_id=25874106]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone5/node_0" parent_id_path=PackedInt32Array(647613378, 721095951) index="0" unique_id=25874106]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/slope_stone5/node_0/StaticBody3D" unique_id=2059724127]
 shape = SubResource("ConvexPolygonShape3D_l5iln")
@@ -46613,7 +46613,7 @@ shape = SubResource("ConvexPolygonShape3D_l5iln")
 [node name="slope_stone6" parent="Echoing_forest_region" unique_id=1386021855 instance=ExtResource("30_2vkyy")]
 transform = Transform3D(9.962524, 0, -0.86494994, 0, 9.999999, 0, 0.86494994, 0, 9.962524, 165.75957, 6.878941, 196.33192)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone6/node_0" parent_id_path=PackedInt32Array(1386021855, 544512886) index="0" unique_id=1755496907]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone6/node_0" parent_id_path=PackedInt32Array(1386021855, 721095951) index="0" unique_id=1755496907]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/slope_stone6/node_0/StaticBody3D" unique_id=241551957]
 shape = SubResource("ConvexPolygonShape3D_l5iln")
@@ -46621,7 +46621,7 @@ shape = SubResource("ConvexPolygonShape3D_l5iln")
 [node name="slope_stone7" parent="Echoing_forest_region" unique_id=906100400 instance=ExtResource("30_2vkyy")]
 transform = Transform3D(7.609498, 0, -6.4881077, 0, 9.999998, 0, 6.4881077, 0, 7.609498, 158.57379, 7.9510026, 186.34737)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone7/node_0" parent_id_path=PackedInt32Array(906100400, 544512886) index="0" unique_id=537421317]
+[node name="StaticBody3D" type="StaticBody3D" parent="Echoing_forest_region/slope_stone7/node_0" parent_id_path=PackedInt32Array(906100400, 721095951) index="0" unique_id=537421317]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Echoing_forest_region/slope_stone7/node_0/StaticBody3D" unique_id=1126698864]
 shape = SubResource("ConvexPolygonShape3D_l5iln")
@@ -46631,7 +46631,7 @@ shape = SubResource("ConvexPolygonShape3D_l5iln")
 [node name="village _house_t1" parent="Village_region" unique_id=1153684171 instance=ExtResource("39_bmjh4")]
 transform = Transform3D(-14.933007, 0, -1.4160528, 0, 13.999999, 0, 1.4160528, 0, -14.933007, -19.290413, 2.3323922, 11.955427)
 
-[node name="node_0" parent="Village_region/village _house_t1" index="0" unique_id=854264566]
+[node name="node_0" parent="Village_region/village _house_t1" index="0" unique_id=1806834286]
 transform = Transform3D(1, 0, 0, 0, -3.5762787e-07, -0.99999994, 0, 0.99999994, -3.5762787e-07, 0, -0.04727304, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t1/node_0" index="0" unique_id=1084811328]
@@ -46654,7 +46654,7 @@ shape = SubResource("ConvexPolygonShape3D_my4yt")
 [node name="village _house_t2" parent="Village_region" unique_id=882088799 instance=ExtResource("32_0qn2w")]
 transform = Transform3D(0.36203375, 0, -14.99563, 0, 13.999999, 0, 14.99563, 0, 0.36203375, 27.334354, 1.5419445, 12.192295)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t2/node_0" parent_id_path=PackedInt32Array(882088799, 945554461) index="0" unique_id=615199672]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t2/node_0" parent_id_path=PackedInt32Array(882088799, 130291953) index="0" unique_id=615199672]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/village _house_t2/node_0/StaticBody3D" unique_id=1673556125]
 shape = SubResource("ConvexPolygonShape3D_navci")
@@ -46671,7 +46671,7 @@ shape = SubResource("ConvexPolygonShape3D_c5fwy")
 [node name="chef_village _house" parent="Village_region" unique_id=1469324321 instance=ExtResource("33_l5iln")]
 transform = Transform3D(15, 0, 0, 0, 14, 0, 0, 0, 15, -5.988735, 1.5354102, -22.482983)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/chef_village _house/node_0" parent_id_path=PackedInt32Array(1469324321, 736217784) index="0" unique_id=834987910]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/chef_village _house/node_0" parent_id_path=PackedInt32Array(1469324321, 996954016) index="0" unique_id=834987910]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/chef_village _house/node_0/StaticBody3D" unique_id=1352129814]
 shape = SubResource("ConvexPolygonShape3D_h8c64")
@@ -46688,7 +46688,7 @@ shape = SubResource("ConvexPolygonShape3D_tenvm")
 [node name="village _house_t4" parent="Village_region" unique_id=1379359393 instance=ExtResource("34_qxjis")]
 transform = Transform3D(-0.3141364, 0, -14.99671, 0, 14.000001, 0, 14.99671, 0, -0.3141364, 4.003127, 1.4848089, 31.615572)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t4/node_0" parent_id_path=PackedInt32Array(1379359393, 1905330834) index="0" unique_id=1801921022]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t4/node_0" parent_id_path=PackedInt32Array(1379359393, 971597090) index="0" unique_id=1801921022]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/village _house_t4/node_0/StaticBody3D" unique_id=1874754743]
 shape = SubResource("ConvexPolygonShape3D_t25rt")
@@ -46711,7 +46711,7 @@ shape = SubResource("ConvexPolygonShape3D_7rqe0")
 [node name="sensei_village _house" parent="Village_region" unique_id=1990622595 instance=ExtResource("35_ers45")]
 transform = Transform3D(13.013748, 0, -7.4593787, 0, 13.999999, 0, 7.4593787, 0, 13.013748, 9.080885, 2.1166537, -18.702421)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/sensei_village _house/node_0" parent_id_path=PackedInt32Array(1990622595, 1514668583) index="0" unique_id=1197168426]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/sensei_village _house/node_0" parent_id_path=PackedInt32Array(1990622595, 3160042) index="0" unique_id=1197168426]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/sensei_village _house/node_0/StaticBody3D" unique_id=636417824]
 shape = SubResource("ConvexPolygonShape3D_fi8fg")
@@ -46734,7 +46734,7 @@ shape = SubResource("ConvexPolygonShape3D_ppam0")
 [node name="schoolboard" parent="Village_region" unique_id=186481826 instance=ExtResource("36_l5iln")]
 transform = Transform3D(2.029426, 0, -2.8515663, 0, 3, 0, 2.8515663, 0, 2.029426, 11.872559, 2.4494972, -9.464386)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/schoolboard/node_0" parent_id_path=PackedInt32Array(186481826, 1565341254) index="0" unique_id=1578037670]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/schoolboard/node_0" parent_id_path=PackedInt32Array(186481826, 1313372678) index="0" unique_id=1578037670]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/schoolboard/node_0/StaticBody3D" unique_id=1297256669]
 shape = SubResource("ConvexPolygonShape3D_2wqk6")
@@ -46742,7 +46742,7 @@ shape = SubResource("ConvexPolygonShape3D_2wqk6")
 [node name="well" parent="Village_region" unique_id=1286406785 instance=ExtResource("37_qxjis")]
 transform = Transform3D(7, 0, 0, 0, 5.5, 0, 0, 0, 7, 0, 2.485052, 0)
 
-[node name="node_0" parent="Village_region/well" index="0" unique_id=1869653774]
+[node name="node_0" parent="Village_region/well" index="0" unique_id=868183942]
 transform = Transform3D(1, 0, 0, 0, -3.5762787e-07, -0.99999994, 0, 0.99999994, -3.5762787e-07, 0, -0.05326721, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/well/node_0" index="0" unique_id=951628101]
@@ -46796,7 +46796,7 @@ shape = SubResource("ConvexPolygonShape3D_bx40k")
 [node name="fence" parent="Village_region/fences/Fence side 1" unique_id=349779411 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -9.547979, 2.792253, -37.703373)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence/node_0" parent_id_path=PackedInt32Array(349779411, 300114942) index="0" unique_id=774054550]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence/node_0" parent_id_path=PackedInt32Array(349779411, 815006650) index="0" unique_id=774054550]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence/node_0/StaticBody3D" unique_id=2003105651]
@@ -46805,7 +46805,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence2" parent="Village_region/fences/Fence side 1" unique_id=1313659031 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, -7.4028435, 2.6996639, -37.694637)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence2/node_0" parent_id_path=PackedInt32Array(1313659031, 300114942) index="0" unique_id=324391722]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence2/node_0" parent_id_path=PackedInt32Array(1313659031, 815006650) index="0" unique_id=324391722]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence2/node_0/StaticBody3D" unique_id=2147062687]
@@ -46814,7 +46814,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence3" parent="Village_region/fences/Fence side 1" unique_id=403168706 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -13.744462, 2.962872, -37.703373)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence3/node_0" parent_id_path=PackedInt32Array(403168706, 300114942) index="0" unique_id=836369807]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence3/node_0" parent_id_path=PackedInt32Array(403168706, 815006650) index="0" unique_id=836369807]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence3/node_0/StaticBody3D" unique_id=1195196068]
@@ -46823,7 +46823,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence14" parent="Village_region/fences/Fence side 1" unique_id=1805860331 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, -11.599326, 2.8822737, -37.694637)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence14/node_0" parent_id_path=PackedInt32Array(1805860331, 300114942) index="0" unique_id=884917084]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence14/node_0" parent_id_path=PackedInt32Array(1805860331, 815006650) index="0" unique_id=884917084]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence14/node_0/StaticBody3D" unique_id=784038078]
@@ -46832,7 +46832,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence15" parent="Village_region/fences/Fence side 1" unique_id=1770887827 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.7115803, 0, 1.382206, 0, 2.2, 0, -1.382206, 0, 1.7115803, -17.314848, 3.0494866, -35.632736)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence15/node_0" parent_id_path=PackedInt32Array(1770887827, 300114942) index="0" unique_id=642426591]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence15/node_0" parent_id_path=PackedInt32Array(1770887827, 815006650) index="0" unique_id=642426591]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence15/node_0/StaticBody3D" unique_id=547275549]
@@ -46841,7 +46841,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence16" parent="Village_region/fences/Fence side 1" unique_id=1966360945 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.7115802, 0, -1.3822062, 0, 2.2, 0, 1.3822062, 0, -1.7115802, -15.640463, 3.0090055, -36.97368)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence16/node_0" parent_id_path=PackedInt32Array(1966360945, 300114942) index="0" unique_id=1508465083]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence16/node_0" parent_id_path=PackedInt32Array(1966360945, 815006650) index="0" unique_id=1508465083]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence16/node_0/StaticBody3D" unique_id=723307729]
@@ -46850,7 +46850,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence17" parent="Village_region/fences/Fence side 1" unique_id=1875403820 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.7115803, 0, 1.382206, 0, 2.2, 0, -1.382206, 0, 1.7115803, -20.567532, 3.056696, -32.981567)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence17/node_0" parent_id_path=PackedInt32Array(1875403820, 300114942) index="0" unique_id=1754235055]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence17/node_0" parent_id_path=PackedInt32Array(1875403820, 815006650) index="0" unique_id=1754235055]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence17/node_0/StaticBody3D" unique_id=532021850]
@@ -46859,7 +46859,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence18" parent="Village_region/fences/Fence side 1" unique_id=583462442 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.7115802, 0, -1.3822062, 0, 2.2, 0, 1.3822062, 0, -1.7115802, -18.893147, 3.0402288, -34.32251)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence18/node_0" parent_id_path=PackedInt32Array(583462442, 300114942) index="0" unique_id=603505127]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence18/node_0" parent_id_path=PackedInt32Array(583462442, 815006650) index="0" unique_id=603505127]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence18/node_0/StaticBody3D" unique_id=951207957]
@@ -46868,7 +46868,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence19" parent="Village_region/fences/Fence side 1" unique_id=1675116979 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.7115803, 0, 1.382206, 0, 2.2, 0, -1.382206, 0, 1.7115803, -23.822296, 3.045662, -30.306877)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence19/node_0" parent_id_path=PackedInt32Array(1675116979, 300114942) index="0" unique_id=740664248]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence19/node_0" parent_id_path=PackedInt32Array(1675116979, 815006650) index="0" unique_id=740664248]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence19/node_0/StaticBody3D" unique_id=1694429138]
@@ -46877,7 +46877,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence20" parent="Village_region/fences/Fence side 1" unique_id=571491173 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.7115802, 0, -1.3822062, 0, 2.2, 0, 1.3822062, 0, -1.7115802, -22.147911, 3.0646777, -31.64782)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence20/node_0" parent_id_path=PackedInt32Array(571491173, 300114942) index="0" unique_id=693614725]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence20/node_0" parent_id_path=PackedInt32Array(571491173, 815006650) index="0" unique_id=693614725]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence20/node_0/StaticBody3D" unique_id=665779355]
@@ -46886,7 +46886,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence21" parent="Village_region/fences/Fence side 1" unique_id=255698921 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.8210653, 0, 1.2343913, 0, 2.2000003, 0, -1.2343913, 0, -1.8210653, 17.30793, 2.13808, -35.893528)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence21/node_0" parent_id_path=PackedInt32Array(255698921, 300114942) index="0" unique_id=1365544772]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence21/node_0" parent_id_path=PackedInt32Array(255698921, 815006650) index="0" unique_id=1365544772]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence21/node_0/StaticBody3D" unique_id=721923123]
@@ -46895,7 +46895,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence22" parent="Village_region/fences/Fence side 1" unique_id=1153400414 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.8210654, 0, -1.2343912, 0, 2.2, 0, 1.2343912, 0, 1.8210654, 15.537177, 2.2474818, -37.104366)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence22/node_0" parent_id_path=PackedInt32Array(1153400414, 300114942) index="0" unique_id=1406153456]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence22/node_0" parent_id_path=PackedInt32Array(1153400414, 815006650) index="0" unique_id=1406153456]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence22/node_0/StaticBody3D" unique_id=328031890]
@@ -46904,7 +46904,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence23" parent="Village_region/fences/Fence side 1" unique_id=1489085877 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.8210653, 0, 1.2343913, 0, 2.2000003, 0, -1.2343913, 0, -1.8210653, 20.792044, 1.869467, -33.55481)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence23/node_0" parent_id_path=PackedInt32Array(1489085877, 300114942) index="0" unique_id=101106558]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence23/node_0" parent_id_path=PackedInt32Array(1489085877, 815006650) index="0" unique_id=101106558]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence23/node_0/StaticBody3D" unique_id=455095166]
@@ -46913,7 +46913,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence24" parent="Village_region/fences/Fence side 1" unique_id=1166296096 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.8210654, 0, -1.2343912, 0, 2.2, 0, 1.2343912, 0, 1.8210654, 19.021292, 1.9776964, -34.765648)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence24/node_0" parent_id_path=PackedInt32Array(1166296096, 300114942) index="0" unique_id=1821196782]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence24/node_0" parent_id_path=PackedInt32Array(1166296096, 815006650) index="0" unique_id=1821196782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence24/node_0/StaticBody3D" unique_id=1279912686]
@@ -46922,7 +46922,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence25" parent="Village_region/fences/Fence side 1" unique_id=817856135 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.8210653, 0, 1.2343913, 0, 2.2000003, 0, -1.2343913, 0, -1.8210653, 24.299269, 1.7665062, -31.22096)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence25/node_0" parent_id_path=PackedInt32Array(817856135, 300114942) index="0" unique_id=1438186238]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence25/node_0" parent_id_path=PackedInt32Array(817856135, 815006650) index="0" unique_id=1438186238]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence25/node_0/StaticBody3D" unique_id=1445645373]
@@ -46931,7 +46931,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence26" parent="Village_region/fences/Fence side 1" unique_id=1017783775 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.8210654, 0, -1.2343912, 0, 2.2, 0, 1.2343912, 0, 1.8210654, 22.528513, 1.7803235, -32.4318)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence26/node_0" parent_id_path=PackedInt32Array(1017783775, 300114942) index="0" unique_id=679345864]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence26/node_0" parent_id_path=PackedInt32Array(1017783775, 815006650) index="0" unique_id=679345864]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence26/node_0/StaticBody3D" unique_id=1510276599]
@@ -46940,7 +46940,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence4" parent="Village_region/fences/Fence side 1" unique_id=916957823 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -5.3493214, 2.5870368, -37.703373)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence4/node_0" parent_id_path=PackedInt32Array(916957823, 300114942) index="0" unique_id=1765619075]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence4/node_0" parent_id_path=PackedInt32Array(916957823, 815006650) index="0" unique_id=1765619075]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence4/node_0/StaticBody3D" unique_id=83824305]
@@ -46949,7 +46949,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence5" parent="Village_region/fences/Fence side 1" unique_id=1842292173 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, -3.2041855, 2.4973378, -37.694637)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence5/node_0" parent_id_path=PackedInt32Array(1842292173, 300114942) index="0" unique_id=943437714]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence5/node_0" parent_id_path=PackedInt32Array(1842292173, 815006650) index="0" unique_id=943437714]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence5/node_0/StaticBody3D" unique_id=1797833620]
@@ -46958,7 +46958,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence6" parent="Village_region/fences/Fence side 1" unique_id=1031377083 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -1.157912, 2.4399343, -37.703373)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence6/node_0" parent_id_path=PackedInt32Array(1031377083, 300114942) index="0" unique_id=979337927]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence6/node_0" parent_id_path=PackedInt32Array(1031377083, 815006650) index="0" unique_id=979337927]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence6/node_0/StaticBody3D" unique_id=1505881684]
@@ -46967,7 +46967,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence7" parent="Village_region/fences/Fence side 1" unique_id=173546152 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 0.98722386, 2.3479776, -37.694637)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence7/node_0" parent_id_path=PackedInt32Array(173546152, 300114942) index="0" unique_id=1727824155]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence7/node_0" parent_id_path=PackedInt32Array(173546152, 815006650) index="0" unique_id=1727824155]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence7/node_0/StaticBody3D" unique_id=586779837]
@@ -46976,7 +46976,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence8" parent="Village_region/fences/Fence side 1" unique_id=799105264 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 3.040746, 2.2906404, -37.703373)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence8/node_0" parent_id_path=PackedInt32Array(799105264, 300114942) index="0" unique_id=1480782407]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence8/node_0" parent_id_path=PackedInt32Array(799105264, 815006650) index="0" unique_id=1480782407]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence8/node_0/StaticBody3D" unique_id=918871338]
@@ -46985,7 +46985,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence9" parent="Village_region/fences/Fence side 1" unique_id=1814761159 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 5.1858816, 2.302176, -37.694637)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence9/node_0" parent_id_path=PackedInt32Array(1814761159, 300114942) index="0" unique_id=2014497796]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence9/node_0" parent_id_path=PackedInt32Array(1814761159, 815006650) index="0" unique_id=2014497796]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence9/node_0/StaticBody3D" unique_id=2004025401]
@@ -46994,7 +46994,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence10" parent="Village_region/fences/Fence side 1" unique_id=28010833 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 7.225192, 2.2805986, -37.703373)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence10/node_0" parent_id_path=PackedInt32Array(28010833, 300114942) index="0" unique_id=822509263]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence10/node_0" parent_id_path=PackedInt32Array(28010833, 815006650) index="0" unique_id=822509263]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence10/node_0/StaticBody3D" unique_id=1664983265]
@@ -47003,7 +47003,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence11" parent="Village_region/fences/Fence side 1" unique_id=1333299976 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 9.370328, 2.3137264, -37.694637)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence11/node_0" parent_id_path=PackedInt32Array(1333299976, 300114942) index="0" unique_id=417060236]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence11/node_0" parent_id_path=PackedInt32Array(1333299976, 815006650) index="0" unique_id=417060236]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence11/node_0/StaticBody3D" unique_id=1972928979]
@@ -47012,7 +47012,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence12" parent="Village_region/fences/Fence side 1" unique_id=366616701 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 11.42385, 2.3434062, -37.703373)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence12/node_0" parent_id_path=PackedInt32Array(366616701, 300114942) index="0" unique_id=2035573347]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence12/node_0" parent_id_path=PackedInt32Array(366616701, 815006650) index="0" unique_id=2035573347]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence12/node_0/StaticBody3D" unique_id=265155628]
@@ -47021,7 +47021,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence13" parent="Village_region/fences/Fence side 1" unique_id=926770406 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.2, 0, -1.923301e-07, 0, 2.2, 0, 1.923301e-07, 0, -2.2, 13.568986, 2.3761237, -37.694637)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence13/node_0" parent_id_path=PackedInt32Array(926770406, 300114942) index="0" unique_id=1908298333]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 1/fence13/node_0" parent_id_path=PackedInt32Array(926770406, 815006650) index="0" unique_id=1908298333]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 1/fence13/node_0/StaticBody3D" unique_id=1199789190]
@@ -47032,7 +47032,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence27" parent="Village_region/fences/Fence side 2" unique_id=215224044 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.69419, 3.7783575, 9.636609)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence27/node_0" parent_id_path=PackedInt32Array(215224044, 300114942) index="0" unique_id=1979413704]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence27/node_0" parent_id_path=PackedInt32Array(215224044, 815006650) index="0" unique_id=1979413704]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence27/node_0/StaticBody3D" unique_id=2069076143]
@@ -47041,7 +47041,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence28" parent="Village_region/fences/Fence side 2" unique_id=741385908 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.643517, 3.7447243, 7.492056)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence28/node_0" parent_id_path=PackedInt32Array(741385908, 300114942) index="0" unique_id=1007151229]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence28/node_0" parent_id_path=PackedInt32Array(741385908, 815006650) index="0" unique_id=1007151229]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence28/node_0/StaticBody3D" unique_id=1190862224]
@@ -47050,7 +47050,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence29" parent="Village_region/fences/Fence side 2" unique_id=1954068411 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.776207, 3.8289227, 13.83229)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence29/node_0" parent_id_path=PackedInt32Array(1954068411, 300114942) index="0" unique_id=975079646]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence29/node_0" parent_id_path=PackedInt32Array(1954068411, 815006650) index="0" unique_id=975079646]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence29/node_0/StaticBody3D" unique_id=826581085]
@@ -47059,7 +47059,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence30" parent="Village_region/fences/Fence side 2" unique_id=1693191029 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.725548, 3.8169765, 11.687737)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence30/node_0" parent_id_path=PackedInt32Array(1693191029, 300114942) index="0" unique_id=622977630]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence30/node_0" parent_id_path=PackedInt32Array(1693191029, 815006650) index="0" unique_id=622977630]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence30/node_0/StaticBody3D" unique_id=1621484446]
@@ -47068,7 +47068,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence31" parent="Village_region/fences/Fence side 2" unique_id=677104607 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.3484864, 0, 1.7382708, 0, 2.2, 0, -1.7382708, 0, -1.3484864, -37.775757, 3.7476501, 17.442472)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence31/node_0" parent_id_path=PackedInt32Array(677104607, 300114942) index="0" unique_id=811254471]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence31/node_0" parent_id_path=PackedInt32Array(677104607, 815006650) index="0" unique_id=811254471]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence31/node_0/StaticBody3D" unique_id=2000794250]
@@ -47077,7 +47077,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence32" parent="Village_region/fences/Fence side 2" unique_id=1491248313 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.3484869, 0, -1.7382704, 0, 2.2, 0, 1.7382704, 0, 1.3484869, -39.083725, 3.8295665, 15.742195)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence32/node_0" parent_id_path=PackedInt32Array(1491248313, 300114942) index="0" unique_id=1027946395]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence32/node_0" parent_id_path=PackedInt32Array(1491248313, 815006650) index="0" unique_id=1027946395]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence32/node_0/StaticBody3D" unique_id=1771556504]
@@ -47086,7 +47086,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence33" parent="Village_region/fences/Fence side 2" unique_id=1831428001 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.3484864, 0, 1.7382708, 0, 2.2, 0, -1.7382708, 0, -1.3484864, -35.188683, 3.5460546, 20.746355)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence33/node_0" parent_id_path=PackedInt32Array(1831428001, 300114942) index="0" unique_id=1377766013]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence33/node_0" parent_id_path=PackedInt32Array(1831428001, 815006650) index="0" unique_id=1377766013]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence33/node_0/StaticBody3D" unique_id=128076214]
@@ -47095,7 +47095,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence34" parent="Village_region/fences/Fence side 2" unique_id=1355867137 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.3484869, 0, -1.7382704, 0, 2.2, 0, 1.7382704, 0, 1.3484869, -36.496635, 3.6487253, 19.046074)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence34/node_0" parent_id_path=PackedInt32Array(1355867137, 300114942) index="0" unique_id=444537780]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence34/node_0" parent_id_path=PackedInt32Array(1355867137, 815006650) index="0" unique_id=444537780]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence34/node_0/StaticBody3D" unique_id=748610162]
@@ -47104,7 +47104,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence35" parent="Village_region/fences/Fence side 2" unique_id=94045623 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.3484864, 0, 1.7382708, 0, 2.2, 0, -1.7382708, 0, -1.3484864, -32.578117, 3.2785463, 24.052774)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence35/node_0" parent_id_path=PackedInt32Array(94045623, 300114942) index="0" unique_id=391748038]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence35/node_0" parent_id_path=PackedInt32Array(94045623, 815006650) index="0" unique_id=391748038]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence35/node_0/StaticBody3D" unique_id=1225559842]
@@ -47113,7 +47113,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence36" parent="Village_region/fences/Fence side 2" unique_id=68159165 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.3484869, 0, -1.7382704, 0, 2.2, 0, 1.7382704, 0, 1.3484869, -33.88607, 3.404212, 22.352499)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence36/node_0" parent_id_path=PackedInt32Array(68159165, 300114942) index="0" unique_id=1790073302]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence36/node_0" parent_id_path=PackedInt32Array(68159165, 815006650) index="0" unique_id=1790073302]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence36/node_0/StaticBody3D" unique_id=998037799]
@@ -47122,7 +47122,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence37" parent="Village_region/fences/Fence side 2" unique_id=1583131906 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.269751, 0, -1.7965896, 0, 2.1999998, 0, 1.7965896, 0, -1.269751, -37.35975, 3.152379, -17.17879)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence37/node_0" parent_id_path=PackedInt32Array(1583131906, 300114942) index="0" unique_id=1391034352]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence37/node_0" parent_id_path=PackedInt32Array(1583131906, 815006650) index="0" unique_id=1391034352]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence37/node_0/StaticBody3D" unique_id=1872364148]
@@ -47131,7 +47131,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence38" parent="Village_region/fences/Fence side 2" unique_id=1615236018 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.2697507, 0, 1.7965899, 0, 2.2, 0, -1.7965899, 0, 1.2697507, -38.604973, 3.1856747, -15.432046)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence38/node_0" parent_id_path=PackedInt32Array(1615236018, 300114942) index="0" unique_id=1768174620]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence38/node_0" parent_id_path=PackedInt32Array(1615236018, 815006650) index="0" unique_id=1768174620]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence38/node_0/StaticBody3D" unique_id=1594461666]
@@ -47140,7 +47140,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence39" parent="Village_region/fences/Fence side 2" unique_id=806381712 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.269751, 0, -1.7965896, 0, 2.1999998, 0, 1.7965896, 0, -1.269751, -34.953377, 3.167729, -20.616526)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence39/node_0" parent_id_path=PackedInt32Array(806381712, 300114942) index="0" unique_id=1489750433]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence39/node_0" parent_id_path=PackedInt32Array(806381712, 815006650) index="0" unique_id=1489750433]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence39/node_0/StaticBody3D" unique_id=351085819]
@@ -47149,7 +47149,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence40" parent="Village_region/fences/Fence side 2" unique_id=627852033 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.2697507, 0, 1.7965899, 0, 2.2, 0, -1.7965899, 0, 1.2697507, -36.1986, 3.1611454, -18.869783)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence40/node_0" parent_id_path=PackedInt32Array(627852033, 300114942) index="0" unique_id=310893270]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence40/node_0" parent_id_path=PackedInt32Array(627852033, 815006650) index="0" unique_id=310893270]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence40/node_0/StaticBody3D" unique_id=1976573869]
@@ -47158,7 +47158,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence41" parent="Village_region/fences/Fence side 2" unique_id=1309638843 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.269751, 0, -1.7965896, 0, 2.1999998, 0, 1.7965896, 0, -1.269751, -32.551422, 3.2047637, -24.077461)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence41/node_0" parent_id_path=PackedInt32Array(1309638843, 300114942) index="0" unique_id=1109319928]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence41/node_0" parent_id_path=PackedInt32Array(1309638843, 815006650) index="0" unique_id=1109319928]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence41/node_0/StaticBody3D" unique_id=1547107470]
@@ -47167,7 +47167,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence42" parent="Village_region/fences/Fence side 2" unique_id=180143023 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.2697507, 0, 1.7965899, 0, 2.2, 0, -1.7965899, 0, 1.2697507, -33.79664, 3.1629806, -22.330715)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence42/node_0" parent_id_path=PackedInt32Array(180143023, 300114942) index="0" unique_id=1499294497]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence42/node_0" parent_id_path=PackedInt32Array(180143023, 815006650) index="0" unique_id=1499294497]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence42/node_0/StaticBody3D" unique_id=2130037605]
@@ -47176,7 +47176,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence43" parent="Village_region/fences/Fence side 2" unique_id=1765042312 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.61212, 3.6975296, 5.438754)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence43/node_0" parent_id_path=PackedInt32Array(1765042312, 300114942) index="0" unique_id=869324354]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence43/node_0" parent_id_path=PackedInt32Array(1765042312, 815006650) index="0" unique_id=869324354]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence43/node_0/StaticBody3D" unique_id=1432926713]
@@ -47185,7 +47185,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence44" parent="Village_region/fences/Fence side 2" unique_id=586176019 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.561455, 3.6510916, 3.2941988)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence44/node_0" parent_id_path=PackedInt32Array(586176019, 300114942) index="0" unique_id=442967841]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence44/node_0" parent_id_path=PackedInt32Array(586176019, 815006650) index="0" unique_id=442967841]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence44/node_0/StaticBody3D" unique_id=1362253546]
@@ -47194,7 +47194,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence45" parent="Village_region/fences/Fence side 2" unique_id=1555345712 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.53019, 3.585579, 1.2481457)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence45/node_0" parent_id_path=PackedInt32Array(1555345712, 300114942) index="0" unique_id=644873996]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence45/node_0" parent_id_path=PackedInt32Array(1555345712, 815006650) index="0" unique_id=644873996]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence45/node_0/StaticBody3D" unique_id=1288666632]
@@ -47203,7 +47203,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence46" parent="Village_region/fences/Fence side 2" unique_id=1255136890 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.479523, 3.5066056, -0.89640933)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence46/node_0" parent_id_path=PackedInt32Array(1255136890, 300114942) index="0" unique_id=474238516]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence46/node_0" parent_id_path=PackedInt32Array(1255136890, 815006650) index="0" unique_id=474238516]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence46/node_0/StaticBody3D" unique_id=643744143]
@@ -47212,7 +47212,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence47" parent="Village_region/fences/Fence side 2" unique_id=789919328 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.44812, 3.4079463, -2.949711)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence47/node_0" parent_id_path=PackedInt32Array(789919328, 300114942) index="0" unique_id=1294368779]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence47/node_0" parent_id_path=PackedInt32Array(789919328, 815006650) index="0" unique_id=1294368779]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence47/node_0/StaticBody3D" unique_id=270548790]
@@ -47221,7 +47221,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence48" parent="Village_region/fences/Fence side 2" unique_id=961121978 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.397453, 3.346723, -5.0942655)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence48/node_0" parent_id_path=PackedInt32Array(961121978, 300114942) index="0" unique_id=234308678]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence48/node_0" parent_id_path=PackedInt32Array(961121978, 815006650) index="0" unique_id=234308678]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence48/node_0/StaticBody3D" unique_id=1486119102]
@@ -47230,7 +47230,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence49" parent="Village_region/fences/Fence side 2" unique_id=1507672182 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.366325, 3.2953646, -7.133357)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence49/node_0" parent_id_path=PackedInt32Array(1507672182, 300114942) index="0" unique_id=843843969]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence49/node_0" parent_id_path=PackedInt32Array(1507672182, 815006650) index="0" unique_id=843843969]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence49/node_0/StaticBody3D" unique_id=875251774]
@@ -47239,7 +47239,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence50" parent="Village_region/fences/Fence side 2" unique_id=1627891878 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.315666, 3.2401586, -9.277914)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence50/node_0" parent_id_path=PackedInt32Array(1627891878, 300114942) index="0" unique_id=1975090608]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence50/node_0" parent_id_path=PackedInt32Array(1627891878, 815006650) index="0" unique_id=1975090608]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence50/node_0/StaticBody3D" unique_id=2066353416]
@@ -47248,7 +47248,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence51" parent="Village_region/fences/Fence side 2" unique_id=143582848 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.043002047, 0, 2.1995795, 0, 2.2, 0, -2.1995795, 0, 0.043002047, -39.284256, 3.2295496, -11.331215)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence51/node_0" parent_id_path=PackedInt32Array(143582848, 300114942) index="0" unique_id=1507238543]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence51/node_0" parent_id_path=PackedInt32Array(143582848, 815006650) index="0" unique_id=1507238543]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence51/node_0/StaticBody3D" unique_id=16867810]
@@ -47257,7 +47257,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence52" parent="Village_region/fences/Fence side 2" unique_id=1598594823 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.04300198, 0, -2.1995795, 0, 2.2, 0, 2.1995795, 0, -0.04300198, -39.233597, 3.218745, -13.47577)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence52/node_0" parent_id_path=PackedInt32Array(1598594823, 300114942) index="0" unique_id=659937247]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 2/fence52/node_0" parent_id_path=PackedInt32Array(1598594823, 815006650) index="0" unique_id=659937247]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 2/fence52/node_0/StaticBody3D" unique_id=290182963]
@@ -47268,7 +47268,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence27" parent="Village_region/fences/Fence side 3" unique_id=299156349 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 39.947002, 3.0767064, -9.3379)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence27/node_0" parent_id_path=PackedInt32Array(299156349, 300114942) index="0" unique_id=457432100]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence27/node_0" parent_id_path=PackedInt32Array(299156349, 815006650) index="0" unique_id=457432100]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence27/node_0/StaticBody3D" unique_id=1344516172]
@@ -47277,7 +47277,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence28" parent="Village_region/fences/Fence side 3" unique_id=346382628 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 39.974243, 2.8914447, -7.19292)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence28/node_0" parent_id_path=PackedInt32Array(346382628, 300114942) index="0" unique_id=166912085]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence28/node_0" parent_id_path=PackedInt32Array(346382628, 815006650) index="0" unique_id=166912085]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence28/node_0/StaticBody3D" unique_id=1141942011]
@@ -47286,7 +47286,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence29" parent="Village_region/fences/Fence side 3" unique_id=510919454 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 39.876617, 3.4181433, -13.533795)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence29/node_0" parent_id_path=PackedInt32Array(510919454, 300114942) index="0" unique_id=891826650]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence29/node_0" parent_id_path=PackedInt32Array(510919454, 815006650) index="0" unique_id=891826650]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence29/node_0/StaticBody3D" unique_id=1322319977]
@@ -47295,7 +47295,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence30" parent="Village_region/fences/Fence side 3" unique_id=908937206 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 39.903862, 3.2783363, -11.388812)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence30/node_0" parent_id_path=PackedInt32Array(908937206, 300114942) index="0" unique_id=325449234]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence30/node_0" parent_id_path=PackedInt32Array(908937206, 815006650) index="0" unique_id=325449234]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence30/node_0/StaticBody3D" unique_id=1516905761]
@@ -47304,7 +47304,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence31" parent="Village_region/fences/Fence side 3" unique_id=747757992 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.4107178, 0, -1.6881573, 0, 2.2, 0, 1.6881573, 0, 1.4107178, 37.74639, 3.1765356, -17.068949)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence31/node_0" parent_id_path=PackedInt32Array(747757992, 300114942) index="0" unique_id=1366569502]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence31/node_0" parent_id_path=PackedInt32Array(747757992, 815006650) index="0" unique_id=1366569502]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence31/node_0/StaticBody3D" unique_id=1578651382]
@@ -47313,7 +47313,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence32" parent="Village_region/fences/Fence side 3" unique_id=1104555144 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.4107182, 0, 1.6881572, 0, 2.2, 0, -1.6881572, 0, -1.4107182, 39.115227, 3.3602657, -15.417289)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence32/node_0" parent_id_path=PackedInt32Array(1104555144, 300114942) index="0" unique_id=583314433]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence32/node_0" parent_id_path=PackedInt32Array(1104555144, 815006650) index="0" unique_id=583314433]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence32/node_0/StaticBody3D" unique_id=1167627436]
@@ -47322,7 +47322,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence33" parent="Village_region/fences/Fence side 3" unique_id=2099788482 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.4107178, 0, -1.6881573, 0, 2.2, 0, 1.6881573, 0, 1.4107178, 35.041046, 2.676825, -20.276709)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence33/node_0" parent_id_path=PackedInt32Array(2099788482, 300114942) index="0" unique_id=1977734103]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence33/node_0" parent_id_path=PackedInt32Array(2099788482, 815006650) index="0" unique_id=1977734103]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence33/node_0/StaticBody3D" unique_id=2063303058]
@@ -47331,7 +47331,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence34" parent="Village_region/fences/Fence side 3" unique_id=345912442 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.4107182, 0, 1.6881572, 0, 2.2, 0, -1.6881572, 0, -1.4107182, 36.40988, 2.9325156, -18.625051)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence34/node_0" parent_id_path=PackedInt32Array(345912442, 300114942) index="0" unique_id=507787313]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence34/node_0" parent_id_path=PackedInt32Array(345912442, 815006650) index="0" unique_id=507787313]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence34/node_0/StaticBody3D" unique_id=70611615]
@@ -47340,7 +47340,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence35" parent="Village_region/fences/Fence side 3" unique_id=79535346 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.4107178, 0, -1.6881573, 0, 2.2, 0, 1.6881573, 0, 1.4107178, 32.312138, 2.2558787, -23.486156)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence35/node_0" parent_id_path=PackedInt32Array(79535346, 300114942) index="0" unique_id=477501812]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence35/node_0" parent_id_path=PackedInt32Array(79535346, 815006650) index="0" unique_id=477501812]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence35/node_0/StaticBody3D" unique_id=1358406919]
@@ -47349,7 +47349,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence36" parent="Village_region/fences/Fence side 3" unique_id=1643380610 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.4107182, 0, 1.6881572, 0, 2.2, 0, -1.6881572, 0, -1.4107182, 33.680973, 2.4654527, -21.834497)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence36/node_0" parent_id_path=PackedInt32Array(1643380610, 300114942) index="0" unique_id=1666862098]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence36/node_0" parent_id_path=PackedInt32Array(1643380610, 815006650) index="0" unique_id=1666862098]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence36/node_0/StaticBody3D" unique_id=1271082157]
@@ -47358,7 +47358,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence37" parent="Village_region/fences/Fence side 3" unique_id=721264629 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.203675, 0, 1.8415122, 0, 2.2000003, 0, -1.8415122, 0, 1.203675, 38.587833, 1.698062, 17.544584)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence37/node_0" parent_id_path=PackedInt32Array(721264629, 300114942) index="0" unique_id=364336375]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence37/node_0" parent_id_path=PackedInt32Array(721264629, 815006650) index="0" unique_id=364336375]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence37/node_0/StaticBody3D" unique_id=339235493]
@@ -47367,7 +47367,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence38" parent="Village_region/fences/Fence side 3" unique_id=1146572683 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.203675, 0, -1.8415126, 0, 2.2000005, 0, 1.8415126, 0, -1.203675, 39.768803, 1.6946564, 15.753771)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence38/node_0" parent_id_path=PackedInt32Array(1146572683, 300114942) index="0" unique_id=1453093025]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence38/node_0" parent_id_path=PackedInt32Array(1146572683, 815006650) index="0" unique_id=1453093025]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence38/node_0/StaticBody3D" unique_id=1768409350]
@@ -47376,7 +47376,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence39" parent="Village_region/fences/Fence side 3" unique_id=1958515263 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.203675, 0, 1.8415122, 0, 2.2000003, 0, -1.8415122, 0, 1.203675, 36.30788, 1.8780801, 21.067432)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence39/node_0" parent_id_path=PackedInt32Array(1958515263, 300114942) index="0" unique_id=2081217496]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence39/node_0" parent_id_path=PackedInt32Array(1958515263, 815006650) index="0" unique_id=2081217496]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence39/node_0/StaticBody3D" unique_id=984243066]
@@ -47385,7 +47385,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence40" parent="Village_region/fences/Fence side 3" unique_id=608160507 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.203675, 0, -1.8415126, 0, 2.2000005, 0, 1.8415126, 0, -1.203675, 37.48885, 1.756701, 19.276623)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence40/node_0" parent_id_path=PackedInt32Array(608160507, 300114942) index="0" unique_id=974969834]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence40/node_0" parent_id_path=PackedInt32Array(608160507, 815006650) index="0" unique_id=974969834]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence40/node_0/StaticBody3D" unique_id=1246281428]
@@ -47394,7 +47394,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence41" parent="Village_region/fences/Fence side 3" unique_id=128313107 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.203675, 0, 1.8415122, 0, 2.2000003, 0, -1.8415122, 0, 1.203675, 34.03318, 2.2445135, 24.613308)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence41/node_0" parent_id_path=PackedInt32Array(128313107, 300114942) index="0" unique_id=105605629]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence41/node_0" parent_id_path=PackedInt32Array(128313107, 815006650) index="0" unique_id=105605629]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence41/node_0/StaticBody3D" unique_id=82960149]
@@ -47403,7 +47403,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence42" parent="Village_region/fences/Fence side 3" unique_id=1439216378 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.203675, 0, -1.8415126, 0, 2.2000005, 0, 1.8415126, 0, -1.203675, 35.21415, 2.0612197, 22.822493)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence42/node_0" parent_id_path=PackedInt32Array(1439216378, 300114942) index="0" unique_id=834878837]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence42/node_0" parent_id_path=PackedInt32Array(1439216378, 815006650) index="0" unique_id=834878837]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence42/node_0/StaticBody3D" unique_id=528146231]
@@ -47412,7 +47412,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence43" parent="Village_region/fences/Fence side 3" unique_id=1318418629 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.017418, 2.7181845, -5.139834)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence43/node_0" parent_id_path=PackedInt32Array(1318418629, 300114942) index="0" unique_id=1300395699]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence43/node_0" parent_id_path=PackedInt32Array(1318418629, 815006650) index="0" unique_id=1300395699]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence43/node_0/StaticBody3D" unique_id=710977514]
@@ -47421,7 +47421,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence44" parent="Village_region/fences/Fence side 3" unique_id=1605818540 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.044662, 2.5350597, -2.994853)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence44/node_0" parent_id_path=PackedInt32Array(1605818540, 300114942) index="0" unique_id=1119119336]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence44/node_0" parent_id_path=PackedInt32Array(1605818540, 815006650) index="0" unique_id=1119119336]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence44/node_0/StaticBody3D" unique_id=796824298]
@@ -47430,7 +47430,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence45" parent="Village_region/fences/Fence side 3" unique_id=816420770 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.087715, 2.3520339, -0.94901276)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence45/node_0" parent_id_path=PackedInt32Array(816420770, 300114942) index="0" unique_id=127447093]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence45/node_0" parent_id_path=PackedInt32Array(816420770, 815006650) index="0" unique_id=127447093]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence45/node_0/StaticBody3D" unique_id=1641941428]
@@ -47439,7 +47439,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence46" parent="Village_region/fences/Fence side 3" unique_id=1825079294 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.114964, 2.1821268, 1.1959653)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence46/node_0" parent_id_path=PackedInt32Array(1825079294, 300114942) index="0" unique_id=198884179]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence46/node_0" parent_id_path=PackedInt32Array(1825079294, 815006650) index="0" unique_id=198884179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence46/node_0/StaticBody3D" unique_id=259411635]
@@ -47448,7 +47448,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence47" parent="Village_region/fences/Fence side 3" unique_id=18003210 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.15814, 1.9978662, 3.249054)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence47/node_0" parent_id_path=PackedInt32Array(18003210, 300114942) index="0" unique_id=1386218161]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence47/node_0" parent_id_path=PackedInt32Array(18003210, 815006650) index="0" unique_id=1386218161]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence47/node_0/StaticBody3D" unique_id=1994455842]
@@ -47457,7 +47457,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence48" parent="Village_region/fences/Fence side 3" unique_id=599167443 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.185383, 1.8400617, 5.3940325)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence48/node_0" parent_id_path=PackedInt32Array(599167443, 300114942) index="0" unique_id=54476622]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence48/node_0" parent_id_path=PackedInt32Array(599167443, 815006650) index="0" unique_id=54476622]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence48/node_0/StaticBody3D" unique_id=2047298757]
@@ -47466,7 +47466,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence49" parent="Village_region/fences/Fence side 3" unique_id=263727833 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.228317, 1.7294605, 7.43291)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence49/node_0" parent_id_path=PackedInt32Array(263727833, 300114942) index="0" unique_id=920168243]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence49/node_0" parent_id_path=PackedInt32Array(263727833, 815006650) index="0" unique_id=920168243]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence49/node_0/StaticBody3D" unique_id=1835053024]
@@ -47475,7 +47475,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence50" parent="Village_region/fences/Fence side 3" unique_id=1756693881 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.25556, 1.6809783, 9.577892)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence50/node_0" parent_id_path=PackedInt32Array(1756693881, 300114942) index="0" unique_id=605596388]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence50/node_0" parent_id_path=PackedInt32Array(1756693881, 815006650) index="0" unique_id=605596388]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence50/node_0/StaticBody3D" unique_id=1601167422]
@@ -47484,7 +47484,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence51" parent="Village_region/fences/Fence side 3" unique_id=1249303591 instance=ExtResource("46_ers45")]
 transform = Transform3D(0.03689806, 0, -2.1996906, 0, 2.2000003, 0, 2.1996906, 0, 0.03689806, 40.29874, 1.6309028, 11.63098)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence51/node_0" parent_id_path=PackedInt32Array(1249303591, 300114942) index="0" unique_id=1839938179]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence51/node_0" parent_id_path=PackedInt32Array(1249303591, 815006650) index="0" unique_id=1839938179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence51/node_0/StaticBody3D" unique_id=3822939]
@@ -47493,7 +47493,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence52" parent="Village_region/fences/Fence side 3" unique_id=823809435 instance=ExtResource("46_ers45")]
 transform = Transform3D(-0.036898255, 0, 2.1996906, 0, 2.2000003, 0, -2.1996906, 0, -0.036898255, 40.32598, 1.6362619, 13.775959)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence52/node_0" parent_id_path=PackedInt32Array(823809435, 300114942) index="0" unique_id=875908469]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 3/fence52/node_0" parent_id_path=PackedInt32Array(823809435, 815006650) index="0" unique_id=875908469]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 3/fence52/node_0/StaticBody3D" unique_id=1287618135]
@@ -47504,7 +47504,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence27" parent="Village_region/fences/Fence side 4" unique_id=1439084738 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 9.504891, 2.078871, 40.838497)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence27/node_0" parent_id_path=PackedInt32Array(1439084738, 300114942) index="0" unique_id=1855917358]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence27/node_0" parent_id_path=PackedInt32Array(1439084738, 815006650) index="0" unique_id=1855917358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence27/node_0/StaticBody3D" unique_id=1325019649]
@@ -47513,7 +47513,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence28" parent="Village_region/fences/Fence side 4" unique_id=1326770845 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, 7.3603077, 1.9598291, 40.788998)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence28/node_0" parent_id_path=PackedInt32Array(1326770845, 300114942) index="0" unique_id=1415243015]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence28/node_0" parent_id_path=PackedInt32Array(1326770845, 815006650) index="0" unique_id=1415243015]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence28/node_0/StaticBody3D" unique_id=1401930128]
@@ -47522,7 +47522,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence29" parent="Village_region/fences/Fence side 4" unique_id=1741940259 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 13.700617, 2.2730982, 40.91826)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence29/node_0" parent_id_path=PackedInt32Array(1741940259, 300114942) index="0" unique_id=163621945]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence29/node_0" parent_id_path=PackedInt32Array(1741940259, 815006650) index="0" unique_id=163621945]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence29/node_0/StaticBody3D" unique_id=1830188824]
@@ -47531,7 +47531,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence30" parent="Village_region/fences/Fence side 4" unique_id=1620916373 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, 11.556034, 2.1415288, 40.868755)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence30/node_0" parent_id_path=PackedInt32Array(1620916373, 300114942) index="0" unique_id=254103820]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence30/node_0" parent_id_path=PackedInt32Array(1620916373, 815006650) index="0" unique_id=254103820]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence30/node_0/StaticBody3D" unique_id=251483476]
@@ -47540,7 +47540,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence31" parent="Village_region/fences/Fence side 4" unique_id=1986018426 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.7375406, 0, -1.349427, 0, 2.2, 0, 1.349427, 0, -1.7375406, 17.30971, 2.559338, 38.915848)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence31/node_0" parent_id_path=PackedInt32Array(1986018426, 300114942) index="0" unique_id=1484336657]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence31/node_0" parent_id_path=PackedInt32Array(1986018426, 815006650) index="0" unique_id=1484336657]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence31/node_0/StaticBody3D" unique_id=20215930]
@@ -47549,7 +47549,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence32" parent="Village_region/fences/Fence side 4" unique_id=119243592 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.7375405, 0, 1.3494273, 0, 2.2, 0, -1.3494273, 0, 1.7375405, 15.610143, 2.3762171, 40.224728)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence32/node_0" parent_id_path=PackedInt32Array(119243592, 300114942) index="0" unique_id=2105001020]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence32/node_0" parent_id_path=PackedInt32Array(119243592, 815006650) index="0" unique_id=2105001020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence32/node_0/StaticBody3D" unique_id=1715674465]
@@ -47558,7 +47558,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence33" parent="Village_region/fences/Fence side 4" unique_id=96040533 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.7375406, 0, -1.349427, 0, 2.2, 0, 1.349427, 0, -1.7375406, 20.612194, 2.6711912, 36.326977)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence33/node_0" parent_id_path=PackedInt32Array(96040533, 300114942) index="0" unique_id=428251659]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence33/node_0" parent_id_path=PackedInt32Array(96040533, 815006650) index="0" unique_id=428251659]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence33/node_0/StaticBody3D" unique_id=621017486]
@@ -47567,7 +47567,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence34" parent="Village_region/fences/Fence side 4" unique_id=279212295 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.7375405, 0, 1.3494273, 0, 2.2, 0, -1.3494273, 0, 1.7375405, 18.912626, 2.6079226, 37.635853)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence34/node_0" parent_id_path=PackedInt32Array(279212295, 300114942) index="0" unique_id=343053405]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence34/node_0" parent_id_path=PackedInt32Array(279212295, 815006650) index="0" unique_id=343053405]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence34/node_0/StaticBody3D" unique_id=1683279411]
@@ -47576,7 +47576,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence35" parent="Village_region/fences/Fence side 4" unique_id=1462565240 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.7375406, 0, -1.349427, 0, 2.2, 0, 1.349427, 0, -1.7375406, 23.917204, 2.6205006, 33.714626)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence35/node_0" parent_id_path=PackedInt32Array(1462565240, 300114942) index="0" unique_id=1084916409]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence35/node_0" parent_id_path=PackedInt32Array(1462565240, 815006650) index="0" unique_id=1084916409]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence35/node_0/StaticBody3D" unique_id=1628635870]
@@ -47585,7 +47585,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence36" parent="Village_region/fences/Fence side 4" unique_id=2050947689 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.7375405, 0, 1.3494273, 0, 2.2, 0, -1.3494273, 0, 1.7375405, 22.217636, 2.6661541, 35.02351)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence36/node_0" parent_id_path=PackedInt32Array(2050947689, 300114942) index="0" unique_id=1384935445]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence36/node_0" parent_id_path=PackedInt32Array(2050947689, 815006650) index="0" unique_id=1384935445]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence36/node_0/StaticBody3D" unique_id=1166894495]
@@ -47594,7 +47594,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence37" parent="Village_region/fences/Fence side 4" unique_id=1061473661 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.7972763, 0, -1.2687786, 0, 2.1999998, 0, 1.2687786, 0, 1.7972763, -17.311771, 2.2391136, 38.518574)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence37/node_0" parent_id_path=PackedInt32Array(1061473661, 300114942) index="0" unique_id=434864425]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence37/node_0" parent_id_path=PackedInt32Array(1061473661, 815006650) index="0" unique_id=434864425]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence37/node_0/StaticBody3D" unique_id=233932105]
@@ -47603,7 +47603,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence38" parent="Village_region/fences/Fence side 4" unique_id=279240994 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.7972764, 0, 1.2687783, 0, 2.1999998, 0, -1.2687783, 0, -1.7972764, -15.564349, 2.1147857, 39.762844)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence38/node_0" parent_id_path=PackedInt32Array(279240994, 300114942) index="0" unique_id=1632748305]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence38/node_0" parent_id_path=PackedInt32Array(279240994, 815006650) index="0" unique_id=1632748305]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence38/node_0/StaticBody3D" unique_id=258976521]
@@ -47612,7 +47612,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence39" parent="Village_region/fences/Fence side 4" unique_id=82082416 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.7972763, 0, -1.2687786, 0, 2.1999998, 0, 1.2687786, 0, 1.7972763, -20.750805, 2.6754801, 36.11406)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence39/node_0" parent_id_path=PackedInt32Array(82082416, 300114942) index="0" unique_id=1982467135]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence39/node_0" parent_id_path=PackedInt32Array(82082416, 815006650) index="0" unique_id=1982467135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence39/node_0/StaticBody3D" unique_id=1909105328]
@@ -47621,7 +47621,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence40" parent="Village_region/fences/Fence side 4" unique_id=319493439 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.7972764, 0, 1.2687783, 0, 2.1999998, 0, -1.2687783, 0, -1.7972764, -19.003387, 2.4656174, 37.358334)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence40/node_0" parent_id_path=PackedInt32Array(319493439, 300114942) index="0" unique_id=2009293534]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence40/node_0" parent_id_path=PackedInt32Array(319493439, 815006650) index="0" unique_id=2009293534]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence40/node_0/StaticBody3D" unique_id=1873959291]
@@ -47630,7 +47630,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence41" parent="Village_region/fences/Fence side 4" unique_id=944246458 instance=ExtResource("46_ers45")]
 transform = Transform3D(1.7972763, 0, -1.2687786, 0, 2.1999998, 0, 1.2687786, 0, 1.7972763, -24.213041, 3.0165272, 33.713974)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence41/node_0" parent_id_path=PackedInt32Array(944246458, 300114942) index="0" unique_id=1496850450]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence41/node_0" parent_id_path=PackedInt32Array(944246458, 815006650) index="0" unique_id=1496850450]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence41/node_0/StaticBody3D" unique_id=2024361263]
@@ -47639,7 +47639,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence42" parent="Village_region/fences/Fence side 4" unique_id=1703554639 instance=ExtResource("46_ers45")]
 transform = Transform3D(-1.7972764, 0, 1.2687783, 0, 2.1999998, 0, -1.2687783, 0, -1.7972764, -22.46562, 2.8705547, 34.958252)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence42/node_0" parent_id_path=PackedInt32Array(1703554639, 300114942) index="0" unique_id=862044707]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence42/node_0" parent_id_path=PackedInt32Array(1703554639, 815006650) index="0" unique_id=862044707]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence42/node_0/StaticBody3D" unique_id=1124501132]
@@ -47648,7 +47648,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence43" parent="Village_region/fences/Fence side 4" unique_id=1438382261 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 5.30699, 1.8567035, 40.7587)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence43/node_0" parent_id_path=PackedInt32Array(1438382261, 300114942) index="0" unique_id=2043761110]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence43/node_0" parent_id_path=PackedInt32Array(1438382261, 815006650) index="0" unique_id=2043761110]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence43/node_0/StaticBody3D" unique_id=307942566]
@@ -47657,7 +47657,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence44" parent="Village_region/fences/Fence side 4" unique_id=1760223069 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, 3.1624079, 1.8163779, 40.709198)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence44/node_0" parent_id_path=PackedInt32Array(1760223069, 300114942) index="0" unique_id=1182898488]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence44/node_0" parent_id_path=PackedInt32Array(1760223069, 815006650) index="0" unique_id=1182898488]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence44/node_0/StaticBody3D" unique_id=1656364576]
@@ -47666,7 +47666,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence45" parent="Village_region/fences/Fence side 4" unique_id=188688840 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, 1.116338, 1.7644765, 40.67904)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence45/node_0" parent_id_path=PackedInt32Array(188688840, 300114942) index="0" unique_id=769874369]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence45/node_0" parent_id_path=PackedInt32Array(188688840, 815006650) index="0" unique_id=769874369]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence45/node_0/StaticBody3D" unique_id=397370798]
@@ -47675,7 +47675,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence46" parent="Village_region/fences/Fence side 4" unique_id=931935331 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -1.0282444, 1.7644765, 40.62954)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence46/node_0" parent_id_path=PackedInt32Array(931935331, 300114942) index="0" unique_id=977314334]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence46/node_0" parent_id_path=PackedInt32Array(931935331, 815006650) index="0" unique_id=977314334]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence46/node_0/StaticBody3D" unique_id=463802249]
@@ -47684,7 +47684,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence47" parent="Village_region/fences/Fence side 4" unique_id=867164015 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, -3.0815616, 1.7644765, 40.599243)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence47/node_0" parent_id_path=PackedInt32Array(867164015, 300114942) index="0" unique_id=908038346]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence47/node_0" parent_id_path=PackedInt32Array(867164015, 815006650) index="0" unique_id=908038346]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence47/node_0/StaticBody3D" unique_id=1011250752]
@@ -47693,7 +47693,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence48" parent="Village_region/fences/Fence side 4" unique_id=1597315854 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -5.226144, 1.7644765, 40.54974)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence48/node_0" parent_id_path=PackedInt32Array(1597315854, 300114942) index="0" unique_id=1515009763]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence48/node_0" parent_id_path=PackedInt32Array(1597315854, 815006650) index="0" unique_id=1515009763]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence48/node_0/StaticBody3D" unique_id=2108080796]
@@ -47702,7 +47702,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence49" parent="Village_region/fences/Fence side 4" unique_id=865690486 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, -7.265252, 1.8398521, 40.51972)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence49/node_0" parent_id_path=PackedInt32Array(865690486, 300114942) index="0" unique_id=1153509003]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence49/node_0" parent_id_path=PackedInt32Array(865690486, 815006650) index="0" unique_id=1153509003]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence49/node_0/StaticBody3D" unique_id=81107106]
@@ -47711,7 +47711,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence50" parent="Village_region/fences/Fence side 4" unique_id=1048419180 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -9.409834, 1.7644765, 40.470215)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence50/node_0" parent_id_path=PackedInt32Array(1048419180, 300114942) index="0" unique_id=1324487]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence50/node_0" parent_id_path=PackedInt32Array(1048419180, 815006650) index="0" unique_id=1324487]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence50/node_0/StaticBody3D" unique_id=1027894356]
@@ -47720,7 +47720,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence51" parent="Village_region/fences/Fence side 4" unique_id=1723723724 instance=ExtResource("46_ers45")]
 transform = Transform3D(-2.199603, 0, 0.041812018, 0, 2.2, 0, -0.041812018, 0, -2.199603, -11.46315, 1.8963065, 40.439922)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence51/node_0" parent_id_path=PackedInt32Array(1723723724, 300114942) index="0" unique_id=356162703]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence51/node_0" parent_id_path=PackedInt32Array(1723723724, 815006650) index="0" unique_id=356162703]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence51/node_0/StaticBody3D" unique_id=2104546259]
@@ -47729,7 +47729,7 @@ shape = SubResource("BoxShape3D_ers45")
 [node name="fence52" parent="Village_region/fences/Fence side 4" unique_id=1235906981 instance=ExtResource("46_ers45")]
 transform = Transform3D(2.199603, 0, -0.041811824, 0, 2.2, 0, 0.041811824, 0, 2.199603, -13.607734, 1.996283, 40.390415)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence52/node_0" parent_id_path=PackedInt32Array(1235906981, 300114942) index="0" unique_id=344139690]
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/fences/Fence side 4/fence52/node_0" parent_id_path=PackedInt32Array(1235906981, 815006650) index="0" unique_id=344139690]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, -0.3604546)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/fences/Fence side 4/fence52/node_0/StaticBody3D" unique_id=155893230]
@@ -47746,7 +47746,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.571863, 2.5104008, -10.8716
 [node name="stone_mountain" parent="Volcanic_peak_region" unique_id=1012931744 instance=ExtResource("31_pi2y4")]
 transform = Transform3D(12.872591, 0, 15.306744, 0, 45, 0, -15.306744, 0, 12.872591, 194.72389, 6.49693, -137.72977)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain/node_0" parent_id_path=PackedInt32Array(1012931744, 876223076) index="0" unique_id=1166706617]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain/node_0" parent_id_path=PackedInt32Array(1012931744, 518426562) index="0" unique_id=1166706617]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/stone_mountain/node_0/StaticBody3D" unique_id=2014447871]
 shape = SubResource("ConvexPolygonShape3D_g82e4")
@@ -47754,7 +47754,7 @@ shape = SubResource("ConvexPolygonShape3D_g82e4")
 [node name="stone_mountain2" parent="Volcanic_peak_region" unique_id=694314498 instance=ExtResource("31_pi2y4")]
 transform = Transform3D(20, 0, 0, 0, 62, 0, 0, 0, 20, 181.22267, 6.49693, -131.28922)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain2/node_0" parent_id_path=PackedInt32Array(694314498, 876223076) index="0" unique_id=1169002996]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain2/node_0" parent_id_path=PackedInt32Array(694314498, 518426562) index="0" unique_id=1169002996]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/stone_mountain2/node_0/StaticBody3D" unique_id=1872139156]
 shape = SubResource("ConvexPolygonShape3D_g82e4")
@@ -47762,7 +47762,7 @@ shape = SubResource("ConvexPolygonShape3D_g82e4")
 [node name="stone_mountain5" parent="Volcanic_peak_region" unique_id=312176833 instance=ExtResource("31_pi2y4")]
 transform = Transform3D(20, 0, 0, 0, 60, 0, 0, 0, 20, 202.97188, 6.49693, -150.27603)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain5/node_0" parent_id_path=PackedInt32Array(312176833, 876223076) index="0" unique_id=2129274886]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain5/node_0" parent_id_path=PackedInt32Array(312176833, 518426562) index="0" unique_id=2129274886]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/stone_mountain5/node_0/StaticBody3D" unique_id=396795346]
 shape = SubResource("ConvexPolygonShape3D_g82e4")
@@ -47770,7 +47770,7 @@ shape = SubResource("ConvexPolygonShape3D_g82e4")
 [node name="stone_mountain3" parent="Volcanic_peak_region" unique_id=1636977796 instance=ExtResource("31_pi2y4")]
 transform = Transform3D(20, 0, 0, 0, 45, 0, 0, 0, 20, 140.64455, 6.49693, -191.90341)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain3/node_0" parent_id_path=PackedInt32Array(1636977796, 876223076) index="0" unique_id=415901608]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain3/node_0" parent_id_path=PackedInt32Array(1636977796, 518426562) index="0" unique_id=415901608]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/stone_mountain3/node_0/StaticBody3D" unique_id=1153332730]
 shape = SubResource("ConvexPolygonShape3D_g82e4")
@@ -47778,7 +47778,7 @@ shape = SubResource("ConvexPolygonShape3D_g82e4")
 [node name="stone_mountain4" parent="Volcanic_peak_region" unique_id=1871788286 instance=ExtResource("31_pi2y4")]
 transform = Transform3D(20, 0, 0, 0, 70, 0, 0, 0, 20, 136.54207, 6.49693, -177.60825)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain4/node_0" parent_id_path=PackedInt32Array(1871788286, 876223076) index="0" unique_id=1619717172]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain4/node_0" parent_id_path=PackedInt32Array(1871788286, 518426562) index="0" unique_id=1619717172]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/stone_mountain4/node_0/StaticBody3D" unique_id=1136696935]
 shape = SubResource("ConvexPolygonShape3D_g82e4")
@@ -47786,7 +47786,7 @@ shape = SubResource("ConvexPolygonShape3D_g82e4")
 [node name="stone_mountain6" parent="Volcanic_peak_region" unique_id=501831996 instance=ExtResource("31_pi2y4")]
 transform = Transform3D(20, 0, 0, 0, 55, 0, 0, 0, 20, 154.78226, 6.49693, -202.36362)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain6/node_0" parent_id_path=PackedInt32Array(501831996, 876223076) index="0" unique_id=1138276812]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain6/node_0" parent_id_path=PackedInt32Array(501831996, 518426562) index="0" unique_id=1138276812]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/stone_mountain6/node_0/StaticBody3D" unique_id=1485630831]
 shape = SubResource("ConvexPolygonShape3D_g82e4")
@@ -47794,7 +47794,7 @@ shape = SubResource("ConvexPolygonShape3D_g82e4")
 [node name="stone_mountain7" parent="Volcanic_peak_region" unique_id=1984790521 instance=ExtResource("31_pi2y4")]
 transform = Transform3D(13.792489, 0, -5.8963723, 0, 29.999998, 0, 5.8963723, 0, 13.792489, 164.494, 6.49693, -200.63239)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain7/node_0" parent_id_path=PackedInt32Array(1984790521, 876223076) index="0" unique_id=1639274747]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain7/node_0" parent_id_path=PackedInt32Array(1984790521, 518426562) index="0" unique_id=1639274747]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/stone_mountain7/node_0/StaticBody3D" unique_id=1360689452]
 shape = SubResource("ConvexPolygonShape3D_g82e4")
@@ -47802,7 +47802,7 @@ shape = SubResource("ConvexPolygonShape3D_g82e4")
 [node name="stone_mountain8" parent="Volcanic_peak_region" unique_id=455289964 instance=ExtResource("31_pi2y4")]
 transform = Transform3D(12.2922325, 0, 8.596568, 0, 29.999998, 0, -8.596568, 0, 12.2922325, 201.94759, 6.49693, -160.3638)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain8/node_0" parent_id_path=PackedInt32Array(455289964, 876223076) index="0" unique_id=382416526]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/stone_mountain8/node_0" parent_id_path=PackedInt32Array(455289964, 518426562) index="0" unique_id=382416526]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/stone_mountain8/node_0/StaticBody3D" unique_id=1130572999]
 shape = SubResource("ConvexPolygonShape3D_g82e4")
@@ -47810,7 +47810,7 @@ shape = SubResource("ConvexPolygonShape3D_g82e4")
 [node name="mountain" parent="Volcanic_peak_region" unique_id=972904586 instance=ExtResource("33_xokg7")]
 transform = Transform3D(9.727593, 0, 19.732555, 0, 59.999996, 0, -19.732555, 0, 9.727593, 168.67186, 4.6449404, -124.6926)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain/node_0" parent_id_path=PackedInt32Array(972904586, 1624078156) index="0" unique_id=982912230]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain/node_0" parent_id_path=PackedInt32Array(972904586, 231535740) index="0" unique_id=982912230]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/mountain/node_0/StaticBody3D" unique_id=226081021]
 shape = SubResource("ConvexPolygonShape3D_2vkyy")
@@ -47818,7 +47818,7 @@ shape = SubResource("ConvexPolygonShape3D_2vkyy")
 [node name="mountain2" parent="Volcanic_peak_region" unique_id=149123458 instance=ExtResource("33_xokg7")]
 transform = Transform3D(18.610924, 0, 11.731722, 0, 59.999996, 0, -11.731722, 0, 18.610924, 132.74146, 2.3293724, -163.7291)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain2/node_0" parent_id_path=PackedInt32Array(149123458, 1624078156) index="0" unique_id=1972934770]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain2/node_0" parent_id_path=PackedInt32Array(149123458, 231535740) index="0" unique_id=1972934770]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/mountain2/node_0/StaticBody3D" unique_id=397526116]
 shape = SubResource("ConvexPolygonShape3D_2vkyy")
@@ -47826,7 +47826,7 @@ shape = SubResource("ConvexPolygonShape3D_2vkyy")
 [node name="mountain_high_layer" parent="Volcanic_peak_region" unique_id=28341793 instance=ExtResource("33_hk3qm")]
 transform = Transform3D(23, 0, 0, 0, 60, 0, 0, 0, 23, 207.04565, 4.085828, -166.87474)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain_high_layer/node_0" parent_id_path=PackedInt32Array(28341793, 1171723083) index="0" unique_id=954687620]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain_high_layer/node_0" parent_id_path=PackedInt32Array(28341793, 1398701764) index="0" unique_id=954687620]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/mountain_high_layer/node_0/StaticBody3D" unique_id=1483130848]
 shape = SubResource("ConvexPolygonShape3D_qv6fn")
@@ -47834,7 +47834,7 @@ shape = SubResource("ConvexPolygonShape3D_qv6fn")
 [node name="mountain_high_layer3" parent="Volcanic_peak_region" unique_id=232271483 instance=ExtResource("33_hk3qm")]
 transform = Transform3D(23, 0, 0, 0, 60, 0, 0, 0, 23, 211.89742, -0.9462042, -194.14093)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain_high_layer3/node_0" parent_id_path=PackedInt32Array(232271483, 1171723083) index="0" unique_id=1540202447]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain_high_layer3/node_0" parent_id_path=PackedInt32Array(232271483, 1398701764) index="0" unique_id=1540202447]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/mountain_high_layer3/node_0/StaticBody3D" unique_id=1417291543]
 shape = SubResource("ConvexPolygonShape3D_qv6fn")
@@ -47842,7 +47842,7 @@ shape = SubResource("ConvexPolygonShape3D_qv6fn")
 [node name="mountain_high_layer4" parent="Volcanic_peak_region" unique_id=996168381 instance=ExtResource("33_hk3qm")]
 transform = Transform3D(22.707909, 0, -3.6538858, 0, 60, 0, 3.6538858, 0, 22.707909, 196.9523, -0.9462042, -207.373)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain_high_layer4/node_0" parent_id_path=PackedInt32Array(996168381, 1171723083) index="0" unique_id=1579131511]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain_high_layer4/node_0" parent_id_path=PackedInt32Array(996168381, 1398701764) index="0" unique_id=1579131511]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/mountain_high_layer4/node_0/StaticBody3D" unique_id=1643038659]
 shape = SubResource("ConvexPolygonShape3D_qv6fn")
@@ -47850,7 +47850,7 @@ shape = SubResource("ConvexPolygonShape3D_qv6fn")
 [node name="mountain_high_layer2" parent="Volcanic_peak_region" unique_id=1908117307 instance=ExtResource("33_hk3qm")]
 transform = Transform3D(23, 0, 0, 0, 60, 0, 0, 0, 23, 171.34146, 4.085828, -205.1734)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain_high_layer2/node_0" parent_id_path=PackedInt32Array(1908117307, 1171723083) index="0" unique_id=1266076793]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/mountain_high_layer2/node_0" parent_id_path=PackedInt32Array(1908117307, 1398701764) index="0" unique_id=1266076793]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/mountain_high_layer2/node_0/StaticBody3D" unique_id=1757206166]
 shape = SubResource("ConvexPolygonShape3D_qv6fn")
@@ -47858,7 +47858,7 @@ shape = SubResource("ConvexPolygonShape3D_qv6fn")
 [node name="lava_mountain" parent="Volcanic_peak_region" unique_id=87952375 instance=ExtResource("34_g82e4")]
 transform = Transform3D(16.316, 0, 14.757646, 0, 70, 0, -14.757646, 0, 16.316, 202.55382, 7.5025587, -198.06636)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/lava_mountain/node_0" parent_id_path=PackedInt32Array(87952375, 785276349) index="0" unique_id=2074488459]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/lava_mountain/node_0" parent_id_path=PackedInt32Array(87952375, 1485029840) index="0" unique_id=2074488459]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/lava_mountain/node_0/StaticBody3D" unique_id=2057391274]
 shape = SubResource("ConvexPolygonShape3D_qxjis")
@@ -47866,7 +47866,7 @@ shape = SubResource("ConvexPolygonShape3D_qxjis")
 [node name="lava_mountain3" parent="Volcanic_peak_region" unique_id=169930376 instance=ExtResource("34_g82e4")]
 transform = Transform3D(8.977309, 0, 20.085018, 0, 59.99999, 0, -20.085018, 0, 8.977309, 187.4638, 7.130067, -209.40746)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/lava_mountain3/node_0" parent_id_path=PackedInt32Array(169930376, 785276349) index="0" unique_id=1667201325]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/lava_mountain3/node_0" parent_id_path=PackedInt32Array(169930376, 1485029840) index="0" unique_id=1667201325]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/lava_mountain3/node_0/StaticBody3D" unique_id=877131738]
 shape = SubResource("ConvexPolygonShape3D_qxjis")
@@ -47874,7 +47874,7 @@ shape = SubResource("ConvexPolygonShape3D_qxjis")
 [node name="lava_mountain2" parent="Volcanic_peak_region" unique_id=1168831861 instance=ExtResource("34_g82e4")]
 transform = Transform3D(19.98782, 0, 9.191679, 0, 59.999996, 0, -9.191679, 0, 19.98782, 217.50247, 7.782591, -184.91692)
 
-[node name="node_0" parent="Volcanic_peak_region/lava_mountain2" index="0" unique_id=785276349]
+[node name="node_0" parent="Volcanic_peak_region/lava_mountain2" index="0" unique_id=1485029840]
 transform = Transform3D(1, -5.9604645e-08, 1.4210855e-14, 0, -3.5762787e-07, -0.99999994, 8.940697e-08, 0.9999999, -3.5762787e-07, -0.27223778, 0, -0.059223175)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/lava_mountain2/node_0" index="0" unique_id=2114723911]
@@ -47885,7 +47885,7 @@ shape = SubResource("ConvexPolygonShape3D_qxjis")
 [node name="basalt_dirt_base" parent="Volcanic_peak_region" unique_id=2139840240 instance=ExtResource("36_g82e4")]
 transform = Transform3D(55.615658, -0.18964481, -57.45001, 3.4895453, 5.994281, -0.13962625, 57.39966, -0.18066476, 55.67293, 174.05347, 7.6, -171.62189)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/basalt_dirt_base/node_0" parent_id_path=PackedInt32Array(2139840240, 462679347) index="0" unique_id=1152859332]
+[node name="StaticBody3D" type="StaticBody3D" parent="Volcanic_peak_region/basalt_dirt_base/node_0" parent_id_path=PackedInt32Array(2139840240, 396912677) index="0" unique_id=1152859332]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Volcanic_peak_region/basalt_dirt_base/node_0/StaticBody3D" unique_id=237132430]
 shape = SubResource("ConvexPolygonShape3D_ers45")
@@ -47986,7 +47986,7 @@ shape = SubResource("ConvexPolygonShape3D_2dsb8")
 [node name="horizontal_boulder2" parent="." unique_id=1015098842 instance=ExtResource("18_d0ueh")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -41.44794, 1.7527609, -13.7502575)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="horizontal_boulder2/node_0" parent_id_path=PackedInt32Array(1015098842, 1690721187) index="0" unique_id=1228999090]
+[node name="StaticBody3D" type="StaticBody3D" parent="horizontal_boulder2/node_0" parent_id_path=PackedInt32Array(1015098842, 101781067) index="0" unique_id=1228999090]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="horizontal_boulder2/node_0/StaticBody3D" unique_id=1914542335]
 shape = SubResource("ConvexPolygonShape3D_cb1tb")
@@ -48000,20 +48000,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -62.463757, 4.372287, -43.393
 [node name="UI" type="Node" parent="." unique_id=1899417207]
 
 [node name="ActionButtons" parent="UI" unique_id=1312401575 instance=ExtResource("49_cp7di")]
-layout_mode = 3
-anchors_preset = 15
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="GameHud" parent="UI" unique_id=1030137469 instance=ExtResource("50_kqqcm")]
 
 [node name="JoystickLayer" parent="UI" unique_id=456041174 instance=ExtResource("38_nres0")]
 
 [node name="TopBar" parent="UI" unique_id=683057418 instance=ExtResource("52_lkldd")]
-layout_mode = 3
-anchors_preset = 15
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="StatusBars" parent="UI" unique_id=1004198051 instance=ExtResource("53_h1p51")]
 grow_horizontal = 2
@@ -48032,6 +48024,7 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 169.78352, 9, 166.50723)
 
 [node name="Castle_Portal" parent="." unique_id=997421894 instance=ExtResource("54_kqqcm")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -169.41512, 3.871373, 166.79712)
+ScenePath = "uid://cv3bxpybryyxv"
 
 [node name="PlayerSpawn" parent="." unique_id=1629409674 instance=ExtResource("54_lkldd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25182772, 8.832642, -0.2843628)
@@ -48041,6 +48034,15 @@ script = ExtResource("55_wctrl")
 
 [node name="WorldBoundary" type="Node3D" parent="." unique_id=1105233830]
 script = ExtResource("56_wbnd")
+
+[node name="GoblinSpawn2" parent="." unique_id=977473573 instance=ExtResource("49_bpf53")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.18071, 5.419857, -79.33967)
+
+[node name="GoblinSpawn3" parent="." unique_id=1660123890 instance=ExtResource("49_bpf53")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75.203224, 2.3095284, 43.2482)
+
+[node name="GoblinSpawn4" parent="." unique_id=1255151921 instance=ExtResource("49_bpf53")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.967445, 4.454178, 104.92417)
 
 [editable path="Magic_castle_region/Castle"]
 [editable path="Magic_castle_region/Gate"]

@@ -1,9 +1,141 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://bwdo7rdgivyk2"]
 
-[ext_resource type="Script" path="res://src/Ui/ActionButtons.cs" id="1_action"]
+[ext_resource type="Script" uid="uid://5kg8bdg77btc" path="res://src/Ui/ActionButtons.cs" id="1_action"]
+[ext_resource type="Texture2D" uid="uid://cnudxsrxbadqo" path="res://assets/sprites/ui/attack button.png" id="2_atk"]
+[ext_resource type="Texture2D" uid="uid://ch7gk36wewsiw" path="res://assets/sprites/ui/jump button.png" id="3_jump"]
+[ext_resource type="Texture2D" uid="uid://cv11yatklmo2r" path="res://assets/sprites/ui/draw button button.png" id="4_draw"]
+[ext_resource type="Texture2D" uid="uid://c1l7r6fqqqcvl" path="res://assets/sprites/ui/voice button.png" id="5_voice"]
 
-[node name="ActionButtons" type="Control"]
+[sub_resource type="StyleBoxFlat" id="fast_n"]
+bg_color = Color(0.72, 0.6, 0.24, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="fast_p"]
+bg_color = Color(0.59, 0.492, 0.197, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="fast_h"]
+bg_color = Color(0.754, 0.648, 0.331, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[node name="ActionButtons" type="Control" unique_id=1786153664 node_paths=PackedStringArray("_jumpBtn", "_atkBtn", "_fastBtn")]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_action")
+_jumpBtn = NodePath("JumpBtn")
+_atkBtn = NodePath("AtkBtn")
+_fastBtn = NodePath("FastBtn")
+
+[node name="AtkBtn" type="Button" parent="." unique_id=1739046004]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -545.0
+offset_top = -310.0
+offset_right = -345.0
+offset_bottom = -110.0
+grow_horizontal = 0
+grow_vertical = 0
+offset_transform_enabled = true
+focus_mode = 0
+icon = ExtResource("2_atk")
+flat = true
+expand_icon = true
+
+[node name="JumpBtn" type="Button" parent="." unique_id=2143720567]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -317.0
+offset_top = -293.0
+offset_right = -137.0
+offset_bottom = -113.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+icon = ExtResource("3_jump")
+flat = true
+expand_icon = true
+
+[node name="FastBtn" type="Button" parent="." unique_id=998905845]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -122.0
+offset_top = -360.0
+offset_right = -42.0
+offset_bottom = -280.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("fast_n")
+theme_override_styles/pressed = SubResource("fast_p")
+theme_override_styles/hover = SubResource("fast_h")
+theme_override_styles/hover_pressed = SubResource("fast_p")
+theme_override_styles/focus = SubResource("empty")
+text = "FAST"
+
+[node name="DrawBtn" type="Button" parent="." unique_id=460261650]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -431.0
+offset_top = -440.0
+offset_right = -331.0
+offset_bottom = -340.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+icon = ExtResource("4_draw")
+flat = true
+expand_icon = true
+
+[node name="VoiceBtn" type="Button" parent="." unique_id=742692153]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -559.0
+offset_top = -441.0
+offset_right = -459.0
+offset_bottom = -341.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+icon = ExtResource("5_voice")
+flat = true
+expand_icon = true

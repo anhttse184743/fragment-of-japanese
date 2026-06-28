@@ -24,6 +24,9 @@ public partial class Npc : StaticBody3D
     /// <summary>Vùng [E] (Area3D con). Gán trong Inspector.</summary>
     [Export] private Interactable _interactable;
 
+    /// <summary>Ảnh chân dung cho hộp thoại. Để trống = tự lấy frame idle đầu của sprite NPC (node "Visual").</summary>
+    [Export] public Texture2D PortraitImage { get; set; }
+
     public override void _Ready()
     {
         if (_interactable != null)
@@ -38,7 +41,33 @@ public partial class Npc : StaticBody3D
 
     /// <summary>Bấm [E] trong tầm → mở hội thoại.</summary>
     protected virtual void OnInteracted()
-        => DialogueUi.Instance?.Start(Dialogue != null ? Convert(Dialogue) : DefaultDialogue());
+    {
+        var node = Dialogue != null ? Convert(Dialogue) : DefaultDialogue();
+        // Chân dung: Inspector (res/NPC) ưu tiên; nếu trống → tự lấy frame đầu của sprite NPC.
+        node.Portrait ??= PortraitImage ?? AutoPortraitFromSprite();
+        DialogueUi.Instance?.Start(node);
+    }
+
+    /// <summary>Tự tạo chân dung từ frame đầu của AnimatedSprite3D con (ưu tiên node "Visual").</summary>
+    private Texture2D AutoPortraitFromSprite()
+    {
+        AnimatedSprite3D spr = GetNodeOrNull<AnimatedSprite3D>("Visual");
+        if (spr == null)
+            foreach (var ch in GetChildren())
+                if (ch is AnimatedSprite3D a) { spr = a; break; }
+
+        var frames = spr?.SpriteFrames;
+        if (frames == null) return null;
+
+        string anim = spr.Animation.ToString();
+        if (string.IsNullOrEmpty(anim) || !frames.HasAnimation(anim))
+        {
+            var names = frames.GetAnimationNames();
+            if (names.Length == 0) return null;
+            anim = names[0];
+        }
+        return frames.GetFrameCount(anim) > 0 ? frames.GetFrameTexture(anim, 0) : null;
+    }
 
     /// <summary>Thoại mặc định khi KHÔNG gán <see cref="Dialogue"/>. Lớp con override để thêm nội dung.</summary>
     protected virtual DialogueNode DefaultDialogue() => new()
@@ -50,8 +79,9 @@ public partial class Npc : StaticBody3D
     /// <summary>Map enum hành động (Inspector) → code. Lớp con override để thêm hành động riêng.</summary>
     protected virtual Action ResolveAction(DialogueAction action) => action switch
     {
-        DialogueAction.OpenShop => () => ShopUi.Instance?.Open(),
-        _                       => null,
+        DialogueAction.OpenShop     => () => ShopUi.Instance?.Open(),
+        DialogueAction.OpenKanaDraw => () => KanaDrawUi.Open(),
+        _                           => null,
     };
 
     /// <summary>Đổi <see cref="DialogueRes"/> (Inspector) → <see cref="DialogueNode"/> (runtime).</summary>
@@ -77,9 +107,10 @@ public partial class Npc : StaticBody3D
 
         return new DialogueNode
         {
-            Speaker = string.IsNullOrEmpty(res.Speaker) ? NpcName : res.Speaker,
-            Lines   = ToLines(res.Lines),
-            Choices = choices.ToArray(),
+            Speaker  = string.IsNullOrEmpty(res.Speaker) ? NpcName : res.Speaker,
+            Lines    = ToLines(res.Lines),
+            Choices  = choices.ToArray(),
+            Portrait = res.Portrait,   // rỗng → OnInteracted tự điền (PortraitImage / sprite NPC)
         };
     }
 

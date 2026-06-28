@@ -13,7 +13,7 @@ DestinationName = "khu vực mới"
 
 [node name="Visual" type="AnimatedSprite3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-pixel_size = 0.0126
+pixel_size = 0.01546
 billboard = 2
 alpha_cut = 1
 texture_filter = 0

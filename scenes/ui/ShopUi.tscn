@@ -1,0 +1,273 @@
+[gd_scene format=3 uid="uid://c45qafdrhgpu1"]
+
+[ext_resource type="Script" uid="uid://c00ukll4rbyhn" path="res://src/Ui/ShopUi.cs" id="1"]
+
+[node name="ShopUi" type="CanvasLayer" unique_id=1093033968 node_paths=PackedStringArray("_shopRoot", "_goldLabel", "_aetherLabel", "_contentArea", "_feedbackLabel", "_confirmDialog", "_tabFeatured", "_tabItems", "_tabGacha", "_tabTopup", "_tabRedeem", "_closeButton", "_revealLayer", "_revealTitle", "_revealGrid", "_revealFlash", "_revealBackdrop")]
+layer = 11
+script = ExtResource("1")
+_shopRoot = NodePath("ShopRoot")
+_goldLabel = NodePath("ShopRoot/Center/Panel/RootH/RightColumn/TopBar/GoldPill/GoldPillH/GoldLabel")
+_aetherLabel = NodePath("ShopRoot/Center/Panel/RootH/RightColumn/TopBar/AetherPill/AetherPillH/AetherLabel")
+_contentArea = NodePath("ShopRoot/Center/Panel/RootH/RightColumn/ContentArea")
+_feedbackLabel = NodePath("ShopRoot/Center/Panel/RootH/RightColumn/FeedbackLabel")
+_confirmDialog = NodePath("ShopRoot/ConfirmDialog")
+_tabFeatured = NodePath("ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox/TabFeatured")
+_tabItems = NodePath("ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox/TabItems")
+_tabGacha = NodePath("ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox/TabGacha")
+_tabTopup = NodePath("ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox/TabTopup")
+_tabRedeem = NodePath("ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox/TabRedeem")
+_closeButton = NodePath("ShopRoot/Center/Panel/RootH/RightColumn/TopBar/CloseButton")
+_revealLayer = NodePath("ShopRoot/RevealLayer")
+_revealTitle = NodePath("ShopRoot/RevealLayer/RevealCenter/RevealVBox/RevealTitle")
+_revealGrid = NodePath("ShopRoot/RevealLayer/RevealCenter/RevealVBox/RevealGrid")
+_revealFlash = NodePath("ShopRoot/RevealLayer/RevealFlash")
+_revealBackdrop = NodePath("ShopRoot/RevealLayer/RevealBackdrop")
+
+[node name="ShopRoot" type="Control" parent="." unique_id=538202685]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Dim" type="ColorRect" parent="ShopRoot" unique_id=1071894979]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.72)
+
+[node name="Center" type="CenterContainer" parent="ShopRoot" unique_id=1200953285]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="ShopRoot/Center" unique_id=1242137674]
+custom_minimum_size = Vector2(940, 600)
+layout_mode = 2
+
+[node name="RootH" type="HBoxContainer" parent="ShopRoot/Center/Panel" unique_id=659202610]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Sidebar" type="PanelContainer" parent="ShopRoot/Center/Panel/RootH" unique_id=570653278]
+custom_minimum_size = Vector2(146, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SidebarVBox" type="VBoxContainer" parent="ShopRoot/Center/Panel/RootH/Sidebar" unique_id=28379466]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ShopTitle" type="Label" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=493590729]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "SHOP"
+horizontal_alignment = 1
+
+[node name="SidebarSep" type="HSeparator" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=308608966]
+layout_mode = 2
+
+[node name="TabFeatured" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=1952978986]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+toggle_mode = true
+button_pressed = true
+text = "Nổi bật"
+
+[node name="TabItems" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=1430681892]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+toggle_mode = true
+text = "Vật phẩm"
+
+[node name="TabGacha" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=875746252]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+toggle_mode = true
+text = "Gacha"
+
+[node name="TabTopup" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=232217086]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+toggle_mode = true
+text = "Nạp"
+
+[node name="TabRedeem" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=1704365992]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+toggle_mode = true
+text = "Nhập Code"
+
+[node name="SidebarSpacer" type="Control" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=1540487551]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RightColumn" type="VBoxContainer" parent="ShopRoot/Center/Panel/RootH" unique_id=1362948588]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="TopBar" type="HBoxContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn" unique_id=1791503871]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TopBarSpacer1" type="Control" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar" unique_id=893090951]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GoldPill" type="PanelContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar" unique_id=718729549]
+layout_mode = 2
+
+[node name="GoldPillH" type="HBoxContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar/GoldPill" unique_id=1280621395]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="GoldIcon" type="TextureRect" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar/GoldPill/GoldPillH" unique_id=1919313552]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldLabel" type="Label" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar/GoldPill/GoldPillH" unique_id=1468448565]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "0"
+vertical_alignment = 1
+
+[node name="AetherPill" type="PanelContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar" unique_id=316706033]
+layout_mode = 2
+
+[node name="AetherPillH" type="HBoxContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar/AetherPill" unique_id=1521363629]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="AetherIcon" type="TextureRect" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar/AetherPill/AetherPillH" unique_id=523662177]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AetherLabel" type="Label" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar/AetherPill/AetherPillH" unique_id=1014394921]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "0"
+vertical_alignment = 1
+
+[node name="TopBarSpacer2" type="Control" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar" unique_id=2007384800]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseButton" type="Button" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar" unique_id=1403950023]
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "X"
+
+[node name="ContentArea" type="MarginContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn" unique_id=118584653]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_top = 2
+
+[node name="FeedbackLabel" type="Label" parent="ShopRoot/Center/Panel/RootH/RightColumn" unique_id=22533019]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+horizontal_alignment = 1
+
+[node name="ConfirmDialog" type="ConfirmationDialog" parent="ShopRoot" unique_id=1561557846]
+oversampling_override = 1.0
+title = "Xác nhận"
+position = Vector2i(0, 36)
+ok_button_text = "Mua"
+cancel_button_text = "Hủy"
+
+[node name="RevealLayer" type="Control" parent="ShopRoot" unique_id=47638658]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RevealDim" type="ColorRect" parent="ShopRoot/RevealLayer" unique_id=548909801]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.85)
+
+[node name="RevealCenter" type="CenterContainer" parent="ShopRoot/RevealLayer" unique_id=1475738665]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RevealVBox" type="VBoxContainer" parent="ShopRoot/RevealLayer/RevealCenter" unique_id=663544670]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="RevealTitle" type="Label" parent="ShopRoot/RevealLayer/RevealCenter/RevealVBox" unique_id=1996515801]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+
+[node name="RevealGrid" type="GridContainer" parent="ShopRoot/RevealLayer/RevealCenter/RevealVBox" unique_id=164965559]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 5
+
+[node name="RevealHint" type="Label" parent="ShopRoot/RevealLayer/RevealCenter/RevealVBox" unique_id=1047528586]
+layout_mode = 2
+text = "Chạm để tiếp tục"
+horizontal_alignment = 1
+
+[node name="RevealFlash" type="ColorRect" parent="ShopRoot/RevealLayer" unique_id=645662904]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[node name="RevealBackdrop" type="Button" parent="ShopRoot/RevealLayer" unique_id=330637823]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

@@ -2,8 +2,29 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading.Tasks;
+using FragmentOfJapanese.Autoloads;
 
 namespace FragmentOfJapanese.Cosmetics;
+
+/// <summary>Kết quả 1 skin khi quay (cho UI reveal).</summary>
+public class SkinGachaResult
+{
+    public string SkinId   { get; set; } = "";
+    public string Category { get; set; } = "";
+    public string Name     { get; set; } = "";
+    public string Rarity   { get; set; } = "";
+    public bool   IsNew    { get; set; }
+}
+
+/// <summary>Kết quả tổng của 1 lượt quay skin.</summary>
+public class SkinPullOutcome
+{
+    public List<SkinGachaResult> Results = new();
+    public int    KeysLeft;
+    public int    GoldRefunded;
+    public string Error;   // null nếu thành công
+}
 
 /// <summary>
 /// Quản lý skin (autoload). Nạp catalog từ data/skins.json; lưu skin ĐANG MẶC riêng vào
@@ -20,9 +41,12 @@ public partial class SkinManager : Node
 
     private readonly List<SkinDef> _all = new();
     private readonly Dictionary<SkinCategory, string> _equipped = new();
+    private readonly HashSet<string> _owned = new();   // skin đã mở khóa (gồm mặc định mỗi loại)
 
     /// <summary>Phát khi đổi skin một loại (category, skin mới).</summary>
     public event Action<SkinCategory, SkinDef> SkinChanged;
+    /// <summary>Phát khi danh sách skin sở hữu thay đổi (sau sync/gacha) → UI túi cập nhật.</summary>
+    public event Action OwnedChanged;
 
     public override void _Ready()
     {
@@ -30,6 +54,76 @@ public partial class SkinManager : Node
         LoadDefs();
         InitDefaults();
         LoadEquipped();
+    }
+
+    // ───────── Sở hữu ─────────
+
+    /// <summary>Skin mặc định mỗi loại = phần tử ĐẦU của loại trong catalog (luôn sở hữu).</summary>
+    public bool IsDefault(string id)
+    {
+        var def = Get(id);
+        if (def == null) return false;
+        var first = _all.Find(s => s.Cat == def.Cat);
+        return first != null && first.Id == id;
+    }
+
+    public bool IsOwned(string id) => IsDefault(id) || _owned.Contains(id);
+
+    /// <summary>Nạp danh sách skin đã mở khóa từ server.</summary>
+    public async Task SyncAsync()
+    {
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return;
+
+        var res = await ApiClient.Instance.GetAsync("/api/skins");
+        if (!res.IsSuccessStatusCode) return;
+
+        var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<List<SkinDto>>>(res);
+        if (data?.Data == null) return;
+
+        _owned.Clear();
+        foreach (var s in data.Data)
+            if (s.Owned && !string.IsNullOrEmpty(s.SkinId)) _owned.Add(s.SkinId);
+
+        // Nếu skin đang mặc bị khóa (vd dữ liệu cũ) → trả về mặc định loại đó.
+        foreach (SkinCategory cat in Enum.GetValues<SkinCategory>())
+        {
+            var id = GetEquippedId(cat);
+            if (!string.IsNullOrEmpty(id) && !IsOwned(id))
+            {
+                var first = _all.Find(s => s.Cat == cat);
+                if (first != null) Equip(cat, first.Id);
+            }
+        }
+        OwnedChanged?.Invoke();
+    }
+
+    /// <summary>Quay gacha skin bằng Chìa Khóa Bạc (server-authoritative).</summary>
+    public async Task<SkinPullOutcome> GachaPullAsync(int count)
+    {
+        var outcome = new SkinPullOutcome();
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) { outcome.Error = "Bạn cần đăng nhập."; return outcome; }
+
+        var res  = await ApiClient.Instance.PostAsync("/api/skins/gacha-pull", new { PullCount = count });
+        var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<SkinGachaResponseDto>>(res);
+
+        if (!res.IsSuccessStatusCode || data == null || !data.Success || data.Data == null)
+        {
+            outcome.Error = data?.Message ?? "Quay thất bại.";
+            return outcome;
+        }
+
+        foreach (var r in data.Data.Results)
+        {
+            if (r.IsNew && !string.IsNullOrEmpty(r.SkinId)) _owned.Add(r.SkinId);
+            outcome.Results.Add(new SkinGachaResult
+            {
+                SkinId = r.SkinId, Category = r.Category, Name = r.Name, Rarity = r.Rarity ?? "common", IsNew = r.IsNew
+            });
+        }
+        outcome.KeysLeft     = data.Data.KeysLeft;
+        outcome.GoldRefunded = data.Data.GoldRefunded;
+        OwnedChanged?.Invoke();
+        return outcome;
     }
 
     // ───────── Truy vấn ─────────
@@ -57,6 +151,7 @@ public partial class SkinManager : Node
     {
         var def = _all.Find(s => s.Cat == cat && s.Id == id);
         if (def == null) return;
+        if (!IsOwned(id)) { GD.Print($"[Skin] Chưa mở khóa: {def.Name}"); return; }   // chỉ mặc skin đã sở hữu
         _equipped[cat] = id;
         SaveEquipped();
         SkinChanged?.Invoke(cat, def);
@@ -102,5 +197,33 @@ public partial class SkinManager : Node
         foreach (var kv in blob)
             if (Enum.TryParse<SkinCategory>(kv.Key, out var cat) && _all.Exists(s => s.Id == kv.Value))
                 _equipped[cat] = kv.Value;
+    }
+
+    // ───────── DTO khớp server ─────────
+
+    private class SkinDto
+    {
+        public string SkinId   { get; set; }
+        public string Category { get; set; }
+        public string Name     { get; set; }
+        public string Rarity   { get; set; }
+        public bool   IsDefault { get; set; }
+        public bool   Owned    { get; set; }
+    }
+
+    private class SkinGachaResultDto
+    {
+        public string SkinId   { get; set; }
+        public string Category { get; set; }
+        public string Name     { get; set; }
+        public string Rarity   { get; set; }
+        public bool   IsNew    { get; set; }
+    }
+
+    private class SkinGachaResponseDto
+    {
+        public List<SkinGachaResultDto> Results { get; set; } = new();
+        public int KeysLeft     { get; set; }
+        public int GoldRefunded { get; set; }
     }
 }

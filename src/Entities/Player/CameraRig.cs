@@ -6,54 +6,77 @@ namespace FragmentOfJapanese.Entities.Player;
 /// <summary>
 /// Chỉ phụ trách phần ĐỘNG của camera: xoay NGANG (yaw) quanh nhân vật theo kéo chuột / vuốt.
 ///
-/// Mọi thứ TĨNH — góc nhìn dọc (pitch), khoảng cách lùi (spring_length), FOV, độ mượt (damping),
-/// offset... — đều lấy từ những gì bạn chỉnh TAY trên node <c>PlayerPhantomCamera3D</c> trong
-/// Godot editor. Script này KHÔNG đè lên chúng.
+/// Mọi thứ TĨNH — khoảng cách lùi (spring_length), FOV, độ mượt (damping), offset... — lấy từ
+/// node <c>PlayerPhantomCamera3D</c> chỉnh trong editor. Riêng PITCH (góc cúi) thì script KẸP lại
+/// theo <see cref="MaxPitchDeg"/> để camera không chúi quá xuống đất.
 ///
-/// Pitch được đọc 1 lần lúc đầu rồi GIỮ NGUYÊN (khóa) → giữ chất 2.5D xoay ngang.
-/// LƯU Ý: script chỉ chạy khi CHẠY GAME (F5/F6), KHÔNG chạy trong editor.
+/// Hai xử lý chống lỗi lúc vào game:
+///  1. Pitch chỉ áp dụng SAU KHI SpringArm của Phantom Camera dựng xong (cờ <c>_has_follow_spring_arm</c>) —
+///     nếu set sớm sẽ bị addon chặn rồi ghi đè (đó là lý do trước đây "vẫn vậy").
+///  2. Lúc spawn TẮT follow_damping trong <see cref="SpawnSnapTime"/> giây để camera BÁM NGAY nhân vật,
+///     tránh lerp từ vị trí camera ban đầu (gần mặt đất) lên chỗ spawn cao → hết cú "quét/chiếu xuống đất".
+///
+/// LƯU Ý: chỉ chạy khi CHẠY GAME (F5/F6), KHÔNG chạy trong editor.
 /// </summary>
 public partial class CameraRig : Node
 {
     [Export] private Node3D _pcamNode;            // = %PlayerPhantomCamera3D
 
-    [Export] public float Sensitivity = 0.25f;    // độ / pixel kéo
-    [Export] public bool  InvertDrag  = false;    // đảo chiều kéo nếu thấy ngược
-    [Export] public bool  Debug       = true;     // in log chẩn đoán ra Output
+    [Export] public float Sensitivity   = 0.25f;  // độ / pixel kéo
+    [Export] public bool  InvertDrag     = false; // đảo chiều kéo nếu thấy ngược
+    [Export] public float MaxPitchDeg    = 14f;   // KẸP độ cúi camera (độ) — nhỏ hơn = nhìn ngang hơn
+    [Export] public float SpawnSnapTime  = 0.6f;  // giây tắt damping lúc spawn để camera bám ngay (đỡ quét qua đất)
+    [Export] public bool  Debug          = true;  // in log chẩn đoán ra Output
 
     private PhantomCamera3D _pcam;
     private float _yaw;
     private float _pitch;
+    private bool  _applied;     // đã kẹp + áp pitch xong chưa (đợi SpringArm sẵn sàng)
 
     public override void _Ready()
     {
-        // Bảo đảm node nhận sự kiện input (phòng trường hợp không auto-enable).
         SetProcessUnhandledInput(true);
 
         if (_pcamNode == null)
         {
             GD.PrintErr("[CameraRig] _pcamNode = NULL → chưa gán node PlayerPhantomCamera3D trong scene. Camera sẽ không xoay.");
+            SetProcess(false);
             return;
         }
 
         _pcam = _pcamNode.AsPhantomCamera3D();
-        CallDeferred(nameof(ReadInitialFromEditor));
+
+        // (2) Spawn snap: tắt damping để camera bám ngay nhân vật, rồi bật lại sau SpawnSnapTime.
+        _pcamNode.Set("follow_damping", false);
+        var timer = GetTree().CreateTimer(SpawnSnapTime);
+        timer.Timeout += () =>
+        {
+            if (GodotObject.IsInstanceValid(_pcamNode))
+                _pcamNode.Set("follow_damping", true);
+        };
     }
 
-    private void ReadInitialFromEditor()
+    public override void _Process(double _delta)
     {
-        if (_pcam == null) return;
+        if (_applied || _pcam == null) return;
+
+        // (1) Chờ SpringArm dựng xong mới đọc/ghi được third-person rotation (tránh bị guard chặn).
+        if (!_pcamNode.Get("_has_follow_spring_arm").AsBool()) return;
+
         var rot = _pcam.GetThirdPersonRotationDegrees();
-        _pitch = rot.X;
         _yaw   = rot.Y;
+        // Giữ DẤU góc cúi của editor nhưng KẸP độ lớn để camera không chúi quá xuống đất.
+        _pitch = Mathf.Clamp(rot.X, -MaxPitchDeg, MaxPitchDeg);
+        _pcam.SetThirdPersonRotationDegrees(new Vector3(_pitch, _yaw, 0f));
+        _applied = true;
 
         if (Debug)
-            GD.Print($"[CameraRig] Sẵn sàng. FollowMode={_pcam.FollowMode} (cần ThirdPerson), pitch={_pitch:0.0}, yaw={_yaw:0.0}");
+            GD.Print($"[CameraRig] Sẵn sàng. pitch editor={rot.X:0.0} → dùng={_pitch:0.0}, yaw={_yaw:0.0}");
     }
 
     public override void _UnhandledInput(InputEvent ev)
     {
-        if (_pcam == null) return;
+        if (_pcam == null || !_applied) return;   // chờ áp pitch xong rồi mới cho xoay
 
         float dx;
         if (ev is InputEventScreenDrag drag)

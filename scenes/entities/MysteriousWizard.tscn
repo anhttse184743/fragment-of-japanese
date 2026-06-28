@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/Entities/Npc/MysteriousWizardNpc.cs" id="1_npc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npcs/mysterious_wizard/unk.png" id="2_tex"]
+[ext_resource type="Script" path="res://src/World/Interactable.cs" id="3_int"]
+
+[sub_resource type="CapsuleShape3D" id="cap_body"]
+radius = 0.35
+height = 1.75
+
+[sub_resource type="CylinderShape3D" id="cyl_zone"]
+radius = 2.2
+height = 3.0
+
+[node name="MysteriousWizard" type="StaticBody3D" node_paths=PackedStringArray("_interactable")]
+script = ExtResource("1_npc")
+NpcId = "mysterious_wizard"
+NpcName = "Pháp sư bí ẩn"
+PortraitImage = ExtResource("2_tex")
+_interactable = NodePath("Interactable")
+
+[node name="Visual" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8538, 0)
+pixel_size = 0.01423
+billboard = 2
+alpha_cut = 1
+texture_filter = 0
+texture = ExtResource("2_tex")
+
+[node name="Body" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("cap_body")
+
+[node name="Interactable" type="Area3D" parent="."]
+script = ExtResource("3_int")
+ActionText = "Nói chuyện"
+PromptOffset = Vector3(0, 2.3, 0)
+
+[node name="Zone" type="CollisionShape3D" parent="Interactable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("cyl_zone")

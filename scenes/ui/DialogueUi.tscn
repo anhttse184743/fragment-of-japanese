@@ -1,0 +1,163 @@
+[gd_scene format=3 uid="uid://bfy0id085nn6s"]
+
+[ext_resource type="Script" uid="uid://d1kda8vcms38y" path="res://src/Ui/DialogueUi.cs" id="1_dlg"]
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[sub_resource type="StyleBoxFlat" id="panel_box"]
+content_margin_left = 20.0
+content_margin_top = 16.0
+content_margin_right = 20.0
+content_margin_bottom = 16.0
+bg_color = Color(0.1, 0.09, 0.15, 0.93)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.86, 0.7, 0.38, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="portrait_box"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.17, 0.15, 0.24, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.86, 0.7, 0.38, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="DialogueUi" type="CanvasLayer" unique_id=1589631205 node_paths=PackedStringArray("_root", "_advance", "_portraitFrame", "_portrait", "_nameLabel", "_textLabel", "_textViLabel", "_hint", "_choiceBox")]
+layer = 40
+script = ExtResource("1_dlg")
+_root = NodePath("DialogueRoot")
+_advance = NodePath("DialogueRoot/Advance")
+_portraitFrame = NodePath("DialogueRoot/Anchor/Col/Panel/HB/PortraitFrame")
+_portrait = NodePath("DialogueRoot/Anchor/Col/Panel/HB/PortraitFrame/Portrait")
+_nameLabel = NodePath("DialogueRoot/Anchor/Col/Panel/HB/TextCol/Name")
+_textLabel = NodePath("DialogueRoot/Anchor/Col/Panel/HB/TextCol/Text")
+_textViLabel = NodePath("DialogueRoot/Anchor/Col/Panel/HB/TextCol/TextVi")
+_hint = NodePath("DialogueRoot/Anchor/Col/Panel/HB/TextCol/Hint")
+_choiceBox = NodePath("DialogueRoot/Anchor/Col/ChoiceBox")
+
+[node name="DialogueRoot" type="Control" parent="." unique_id=673478837]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Advance" type="Button" parent="DialogueRoot" unique_id=1998717763]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("empty")
+theme_override_styles/pressed = SubResource("empty")
+theme_override_styles/hover = SubResource("empty")
+theme_override_styles/focus = SubResource("empty")
+
+[node name="Anchor" type="MarginContainer" parent="DialogueRoot" unique_id=856639768]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 163.0
+offset_top = -423.0
+offset_right = -107.0
+offset_bottom = -97.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Col" type="VBoxContainer" parent="DialogueRoot/Anchor" unique_id=1608040012]
+layout_mode = 2
+offset_transform_enabled = true
+mouse_filter = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="ChoiceBox" type="VBoxContainer" parent="DialogueRoot/Anchor/Col" unique_id=1497401141]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 8
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Panel" type="PanelContainer" parent="DialogueRoot/Anchor/Col" unique_id=1080378490]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("panel_box")
+
+[node name="HB" type="HBoxContainer" parent="DialogueRoot/Anchor/Col/Panel" unique_id=100118298]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="PortraitFrame" type="PanelContainer" parent="DialogueRoot/Anchor/Col/Panel/HB" unique_id=2069929465]
+custom_minimum_size = Vector2(132, 132)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("portrait_box")
+
+[node name="Portrait" type="TextureRect" parent="DialogueRoot/Anchor/Col/Panel/HB/PortraitFrame" unique_id=1144062017]
+texture_filter = 1
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextCol" type="VBoxContainer" parent="DialogueRoot/Anchor/Col/Panel/HB" unique_id=1749432102]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Name" type="Label" parent="DialogueRoot/Anchor/Col/Panel/HB/TextCol" unique_id=1627547476]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 21
+text = "NPC"
+
+[node name="Text" type="Label" parent="DialogueRoot/Anchor/Col/Panel/HB/TextCol" unique_id=1186139795]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.98, 0.96, 0.92, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 25
+autowrap_mode = 3
+
+[node name="TextVi" type="Label" parent="DialogueRoot/Anchor/Col/Panel/HB/TextCol" unique_id=1930575675]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.69, 0.8, 0.95, 1)
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 3
+
+[node name="Hint" type="Label" parent="DialogueRoot/Anchor/Col/Panel/HB/TextCol" unique_id=2043264043]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.66, 0.63, 0.74, 1)
+theme_override_font_sizes/font_size = 14
+text = "▼  Nhấp để tiếp"
+horizontal_alignment = 2

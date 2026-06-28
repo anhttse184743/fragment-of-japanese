@@ -29,6 +29,13 @@ public partial class DungeonController : Node3D
     [Export] public float  GameEnemyRatio { get; set; } = 0.85f;
     [Export] public float  PortalCoeff    { get; set; } = 1.0f;
     [Export] public float  SpawnRadius    { get; set; } = 8f;
+    [Export] public bool   ScatterIfNoPoints { get; set; } = true;   // không có điểm spawn (group "enemy_spawn") → rải quanh người chơi
+
+    // Spawn theo ĐỢT (không ra hết 1 lượt). Tổng quái vẫn = Min..MaxEnemies, chia thành đợt tăng dần.
+    [Export] public bool   UseWaves        { get; set; } = true;     // false = ra hết 1 lượt như cũ
+    [Export] public int    FirstWaveSize   { get; set; } = 1;        // số quái đợt đầu
+    [Export] public int    WaveIncrement   { get; set; } = 1;        // mỗi đợt sau +bao nhiêu (1 → 1,2,3...)
+    [Export] public int    NextWaveAtAlive { get; set; } = 0;        // còn ≤ bấy nhiêu quái sống thì ra đợt kế (0 = dọn sạch mới ra)
     [Export] public double QuizTimeout    { get; set; } = 30.0;
 
     // Bộ game cho phép ở dungeon này (Inspector). Cả 3 đã hiện thực (Pha 1–3).
@@ -53,6 +60,10 @@ public partial class DungeonController : Node3D
     [Export] public int    LootDropMax { get; set; } = 2;
 
     private readonly List<GameKind> _defeated = new();
+    private readonly List<Node3D>   _spawnPoints = new();   // marker group "enemy_spawn" (nếu có)
+    private readonly List<int>      _waveSizes   = new();   // kích thước từng đợt
+    private int _waveIndex;     // đợt kế tiếp sẽ ra
+    private int _spawnCursor;   // chỉ số xoay vòng điểm spawn
     private readonly RandomNumberGenerator _rng = new();
     private PlayerEntity _player;
     private AttackZone   _attackZone;
@@ -79,28 +90,81 @@ public partial class DungeonController : Node3D
 
     private void SetupEnemies()
     {
-        var enemies = new List<EnemyEntity>();
+        var manual = new List<EnemyEntity>();
         foreach (var c in GetChildren())
-            if (c is EnemyEntity e) enemies.Add(e);
+            if (c is EnemyEntity e) manual.Add(e);   // quái đặt-tay (nếu có) tính vào tổng, có sẵn từ đầu
 
-        int target = _rng.RandiRange(MinEnemies, MaxEnemies);
-        Vector3 origin = _player?.GlobalPosition ?? GlobalPosition;
-        if (EnemyScene != null)
-            while (enemies.Count < target)
-                enemies.Add(SpawnEnemyAt(origin));
+        // Điểm spawn đặt-tay = node trong group "enemy_spawn" (vd EnemySpawn.tscn) — ẩn marker khi chơi.
+        _spawnPoints.Clear();
+        foreach (var n in GetTree().GetNodesInGroup("enemy_spawn"))
+            if (n is Node3D p) { _spawnPoints.Add(p); p.Visible = false; }
 
-        foreach (var e in enemies) Register(e);
-        _alive = enemies.Count;
-        GD.Print($"[Dungeon] {_alive} quái, portalCoeff={PortalCoeff}, allow Q/G/R={AllowQuiz}/{AllowGrammar}/{AllowReading}");
+        foreach (var e in manual) Register(e);
+        _alive = manual.Count;
+
+        int  target   = _rng.RandiRange(MinEnemies, MaxEnemies);
+        bool canSpawn = EnemyScene != null && (_spawnPoints.Count > 0 || ScatterIfNoPoints);
+        int  toSpawn  = canSpawn ? Mathf.Max(0, target - manual.Count) : 0;
+
+        BuildWaves(toSpawn);
+        _waveIndex   = 0;
+        _spawnCursor = 0;
+        if (canSpawn) SpawnNextWave();   // ra đợt đầu (UseWaves=false → BuildWaves gộp 1 đợt = ra hết)
+
+        GD.Print($"[Dungeon] mục tiêu {target} quái / {_waveSizes.Count} đợt ({_spawnPoints.Count} điểm spawn), portalCoeff={PortalCoeff}, allow Q/G/R={AllowQuiz}/{AllowGrammar}/{AllowReading}");
     }
 
-    private EnemyEntity SpawnEnemyAt(Vector3 around)
+    /// <summary>Chia tổng số quái thành các đợt tăng dần (FirstWaveSize rồi +WaveIncrement). UseWaves=false → 1 đợt.</summary>
+    private void BuildWaves(int total)
+    {
+        _waveSizes.Clear();
+        if (total <= 0) return;
+        if (!UseWaves) { _waveSizes.Add(total); return; }
+
+        int remaining = total;
+        int size = Mathf.Max(1, FirstWaveSize);
+        while (remaining > 0)
+        {
+            int s = Mathf.Min(size, remaining);
+            _waveSizes.Add(s);
+            remaining -= s;
+            size += Mathf.Max(0, WaveIncrement);
+        }
+    }
+
+    /// <summary>Ra đợt kế (nếu còn): spawn + Register + tăng _alive.</summary>
+    private void SpawnNextWave()
+    {
+        if (_waveIndex >= _waveSizes.Count || EnemyScene == null) return;
+        int n = _waveSizes[_waveIndex++];
+        for (int k = 0; k < n; k++)
+        {
+            var e = SpawnEnemy(SpawnPos(_spawnCursor++));
+            Register(e);
+            _alive++;
+        }
+        GD.Print($"[Dungeon] Đợt {_waveIndex}/{_waveSizes.Count}: +{n} quái — còn sống {_alive}");
+    }
+
+    /// <summary>Vị trí spawn thứ i: xoay vòng các điểm "enemy_spawn" (lệch nhẹ); không có điểm → rải quanh người chơi.</summary>
+    private Vector3 SpawnPos(int i)
+    {
+        if (_spawnPoints.Count > 0)
+        {
+            var p = _spawnPoints[i % _spawnPoints.Count];
+            return p.GlobalPosition + new Vector3(_rng.RandfRange(-0.6f, 0.6f), 1f, _rng.RandfRange(-0.6f, 0.6f));
+        }
+        Vector3 c = _player?.GlobalPosition ?? GlobalPosition;
+        float a = _rng.RandfRange(0f, Mathf.Tau);
+        float r = _rng.RandfRange(SpawnRadius * 0.4f, SpawnRadius);
+        return c + new Vector3(Mathf.Cos(a) * r, 1f, Mathf.Sin(a) * r);
+    }
+
+    private EnemyEntity SpawnEnemy(Vector3 pos)
     {
         var e = EnemyScene.Instantiate<EnemyEntity>();
         AddChild(e);
-        float a = _rng.RandfRange(0f, Mathf.Tau);
-        float r = _rng.RandfRange(SpawnRadius * 0.4f, SpawnRadius);
-        e.GlobalPosition = around + new Vector3(Mathf.Cos(a) * r, 1f, Mathf.Sin(a) * r);
+        e.GlobalPosition = pos;
         return e;
     }
 
@@ -166,7 +230,7 @@ public partial class DungeonController : Node3D
         ChallengeUi.Instance.RunQuiz(target, pool, showMeaning, QuizTimeout, (correct, ms) =>
         {
             lt.Record(ItemKind.Vocab, target.Id, correct, ms);
-            if (correct) QuestManager.Instance?.Report("learn");
+            if (correct) QuestManager.Instance?.Report("learn", "vocab");
             enemy.ResolveChallenge(correct);
         });
     }
@@ -187,7 +251,7 @@ public partial class DungeonController : Node3D
         ChallengeUi.Instance.RunGrammar(g, stage, pool, QuizTimeout, (correct, ms) =>
         {
             lt.Record(ItemKind.Grammar, g.Id, correct, ms);
-            if (correct) QuestManager.Instance?.Report("learn");
+            if (correct) QuestManager.Instance?.Report("learn", "grammar");
             if (stage > 0)
             {
                 bool spawn = correct ? _rng.Randf() < GrammarCorrectSpawnChance : true;
@@ -216,7 +280,7 @@ public partial class DungeonController : Node3D
             {
                 _bonusGold += ReadingBonusGold;          // bonus thưởng
                 ApplyReadingDamageBonus();               // bonus damage cả lượt ải
-                QuestManager.Instance?.Report("learn");
+                QuestManager.Instance?.Report("learn", "reading");
                 enemy.ResolveChallenge(true);            // chết
             }
             else
@@ -252,7 +316,7 @@ public partial class DungeonController : Node3D
     {
         if (EnemyScene == null || _reinforcements >= MaxReinforcements) return;
         _reinforcements++;
-        var e = SpawnEnemyAt(_player?.GlobalPosition ?? GlobalPosition);
+        var e = SpawnEnemy(SpawnPos(_spawnCursor++));   // tiếp viện cũng dùng điểm spawn (xoay vòng)
         Register(e);
         _alive++;
         GD.Print($"[Dungeon] Quái tiếp viện ({_reinforcements}/{MaxReinforcements}) — còn sống {_alive}");
@@ -284,8 +348,17 @@ public partial class DungeonController : Node3D
     {
         _defeated.Add(enemy.Challenge);
         GrantKillLoot(enemy);
+        QuestManager.Instance?.Report("kill", "goblin");
         _alive--;
-        if (_alive <= 0) Win();
+
+        if (_waveIndex < _waveSizes.Count)          // còn đợt chưa ra
+        {
+            if (_alive <= NextWaveAtAlive) SpawnNextWave();
+        }
+        else if (_alive <= 0)                       // hết đợt + sạch quái → thắng
+        {
+            Win();
+        }
     }
 
     /// <summary>Hạ 1 quái → EXP + Vàng + 1–2 Tai Goblin vào túi.
@@ -296,11 +369,11 @@ public partial class DungeonController : Node3D
 
         int gold = Mathf.RoundToInt(RewardCalculator.BaseGoldPerEnemy
                    * RewardCalculator.KindMult(enemy.Challenge) * PortalCoeff);
-        Wallet.Instance?.AddGold(gold);
+        _ = _player?.AwardAsync(0, gold);   // server cộng + kẹp trần, rồi đồng bộ ví
         _goldEarned += gold;
 
         int ears = _rng.RandiRange(LootDropMin, LootDropMax);
-        if (ears > 0) { Inventory.Instance?.Add(LootItemId, ears); _earsDropped += ears; }
+        if (ears > 0) { _ = Inventory.Instance?.GrantAsync(LootItemId, ears); _earsDropped += ears; }
     }
 
     private void Win()
@@ -308,7 +381,7 @@ public partial class DungeonController : Node3D
         if (_resolved) return;
         _resolved = true;
         // Vàng/EXP/Tai đã cấp NGAY mỗi lần hạ quái (GrantKillLoot). Win chỉ cộng bonus đọc + tổng kết.
-        if (_bonusGold > 0) { Wallet.Instance?.AddGold(_bonusGold); _goldEarned += _bonusGold; }
+        if (_bonusGold > 0) { _ = _player?.AwardAsync(0, _bonusGold); _goldEarned += _bonusGold; }
         GD.Print($"[Dungeon] WIN — tổng +{_goldEarned} Vàng, +{_earsDropped} Tai Goblin ({_defeated.Count} quái).");
         ShowBanner($"🏆 Hoàn thành ải!   +{_goldEarned} Vàng · +{_earsDropped} Tai Goblin");
         Leave();
@@ -319,8 +392,8 @@ public partial class DungeonController : Node3D
         if (_resolved) return;
         _resolved = true;
         _player?.RestoreFull();
-        // Xóa vị trí cổng → World sẽ hồi sinh tại PlayerSpawn mặc định (không phải cổng).
-        SceneTransition.PlayerStartPosition = null;
+        // Gục → về World hồi sinh tại PlayerSpawn mặc định (KHÔNG đặt tại cổng).
+        SceneTransition.ForceDefaultArrival = true;
         GD.Print("[Dungeon] Người chơi gục — về World, hồi sinh tại spawn.");
         ShowBanner("💀 Bạn đã gục... quay về làng.");
         Leave();

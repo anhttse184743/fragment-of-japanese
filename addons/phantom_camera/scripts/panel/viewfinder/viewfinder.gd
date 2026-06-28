@@ -539,7 +539,6 @@ func _check_follow_mode() -> void:
 
 
 func _on_update_editor_viewfinder(check_framed_view: bool = false) -> void:
-	if not is_instance_valid(pcam_host): return
 	_active_pcam = pcam_host.get_active_pcam()
 
 	if not is_instance_valid(_active_pcam): return

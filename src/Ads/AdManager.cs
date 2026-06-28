@@ -139,7 +139,7 @@ public partial class AdManager : CanvasLayer
         {
             if (!earned) return;
             int gold = AdConfig.RewardGoldPerAd;
-            Wallet.Instance?.AddGold(gold);
+            _ = Wallet.Instance?.RewardGoldAsync(gold);   // qua server (có trần) + đồng bộ
             RewardGranted?.Invoke(gold);
         });
 
@@ -152,7 +152,32 @@ public partial class AdManager : CanvasLayer
         if (removed) HideBanner();
         Save();
         AdsRemovedChanged?.Invoke();
+
+        // Lưu entitlement lên server (bền khi cài lại / đổi máy).
+        if (removed && !string.IsNullOrEmpty(FragmentOfJapanese.Autoloads.ApiClient.Instance.AccessToken))
+            _ = FragmentOfJapanese.Autoloads.ApiClient.Instance.PostAsync("/api/player/ads-removed", new { });
     }
+
+    /// <summary>Nạp trạng thái "đã gỡ QC" từ server (server là nguồn chân lý cho entitlement này).</summary>
+    public async System.Threading.Tasks.Task SyncAsync()
+    {
+        if (string.IsNullOrEmpty(FragmentOfJapanese.Autoloads.ApiClient.Instance.AccessToken)) return;
+
+        var res = await FragmentOfJapanese.Autoloads.ApiClient.Instance.GetAsync("/api/player/profile");
+        if (!res.IsSuccessStatusCode) return;
+
+        var data = await FragmentOfJapanese.Autoloads.ApiClient.Instance
+            .ReadAsAsync<FragmentOfJapanese.Autoloads.AccountManager.ApiResponse<AdsProfileDto>>(res);
+        if (data?.Data != null && data.Data.AdsRemoved && !AdsRemoved)
+        {
+            AdsRemoved = true;
+            HideBanner();
+            Save();
+            AdsRemovedChanged?.Invoke();
+        }
+    }
+
+    private class AdsProfileDto { public bool AdsRemoved { get; set; } }
 
     // ───────────────────────── Lưu / nạp ─────────────────────────
     private void ResetDailyIfNeeded()

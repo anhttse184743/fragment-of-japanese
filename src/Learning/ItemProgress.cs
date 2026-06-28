@@ -21,6 +21,7 @@ public class ItemProgress
     [JsonPropertyName("guesses")] public int    Guesses  { get; set; }          // số lần nghi chọn bừa
     [JsonPropertyName("last")]    public long   LastSeen { get; set; }          // unix giây
     [JsonPropertyName("due")]     public long   Due      { get; set; }          // unix giây — khi nào nên ôn lại
+    [JsonIgnore]                  public System.DateTime? NextReviewAt { get; set; }
 
     [JsonIgnore] public double Accuracy => Seen > 0 ? (double)Correct / Seen : 0.0;
 }

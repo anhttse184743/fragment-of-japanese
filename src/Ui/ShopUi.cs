@@ -2,18 +2,15 @@ using Godot;
 using System.Collections.Generic;
 using FragmentOfJapanese.Ads;
 using FragmentOfJapanese.Autoloads;
+using FragmentOfJapanese.Cosmetics;
 using FragmentOfJapanese.Core;
 using FragmentOfJapanese.Items;
 
 namespace FragmentOfJapanese.Ui;
 
 /// <summary>
-/// UI cửa hàng — autoload dựng bằng code, tông nâu gỗ. Mở/đóng bằng phím P (Esc để đóng).
-/// Sidebar trái (SHOP + tab dọc) | thanh trên (Vàng + Aetherstone + X) | nội dung đổi theo tab.
-///   - Nổi bật : poster + hàng item (mua được)
-///   - Vật phẩm: lưới 6 cột (mua được, có hộp xác nhận)
-///   - Gacha   : banner + Luck/pity + quay x1/x10 (tốn Chìa Khóa Bạc) → màn lật kết quả có hiệu ứng
-///   - Nạp     : xem quảng cáo + gói game + gói gold/pay (sắp ra mắt)
+/// UI cửa hàng — Scene-based (ShopUi.tscn). Mở/đóng bằng phím P (Esc để đóng).
+/// Tất cả node được wire từ scene qua [Export]. Script chỉ chứa logic thuần.
 /// </summary>
 public partial class ShopUi : CanvasLayer
 {
@@ -23,33 +20,56 @@ public partial class ShopUi : CanvasLayer
 
     private const string KeyIconPath = "res://assets/sprites/items/silver_key.png";
 
-    private Control            _root;
-    private Label              _goldLabel;
-    private Label              _aetherLabel;
-    private MarginContainer    _content;
-    private Label              _feedback;
-    private ConfirmationDialog _confirm;
+    // ── Nodes wired từ scene ──────────────────────────────────────────────────
+    [Export] private Control            _shopRoot;
+    [Export] private Label              _goldLabel;
+    [Export] private Label              _aetherLabel;
+    [Export] private MarginContainer    _contentArea;
+    [Export] private Label              _feedbackLabel;
+    [Export] private ConfirmationDialog _confirmDialog;
 
+    // Sidebar tab buttons
+    [Export] private Button _tabFeatured;
+    [Export] private Button _tabItems;
+    [Export] private Button _tabGacha;
+    [Export] private Button _tabTopup;
+    [Export] private Button _tabRedeem;
+
+    // Close button
+    [Export] private Button _closeButton;
+
+    // Gacha reveal nodes
+    [Export] private Control       _revealLayer;
+    [Export] private Label         _revealTitle;
+    [Export] private GridContainer _revealGrid;
+    [Export] private ColorRect     _revealFlash;
+    [Export] private Button        _revealBackdrop;
+
+    // Gacha luck label (built dynamically inside gacha tab)
+    private Label _luckLabel;
     private string _pendingItemId = "";
 
-    // Gacha
-    private Label         _luckLabel;
-    private Control       _reveal;
-    private ColorRect     _flash;
-    private Label         _revealTitle;
-    private GridContainer _revealGrid;
+    // Panel chính — co giãn theo màn hình
+    private PanelContainer _panel;
 
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
     public override void _Ready()
     {
         Instance = this;
-        Layer    = 11;            // trên cả túi đồ (10)
 
         EnsureInputAction();
-        BuildUi();
-        _root.Visible = false;
+        ApplyStyles();
+        WireSignals();
 
-        if (Wallet.Instance != null) Wallet.Instance.Changed += RefreshWallet;
-        if (Gacha.Instance  != null) Gacha.Instance.Changed  += RefreshLuck;
+        // Layout co giãn theo màn hình (mobile/desktop): panel chiếm phần lớn viewport, có trần.
+        _panel = _shopRoot.GetNode<PanelContainer>("Center/Panel");
+        ResizePanel();
+        GetViewport().SizeChanged += ResizePanel;
+
+        _shopRoot.Visible = false;
+
+        if (Wallet.Instance    != null) Wallet.Instance.Changed          += RefreshWallet;
+        if (Gacha.Instance     != null) Gacha.Instance.Changed           += RefreshLuck;
         if (AdManager.Instance != null) AdManager.Instance.RewardGranted += OnAdReward;
 
         RefreshWallet();
@@ -58,169 +78,135 @@ public partial class ShopUi : CanvasLayer
 
     public override void _UnhandledInput(InputEvent ev)
     {
-        if (_reveal != null && _reveal.Visible) return;   // đang xem kết quả gacha
+        if (_revealLayer != null && _revealLayer.Visible) return;
 
         if (ev.IsActionPressed("toggle_shop"))
         {
             Toggle();
             GetViewport().SetInputAsHandled();
         }
-        else if (_root.Visible && ev.IsActionPressed("ui_cancel"))
+        else if (_shopRoot.Visible && ev.IsActionPressed("ui_cancel"))
         {
             Close();
             GetViewport().SetInputAsHandled();
         }
     }
 
-    public void Toggle() { if (_root.Visible) Close(); else Open(); }
-    public void Open()   { _root.Visible = true; RefreshWallet(); }
-    public void Close()  { _root.Visible = false; }
-
-    // ───────────────────────── Build khung ─────────────────────────
-
-    private void BuildUi()
+    public void Toggle() { if (_shopRoot.Visible) Close(); else Open(); }
+    public async void Open()
     {
-        _root = new Control { Name = "ShopRoot" };
-        _root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        _root.MouseFilter = Control.MouseFilterEnum.Stop;
-        AddChild(_root);
+        _shopRoot.Visible = true;
+        ResizePanel();
+        RefreshWallet();
+        if (Wallet.Instance != null) { await Wallet.Instance.SyncAsync(); RefreshWallet(); }   // cập nhật sau thanh toán
+    }
+    public void Close()  { _shopRoot.Visible = false; }
 
-        var dim = new ColorRect { Color = new Color(0, 0, 0, 0.72f) };
-        dim.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        dim.MouseFilter = Control.MouseFilterEnum.Ignore;
-        _root.AddChild(dim);
-
-        var center = new CenterContainer();
-        center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        _root.AddChild(center);
-
-        var panel = new PanelContainer { CustomMinimumSize = new Vector2(940, 600) };
-        panel.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodPanel, 14, UiKit.WoodBorder, 3, 10, 10));
-        center.AddChild(panel);
-
-        var rootH = new HBoxContainer();
-        rootH.AddThemeConstantOverride("separation", 10);
-        panel.AddChild(rootH);
-
-        rootH.AddChild(BuildSidebar());
-
-        var right = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-        right.AddThemeConstantOverride("separation", 8);
-        rootH.AddChild(right);
-
-        right.AddChild(BuildTopBar());
-
-        _content = new MarginContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
-        _content.AddThemeConstantOverride("margin_top", 2);
-        right.AddChild(_content);
-
-        _feedback = new Label { HorizontalAlignment = HorizontalAlignment.Center };
-        _feedback.AddThemeFontSizeOverride("font_size", 15);
-        right.AddChild(_feedback);
-
-        _confirm = new ConfirmationDialog { Title = "Xác nhận", OkButtonText = "Mua", CancelButtonText = "Hủy" };
-        _confirm.Confirmed += OnBuyConfirmed;
-        _root.AddChild(_confirm);
-
-        BuildReveal();
+    /// <summary>Panel co theo viewport: ~94% bề ngang, ~92% chiều cao, có trần để không quá to trên desktop.</summary>
+    private void ResizePanel()
+    {
+        if (_panel == null) return;
+        var vp = GetViewport().GetVisibleRect().Size;
+        float w = Mathf.Min(vp.X * 0.94f, 1480f);
+        float h = Mathf.Min(vp.Y * 0.92f, 920f);
+        _panel.CustomMinimumSize = new Vector2(w, h);
     }
 
-    private Control BuildSidebar()
+    // ── Wire signals từ scene ─────────────────────────────────────────────────
+    private void WireSignals()
     {
-        var side = new PanelContainer { CustomMinimumSize = new Vector2(146, 0) };
-        side.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
-        side.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodDark, 10, UiKit.WoodBorder, 2, 8, 10));
-
-        var v = new VBoxContainer();
-        v.AddThemeConstantOverride("separation", 8);
-        side.AddChild(v);
-
-        var shop = new Label { Text = "SHOP", HorizontalAlignment = HorizontalAlignment.Center };
-        shop.AddThemeFontSizeOverride("font_size", 24);
-        shop.AddThemeColorOverride("font_color", UiKit.Accent);
-        v.AddChild(shop);
-
-        v.AddChild(new HSeparator());
+        _closeButton.Pressed    += Close;
+        _confirmDialog.Confirmed += OnBuyConfirmed;
+        _revealBackdrop.Pressed  += HideReveal;
 
         var group = new ButtonGroup();
-        AddSideTab(v, group, "Nổi bật",  Tab.Featured, first: true);
-        AddSideTab(v, group, "Vật phẩm", Tab.Items);
-        AddSideTab(v, group, "Gacha",    Tab.Gacha);
-        AddSideTab(v, group, "Nạp",      Tab.Topup);
-        AddSideTab(v, group, "Nhập Code", Tab.Redeem);
-
-        v.AddChild(new Control { SizeFlagsVertical = Control.SizeFlags.ExpandFill });
-        return side;
+        WireTabButton(_tabFeatured, group, Tab.Featured, first: true);
+        WireTabButton(_tabItems,    group, Tab.Items);
+        WireTabButton(_tabGacha,    group, Tab.Gacha);
+        WireTabButton(_tabTopup,    group, Tab.Topup);
+        WireTabButton(_tabRedeem,   group, Tab.Redeem);
     }
 
-    private void AddSideTab(VBoxContainer bar, ButtonGroup group, string text, Tab tab, bool first = false)
+    private void WireTabButton(Button btn, ButtonGroup group, Tab tab, bool first = false)
     {
-        var btn = new Button
-        {
-            Text                = text,
-            ToggleMode          = true,
-            ButtonGroup         = group,
-            ButtonPressed       = first,
-            CustomMinimumSize   = new Vector2(0, 42),
-            SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
-        };
+        btn.ButtonGroup   = group;
+        btn.ButtonPressed = first;
+        btn.Pressed       += () => SetTab(tab);
+    }
+
+    // ── Áp dụng style UiKit lên các node scene ───────────────────────────────
+    private void ApplyStyles()
+    {
+        // Panel chính
+        var panel = _shopRoot.GetNode<PanelContainer>("Center/Panel");
+        panel?.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodPanel, 14, UiKit.WoodBorder, 3, 10, 10));
+
+        // Sidebar
+        var sidebar = _shopRoot.GetNode<PanelContainer>("Center/Panel/RootH/Sidebar");
+        sidebar?.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodDark, 10, UiKit.WoodBorder, 2, 8, 10));
+
+        var shopTitle = _shopRoot.GetNodeOrNull<Label>("Center/Panel/RootH/Sidebar/SidebarVBox/ShopTitle");
+        if (shopTitle != null) shopTitle.AddThemeColorOverride("font_color", UiKit.Accent);
+
+        StyleTabButton(_tabFeatured);
+        StyleTabButton(_tabItems);
+        StyleTabButton(_tabGacha);
+        StyleTabButton(_tabTopup);
+        StyleTabButton(_tabRedeem);
+
+        // Gold pill
+        var goldPill = _shopRoot.GetNodeOrNull<PanelContainer>("Center/Panel/RootH/RightColumn/TopBar/GoldPill");
+        goldPill?.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodDark, 14, UiKit.Gold, 1, 12, 5));
+        if (_goldLabel  != null) _goldLabel.AddThemeColorOverride("font_color", UiKit.WoodText);
+
+        // Aether pill
+        var aetherPill = _shopRoot.GetNodeOrNull<PanelContainer>("Center/Panel/RootH/RightColumn/TopBar/AetherPill");
+        aetherPill?.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodDark, 14, UiKit.MaThach, 1, 12, 5));
+        if (_aetherLabel != null) _aetherLabel.AddThemeColorOverride("font_color", UiKit.WoodText);
+
+        // Load icon texture cho gold/aether pill
+        LoadPillIcon("Center/Panel/RootH/RightColumn/TopBar/GoldPill/GoldPillH/GoldIcon",   UiKit.GoldIconPath);
+        LoadPillIcon("Center/Panel/RootH/RightColumn/TopBar/AetherPill/AetherPillH/AetherIcon", UiKit.AetherIconPath);
+
+        // Close button
+        UiKit.StyleButton(_closeButton, UiKit.WoodDark, new Color(0.55f, 0.25f, 0.22f), new Color(0.40f, 0.18f, 0.16f));
+        _closeButton.AddThemeFontSizeOverride("font_size", 18);
+
+        // Reveal backdrop
+        var clear = UiKit.Box(new Color(0, 0, 0, 0));
+        _revealBackdrop?.AddThemeStyleboxOverride("normal",  clear);
+        _revealBackdrop?.AddThemeStyleboxOverride("hover",   clear);
+        _revealBackdrop?.AddThemeStyleboxOverride("pressed", clear);
+        _revealBackdrop?.AddThemeStyleboxOverride("focus",   clear);
+
+        if (_revealTitle  != null) _revealTitle.AddThemeColorOverride("font_color", UiKit.Accent);
+        if (_revealFlash  != null) _revealFlash.Color = new Color(1, 1, 1, 0);
+    }
+
+    private void StyleTabButton(Button btn)
+    {
+        if (btn == null) return;
         UiKit.StyleButton(btn, UiKit.WoodDark, new Color(0.40f, 0.28f, 0.17f), UiKit.Accent);
         btn.AddThemeColorOverride("font_color",         UiKit.WoodText);
         btn.AddThemeColorOverride("font_hover_color",   UiKit.WoodText);
         btn.AddThemeColorOverride("font_pressed_color", new Color(0.22f, 0.14f, 0.07f));
         btn.AddThemeFontSizeOverride("font_size", 15);
-        btn.Pressed += () => SetTab(tab);
-        bar.AddChild(btn);
     }
 
-    private Control BuildTopBar()
+    private void LoadPillIcon(string nodePath, string texPath)
     {
-        var bar = new HBoxContainer();
-        bar.AddThemeConstantOverride("separation", 10);
-
-        bar.AddChild(new Control { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
-        bar.AddChild(MakeCurrencyPill(false));
-        bar.AddChild(MakeCurrencyPill(true));
-        bar.AddChild(new Control { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
-
-        var x = new Button { Text = "X", CustomMinimumSize = new Vector2(42, 42) };
-        UiKit.StyleButton(x, UiKit.WoodDark, new Color(0.55f, 0.25f, 0.22f), new Color(0.40f, 0.18f, 0.16f));
-        x.AddThemeFontSizeOverride("font_size", 18);
-        x.Pressed += Close;
-        bar.AddChild(x);
-
-        return bar;
+        var icon = _shopRoot.GetNodeOrNull<TextureRect>(nodePath);
+        if (icon == null || !ResourceLoader.Exists(texPath)) return;
+        icon.Texture = GD.Load<Texture2D>(texPath);
     }
 
-    private Control MakeCurrencyPill(bool isMa)
-    {
-        Color  col      = isMa ? UiKit.MaThach : UiKit.Gold;
-        string iconPath = isMa ? UiKit.AetherIconPath : UiKit.GoldIconPath;
-
-        var pill = new PanelContainer();
-        pill.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodDark, 14, col, 1, 12, 5));
-
-        var h = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
-        h.AddThemeConstantOverride("separation", 6);
-        AddIcon(h, iconPath, 24);
-
-        var l = new Label { VerticalAlignment = VerticalAlignment.Center };
-        l.AddThemeFontSizeOverride("font_size", 16);
-        l.AddThemeColorOverride("font_color", UiKit.WoodText);
-        h.AddChild(l);
-        pill.AddChild(h);
-
-        if (isMa) _aetherLabel = l; else _goldLabel = l;
-        return pill;
-    }
-
-    // ───────────────────────── Tabs ─────────────────────────
-
+    // ── Tabs ──────────────────────────────────────────────────────────────────
     private void SetTab(Tab tab)
     {
-        if (_content == null) return;
-        foreach (Node c in _content.GetChildren()) c.QueueFree();
-        _feedback.Text = "";
+        if (_contentArea == null) return;
+        foreach (Node c in _contentArea.GetChildren()) c.QueueFree();
+        if (_feedbackLabel != null) _feedbackLabel.Text = "";
+        _luckLabel = null;
 
         Control view = tab switch
         {
@@ -231,17 +217,17 @@ public partial class ShopUi : CanvasLayer
             Tab.Redeem   => BuildRedeem(),
             _            => new Control(),
         };
-        _content.AddChild(view);
+        _contentArea.AddChild(view);
     }
 
     private void RefreshWallet()
     {
         var w = Wallet.Instance;
-        if (_goldLabel   != null) _goldLabel.Text   = $"{(w?.Gold ?? 0):N0}";
+        if (_goldLabel   != null) _goldLabel.Text   = $"{(w?.Gold    ?? 0):N0}";
         if (_aetherLabel != null) _aetherLabel.Text = $"{(w?.MaThach ?? 0):N0}";
     }
 
-    // ---- Tab Nổi bật ----
+    // ── Tab Nổi bật ──────────────────────────────────────────────────────────
     private Control BuildFeatured()
     {
         var v = new VBoxContainer();
@@ -275,13 +261,13 @@ public partial class ShopUi : CanvasLayer
         return v;
     }
 
-    // ---- Tab Vật phẩm ----
+    // ── Tab Vật phẩm ─────────────────────────────────────────────────────────
     private Control BuildItemsGrid()
     {
         var scroll = new ScrollContainer();
-        scroll.SizeFlagsHorizontal   = Control.SizeFlags.ExpandFill;
-        scroll.SizeFlagsVertical     = Control.SizeFlags.ExpandFill;
-        scroll.HorizontalScrollMode  = ScrollContainer.ScrollMode.Disabled;
+        scroll.SizeFlagsHorizontal  = Control.SizeFlags.ExpandFill;
+        scroll.SizeFlagsVertical    = Control.SizeFlags.ExpandFill;
+        scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled;
 
         var grid = new GridContainer { Columns = 6 };
         grid.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
@@ -303,11 +289,11 @@ public partial class ShopUi : CanvasLayer
 
     private Button MakeBuyCard(ShopListing listing)
     {
-        var    def    = ItemDatabase.Instance?.Get(listing.ItemId);
-        Color  accent = UiKit.TypeColor(def?.Type ?? ItemType.Consumable);
-        string id     = listing.ItemId;
-        bool   isMa   = listing.CurrencyType == ShopCurrency.MaThach;
-        Color  curCol = isMa ? UiKit.MaThach : UiKit.Gold;
+        var   def    = ItemDatabase.Instance?.Get(listing.ItemId);
+        Color accent = UiKit.TypeColor(def?.Type ?? ItemType.Consumable);
+        string id    = listing.ItemId;
+        bool  isMa   = listing.CurrencyType == ShopCurrency.MaThach;
+        Color curCol = isMa ? UiKit.MaThach : UiKit.Gold;
 
         var card = new Button { CustomMinimumSize = new Vector2(108, 150), TooltipText = def?.NameVi ?? id };
         card.AddThemeStyleboxOverride("normal",  UiKit.Box(UiKit.WoodCard, 10, UiKit.WoodBorder, 2, 6, 6));
@@ -318,7 +304,6 @@ public partial class ShopUi : CanvasLayer
         var v = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
         v.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         v.AddThemeConstantOverride("separation", 4);
-
         v.AddChild(UiKit.ItemIcon(def, accent, 52));
 
         var name = new Label { Text = def?.NameVi ?? id, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
@@ -337,12 +322,11 @@ public partial class ShopUi : CanvasLayer
 
         card.AddChild(v);
         IgnoreMouse(v);
-
         card.Pressed += () => RequestBuy(id);
         return card;
     }
 
-    // ---- Tab Gacha ----
+    // ── Tab Gacha ─────────────────────────────────────────────────────────────
     private Control BuildGacha()
     {
         var v = new VBoxContainer();
@@ -356,12 +340,12 @@ public partial class ShopUi : CanvasLayer
         topRow.AddChild(new Control { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
         var rate = new Button { Text = "Tỉ lệ %", CustomMinimumSize = new Vector2(86, 34) };
         UiKit.StyleButton(rate, UiKit.WoodDark, new Color(0.40f, 0.28f, 0.17f), UiKit.Accent);
-        rate.Pressed += () => ShowFeedback("Thường 74% · Hiếm 20% · Sử thi 5% · Huyền thoại 1%", true);
+        rate.Pressed += () => ShowFeedback("Hiếm 35% · Sử thi 12% · Huyền thoại 3% · còn lại Thường — quay trúng skin trùng được hoàn Vàng", true);
         topRow.AddChild(rate);
         bv.AddChild(topRow);
 
         var bc = new CenterContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
-        var bl = new Label { Text = "BANNER GACHA", HorizontalAlignment = HorizontalAlignment.Center };
+        var bl = new Label { Text = "GACHA HIỆU ỨNG", HorizontalAlignment = HorizontalAlignment.Center };
         bl.AddThemeFontSizeOverride("font_size", 24);
         bl.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
         bc.AddChild(bl);
@@ -371,12 +355,11 @@ public partial class ShopUi : CanvasLayer
 
         var bottom = new HBoxContainer();
         bottom.AddThemeConstantOverride("separation", 10);
-        _luckLabel = new Label { VerticalAlignment = VerticalAlignment.Center };
+        _luckLabel = new Label { VerticalAlignment = VerticalAlignment.Center, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         _luckLabel.AddThemeColorOverride("font_color", UiKit.WoodText);
         _luckLabel.AddThemeFontSizeOverride("font_size", 16);
-        _luckLabel.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
         bottom.AddChild(_luckLabel);
-        bottom.AddChild(MakePullButton("x1", 1));
+        bottom.AddChild(MakePullButton("x1",  1));
         bottom.AddChild(MakePullButton("x10", 10));
         v.AddChild(bottom);
 
@@ -399,24 +382,22 @@ public partial class ShopUi : CanvasLayer
         h.AddChild(l);
         b.AddChild(h);
         IgnoreMouse(h);
-
         b.Pressed += () => OnPull(count);
         return b;
     }
 
-    // ---- Tab Nạp (sắp ra mắt) ----
+    // ── Tab Nạp ───────────────────────────────────────────────────────────────
     private Control BuildTopup()
     {
         var v = new VBoxContainer();
         v.AddThemeConstantOverride("separation", 12);
-
         v.AddChild(SectionLabel("Xem quảng cáo nhận thưởng"));
 
-        var ad       = AdManager.Instance;
-        bool canAd   = ad?.CanWatchRewarded ?? false;
-        int  used    = ad?.RewardsToday     ?? 0;
-        int  cap     = ad?.DailyRewardCap   ?? AdConfig.DailyRewardCap;
-        bool removed = ad?.AdsRemoved       ?? false;
+        var ad      = AdManager.Instance;
+        bool canAd  = ad?.CanWatchRewarded ?? false;
+        int  used   = ad?.RewardsToday     ?? 0;
+        int  cap    = ad?.DailyRewardCap   ?? AdConfig.DailyRewardCap;
+        bool removed = ad?.AdsRemoved      ?? false;
 
         var adRow = new HBoxContainer();
         adRow.AddThemeConstantOverride("separation", 8);
@@ -434,56 +415,115 @@ public partial class ShopUi : CanvasLayer
         watch.Pressed += OnWatchRewarded;
         adRow.AddChild(watch);
 
-        var noAds = new Button
-        {
-            Text              = removed ? "Đã gỡ QC ✓" : "Gỡ QC",
-            CustomMinimumSize = new Vector2(150, 60),
-            Disabled          = removed,
-        };
+        var noAds = new Button { Text = removed ? "Đã gỡ QC ✓" : "Gỡ QC", CustomMinimumSize = new Vector2(150, 60), Disabled = removed };
         UiKit.StyleButton(noAds, UiKit.WoodCard, UiKit.Fade(UiKit.Accent, 0.18f), UiKit.Accent);
         noAds.AddThemeColorOverride("font_color", UiKit.WoodText);
         noAds.Pressed += OnRemoveAds;
         adRow.AddChild(noAds);
-
         v.AddChild(adRow);
 
-        v.AddChild(SectionLabel("Gói game"));
-        var gpRow = new HBoxContainer();
-        gpRow.AddThemeConstantOverride("separation", 8);
-        for (int i = 0; i < 3; i++)
-        {
-            var b = MakePackButton("Gói game", new Vector2(0, 70));
-            b.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-            gpRow.AddChild(b);
-        }
-        v.AddChild(gpRow);
+        v.AddChild(SectionLabel("Nạp Ma Thạch (thanh toán PayOS)"));
 
-        v.AddChild(SectionLabel("Mua Vàng / Nạp Aetherstone"));
-        var payRow = new HBoxContainer();
-        payRow.AddThemeConstantOverride("separation", 8);
-        for (int i = 0; i < 3; i++)
-        {
-            var b = MakePackButton("Gold", new Vector2(0, 68));
-            b.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-            payRow.AddChild(b);
-        }
-        for (int i = 0; i < 3; i++)
-        {
-            var b = MakePackButton("Nạp", new Vector2(0, 68));
-            b.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-            payRow.AddChild(b);
-        }
-        v.AddChild(payRow);
+        var packsScroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        packsScroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled;
+        var packsGrid = new GridContainer { Columns = 4 };
+        packsGrid.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        packsGrid.AddThemeConstantOverride("h_separation", 8);
+        packsGrid.AddThemeConstantOverride("v_separation", 8);
+        packsScroll.AddChild(packsGrid);
+        v.AddChild(packsScroll);
 
+        var loading = new Label { Text = "Đang tải gói nạp..." };
+        loading.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
+        packsGrid.AddChild(loading);
+
+        _ = FillPacks(packsGrid);
         return v;
     }
 
-    // ---- Tab Nhập Code ----
+    private async System.Threading.Tasks.Task FillPacks(GridContainer grid)
+    {
+        var packs = Shop.Instance != null ? await Shop.Instance.GetPacksAsync() : new List<Shop.PaymentPack>();
+        if (!GodotObject.IsInstanceValid(grid)) return;
+        foreach (Node c in grid.GetChildren()) c.QueueFree();
+
+        if (packs.Count == 0)
+        {
+            var empty = new Label { Text = "Chưa có gói nạp (hoặc chưa đăng nhập)." };
+            empty.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
+            grid.AddChild(empty);
+            return;
+        }
+
+        foreach (var p in packs)
+            grid.AddChild(MakePackCard(p));
+    }
+
+    private Control MakePackCard(Shop.PaymentPack p)
+    {
+        var card = new Button { CustomMinimumSize = new Vector2(150, 132), TooltipText = p.Description };
+        card.AddThemeStyleboxOverride("normal",  UiKit.Box(UiKit.WoodCard, 10, UiKit.MaThach, 2, 8, 8));
+        card.AddThemeStyleboxOverride("hover",   UiKit.Box(UiKit.Fade(UiKit.MaThach, 0.18f), 10, UiKit.MaThach, 2, 8, 8));
+        card.AddThemeStyleboxOverride("pressed", UiKit.Box(UiKit.Fade(UiKit.MaThach, 0.24f), 10, UiKit.MaThach, 2, 8, 8));
+
+        var v = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+        v.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        v.AddThemeConstantOverride("separation", 4);
+
+        var amount = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+        amount.AddThemeConstantOverride("separation", 4);
+        AddIcon(amount, UiKit.AetherIconPath, 22);
+        var al = new Label { Text = $"{p.CurrencyAmount:N0}" };
+        al.AddThemeFontSizeOverride("font_size", 18);
+        al.AddThemeColorOverride("font_color", UiKit.MaThach);
+        amount.AddChild(al);
+        v.AddChild(amount);
+
+        if (p.BonusPercent > 0)
+        {
+            var bonus = new Label { Text = $"+{p.BonusPercent}%", HorizontalAlignment = HorizontalAlignment.Center };
+            bonus.AddThemeFontSizeOverride("font_size", 12);
+            bonus.AddThemeColorOverride("font_color", UiKit.BuyGreenHi);
+            v.AddChild(bonus);
+        }
+
+        var name = new Label { Text = p.Name, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+        name.AddThemeFontSizeOverride("font_size", 12);
+        name.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
+        v.AddChild(name);
+
+        var price = new Label { Text = $"{(p.PriceVnd ?? 0):N0}đ", HorizontalAlignment = HorizontalAlignment.Center };
+        price.AddThemeFontSizeOverride("font_size", 15);
+        price.AddThemeColorOverride("font_color", UiKit.WoodText);
+        v.AddChild(price);
+
+        card.AddChild(v);
+        IgnoreMouse(v);
+        card.Pressed += () => OnBuyPack(p);
+        return card;
+    }
+
+    private async void OnBuyPack(Shop.PaymentPack p)
+    {
+        if (Shop.Instance == null) return;
+        ShowFeedback("Đang tạo link thanh toán...", true);
+        var (url, error) = await Shop.Instance.CreatePayOsLinkAsync(p.Id);
+        if (!string.IsNullOrEmpty(url))
+        {
+            OS.ShellOpen(url);   // mở trình duyệt thanh toán; webhook PayOS cộng Ma Thạch khi xong
+            ShowFeedback("Đã mở trang thanh toán. Hoàn tất rồi quay lại — Ma Thạch sẽ tự cộng.", true);
+        }
+        else
+        {
+            ShowFeedback(error, false);
+        }
+    }
+
+    // ── Tab Nhập Code ─────────────────────────────────────────────────────────
     private Control BuildRedeem()
     {
         var center = new CenterContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
-
-        var card = new PanelContainer { CustomMinimumSize = new Vector2(440, 0) };
+        var card   = new PanelContainer  { CustomMinimumSize = new Vector2(440, 0) };
         card.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodCard, 12, UiKit.Accent, 2, 24, 22));
 
         var v = new VBoxContainer();
@@ -494,24 +534,14 @@ public partial class ShopUi : CanvasLayer
         title.AddThemeColorOverride("font_color", UiKit.Accent);
         v.AddChild(title);
 
-        var desc = new Label
-        {
-            Text                = "Nhập mã quà tặng để nhận Vàng, Aetherstone hoặc vật phẩm.",
-            HorizontalAlignment = HorizontalAlignment.Center,
-            AutowrapMode        = TextServer.AutowrapMode.WordSmart,
-        };
+        var desc = new Label { Text = "Nhập mã quà tặng để nhận Vàng, Aetherstone hoặc vật phẩm.", HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
         desc.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
         v.AddChild(desc);
 
-        var input = new LineEdit
-        {
-            PlaceholderText   = "Ví dụ: WELCOME",
-            CustomMinimumSize = new Vector2(0, 46),
-            Alignment         = HorizontalAlignment.Center,
-        };
+        var input = new LineEdit { PlaceholderText = "Ví dụ: WELCOME", CustomMinimumSize = new Vector2(0, 46), Alignment = HorizontalAlignment.Center };
         input.AddThemeStyleboxOverride("normal", UiKit.Box(UiKit.WoodDark, 8, UiKit.WoodBorder, 2, 10, 6));
-        input.AddThemeStyleboxOverride("focus",  UiKit.Box(UiKit.WoodDark, 8, UiKit.Accent, 2, 10, 6));
-        input.AddThemeColorOverride("font_color", UiKit.WoodText);
+        input.AddThemeStyleboxOverride("focus",  UiKit.Box(UiKit.WoodDark, 8, UiKit.Accent,     2, 10, 6));
+        input.AddThemeColorOverride("font_color",             UiKit.WoodText);
         input.AddThemeColorOverride("font_placeholder_color", UiKit.WoodTextDim);
         input.AddThemeFontSizeOverride("font_size", 18);
         v.AddChild(input);
@@ -521,37 +551,22 @@ public partial class ShopUi : CanvasLayer
         redeem.AddThemeFontSizeOverride("font_size", 18);
         v.AddChild(redeem);
 
-        var result = new Label
-        {
-            HorizontalAlignment = HorizontalAlignment.Center,
-            AutowrapMode        = TextServer.AutowrapMode.WordSmart,
-            CustomMinimumSize   = new Vector2(0, 44),
-        };
+        var result = new Label { HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(0, 44) };
         result.AddThemeFontSizeOverride("font_size", 15);
         v.AddChild(result);
 
-        void DoRedeem()
+        async void DoRedeem()
         {
             var mgr = RedeemManager.Instance;
             if (mgr == null) return;
-            var status = mgr.Redeem(input.Text, out string reward);
-            switch (status)
-            {
-                case RedeemManager.Result.Success:
-                    result.Text = $"Thành công! Nhận: {reward}";
-                    result.AddThemeColorOverride("font_color", new Color(0.55f, 0.95f, 0.55f));
-                    input.Text = "";
-                    RefreshWallet();
-                    break;
-                case RedeemManager.Result.AlreadyUsed:
-                    result.Text = "Mã này đã được sử dụng.";
-                    result.AddThemeColorOverride("font_color", new Color(1f, 0.6f, 0.55f));
-                    break;
-                default:
-                    result.Text = "Mã không hợp lệ.";
-                    result.AddThemeColorOverride("font_color", new Color(1f, 0.6f, 0.55f));
-                    break;
-            }
+            redeem.Disabled = true;
+            result.Text = "Đang đổi mã...";
+            result.AddThemeColorOverride("font_color", new Color(0.85f, 0.85f, 0.85f));
+            var (ok, message) = await mgr.RedeemAsync(input.Text);
+            result.Text = message;
+            result.AddThemeColorOverride("font_color", ok ? new Color(0.55f, 0.95f, 0.55f) : new Color(1f, 0.6f, 0.55f));
+            if (ok) { input.Text = ""; RefreshWallet(); }
+            redeem.Disabled = false;
         }
 
         redeem.Pressed      += DoRedeem;
@@ -562,181 +577,119 @@ public partial class ShopUi : CanvasLayer
         return center;
     }
 
-    private Label SectionLabel(string text)
-    {
-        var l = new Label { Text = text };
-        l.AddThemeFontSizeOverride("font_size", 15);
-        l.AddThemeColorOverride("font_color", UiKit.Accent);
-        return l;
-    }
-
-    private Button MakePackButton(string text, Vector2 size)
-    {
-        var b = new Button { Text = text, CustomMinimumSize = size };
-        UiKit.StyleButton(b, UiKit.WoodCard, UiKit.Fade(UiKit.Accent, 0.18f), UiKit.Accent);
-        b.AddThemeColorOverride("font_color", UiKit.WoodText);
-        b.Pressed += () => ShowFeedback("Nạp / quảng cáo — sắp ra mắt (cần tích hợp thanh toán)", false);
-        return b;
-    }
-
-    // ---- Quảng cáo (tab Nạp) ----
-    private void OnWatchRewarded()
-    {
-        var ad = AdManager.Instance;
-        if (ad == null)           { ShowFeedback("Hệ thống quảng cáo chưa sẵn sàng", false); return; }
-        if (!ad.CanWatchRewarded) { ShowFeedback("Bạn đã hết lượt xem hôm nay", false);     return; }
-        ad.WatchRewardedForGold();   // xem xong → cộng Vàng + phát RewardGranted (→ OnAdReward)
-    }
-
-    private void OnAdReward(int gold)
-    {
-        if (_root == null || !_root.Visible) return;
-        SetTab(Tab.Topup);                                  // làm mới (used/cap, trạng thái nút)
-        ShowFeedback($"+{gold} Vàng từ quảng cáo!", true);
-    }
-
-    private void OnRemoveAds()
-    {
-        var ad = AdManager.Instance;
-        if (ad == null) return;
-        ad.SetAdsRemoved(true);
-        if (_root.Visible) SetTab(Tab.Topup);
-        ShowFeedback("Đã gỡ quảng cáo (banner + interstitial). Rewarded vẫn xem được.", true);
-    }
-
-    // ───────────────────────── Buy flow ─────────────────────────
-
-    private void RequestBuy(string itemId)
-    {
-        var listing = Shop.Instance?.GetListing(itemId);
-        var def     = ItemDatabase.Instance?.Get(itemId);
-        if (listing == null || def == null) return;
-
-        _pendingItemId      = itemId;
-        _confirm.DialogText = $"Mua {def.NameVi} với giá {listing.Price:N0} {(listing.CurrencyType == ShopCurrency.MaThach ? "Aetherstone" : "Vàng")}?";
-        _confirm.PopupCentered();
-    }
-
-    private void OnBuyConfirmed()
-    {
-        if (string.IsNullOrEmpty(_pendingItemId)) return;
-
-        var    def    = ItemDatabase.Instance?.Get(_pendingItemId);
-        string name   = def?.NameVi ?? _pendingItemId;
-        var    result = Shop.Instance?.Buy(_pendingItemId) ?? Shop.BuyResult.InvalidItem;
-
-        switch (result)
-        {
-            case Shop.BuyResult.Success:        ShowFeedback($"Đã mua {name}.", ok: true);  break;
-            case Shop.BuyResult.NotEnoughMoney: ShowFeedback("Không đủ tiền.",  ok: false); break;
-            default:                            ShowFeedback("Không mua được.", ok: false); break;
-        }
-        _pendingItemId = "";
-    }
-
-    private void ShowFeedback(string msg, bool ok)
-    {
-        if (_feedback == null) return;
-        _feedback.Text = msg;
-        _feedback.AddThemeColorOverride("font_color", ok ? new Color(0.55f, 0.95f, 0.55f) : new Color(1f, 0.6f, 0.55f));
-    }
-
-    // ───────────────────────── Gacha quay + hiệu ứng ─────────────────────────
-
+    // ── Gacha ─────────────────────────────────────────────────────────────────
     private void RefreshLuck()
     {
         if (_luckLabel != null && GodotObject.IsInstanceValid(_luckLabel))
-            _luckLabel.Text = $"Luck: {Gacha.Instance?.Pity ?? 0} / {Gacha.PityMax}";
+            _luckLabel.Text = $"Chìa Khóa Bạc: {Inventory.Instance?.CountOf("item_silver_key") ?? 0}";
     }
 
-    private void OnPull(int count)
+    private async void OnPull(int count)
     {
-        var results = Gacha.Instance?.Pull(count);
-        if (results == null || results.Count == 0)
-        {
-            ShowFeedback($"Cần {count} Chìa Khóa Bạc để quay.", false);
-            return;
-        }
-        RefreshLuck();
+        var mgr = SkinManager.Instance;
+        if (mgr == null) return;
+
+        var outcome = await mgr.GachaPullAsync(count);
+        if (outcome.Error != null) { ShowFeedback(outcome.Error, false); return; }
+
+        _ = Inventory.Instance?.SyncAsync();   // chìa đã trừ ở server → làm mới túi
         RefreshWallet();
-        ShowReveal(results);
+        RefreshLuck();
+        if (outcome.GoldRefunded > 0) ShowFeedback($"Trùng skin → hoàn {outcome.GoldRefunded:N0} Vàng.", true);
+        ShowSkinReveal(outcome.Results);
     }
 
-    private void BuildReveal()
+    // ── Reveal skin ───────────────────────────────────────────────────────────
+    private void ShowSkinReveal(List<SkinGachaResult> results)
     {
-        _reveal = new Control { Visible = false };
-        _reveal.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        _reveal.MouseFilter = Control.MouseFilterEnum.Ignore;
-        _root.AddChild(_reveal);
-
-        var dim = new ColorRect { Color = new Color(0, 0, 0, 0.85f) };
-        dim.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        dim.MouseFilter = Control.MouseFilterEnum.Ignore;
-        _reveal.AddChild(dim);
-
-        var box = new CenterContainer();
-        box.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        box.MouseFilter = Control.MouseFilterEnum.Ignore;
-        _reveal.AddChild(box);
-
-        var v = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center, MouseFilter = Control.MouseFilterEnum.Ignore };
-        v.AddThemeConstantOverride("separation", 16);
-        box.AddChild(v);
-
-        _revealTitle = new Label { HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = Control.MouseFilterEnum.Ignore };
-        _revealTitle.AddThemeFontSizeOverride("font_size", 30);
-        _revealTitle.AddThemeColorOverride("font_color", UiKit.Accent);
-        v.AddChild(_revealTitle);
-
-        _revealGrid = new GridContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
-        _revealGrid.AddThemeConstantOverride("h_separation", 12);
-        _revealGrid.AddThemeConstantOverride("v_separation", 12);
-        v.AddChild(_revealGrid);
-
-        var hint = new Label { Text = "Chạm để tiếp tục", HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = Control.MouseFilterEnum.Ignore };
-        hint.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
-        v.AddChild(hint);
-
-        _flash = new ColorRect { Color = new Color(1, 1, 1, 0) };
-        _flash.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        _flash.MouseFilter = Control.MouseFilterEnum.Ignore;
-        _reveal.AddChild(_flash);
-
-        var backdrop = new Button();
-        backdrop.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        var clear = UiKit.Box(new Color(0, 0, 0, 0));
-        backdrop.AddThemeStyleboxOverride("normal",  clear);
-        backdrop.AddThemeStyleboxOverride("hover",   clear);
-        backdrop.AddThemeStyleboxOverride("pressed", clear);
-        backdrop.AddThemeStyleboxOverride("focus",   clear);
-        backdrop.Pressed += HideReveal;
-        _reveal.AddChild(backdrop);
-    }
-
-    private void ShowReveal(List<ItemEntry> results)
-    {
-        _reveal.Visible     = true;
-        _reveal.MouseFilter = Control.MouseFilterEnum.Stop;
-
+        if (results == null || results.Count == 0) return;
+        _revealLayer.Visible     = true;
+        _revealLayer.MouseFilter = Control.MouseFilterEnum.Stop;
         foreach (Node c in _revealGrid.GetChildren()) c.QueueFree();
         _revealGrid.Columns = results.Count > 1 ? 5 : 1;
         _revealTitle.Text   = results.Count > 1 ? $"Quay {results.Count} lần!" : "Kết quả";
 
-        // Chớp sáng theo độ hiếm cao nhất
         Rarity best = Rarity.Common;
-        foreach (var d in results)
-            if (d != null && d.Rarity > best) best = d.Rarity;
-        _flash.Color = UiKit.Fade(best == Rarity.Common ? Colors.White : UiKit.RarityColor(best), 0.6f);
-        CreateTween().TweenProperty(_flash, "color:a", 0f, 0.4);
+        foreach (var r in results) { var rr = ParseRarity(r.Rarity); if (rr > best) best = rr; }
+        _revealFlash.Color = UiKit.Fade(best == Rarity.Common ? Colors.White : UiKit.RarityColor(best), 0.6f);
+        CreateTween().TweenProperty(_revealFlash, "color:a", 0f, 0.4);
 
-        // Card hiện lần lượt (fade-in so le)
+        int i = 0;
+        foreach (var r in results)
+        {
+            var card = MakeSkinRevealCard(r);
+            card.Modulate = new Color(1, 1, 1, 0);
+            _revealGrid.AddChild(card);
+            var tw = CreateTween();
+            tw.TweenInterval(0.12 + i * 0.07);
+            tw.TweenProperty(card, "modulate:a", 1f, 0.25);
+            i++;
+        }
+    }
+
+    private Control MakeSkinRevealCard(SkinGachaResult r)
+    {
+        Rarity rar = ParseRarity(r.Rarity);
+        Color  rc  = UiKit.RarityColor(rar);
+        var card = new PanelContainer { CustomMinimumSize = new Vector2(140, 172) };
+        card.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.Fade(rc, 0.18f), 12, rc, 3, 10, 10));
+
+        var v = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+        v.AddThemeConstantOverride("separation", 6);
+
+        // Ô màu đại diện hiệu ứng (skin procedural đổi màu)
+        var swatch = new ColorRect { CustomMinimumSize = new Vector2(64, 64), Color = SkinSwatchColor(r.SkinId) };
+        var sw = new CenterContainer();
+        sw.AddChild(swatch);
+        v.AddChild(sw);
+
+        var name = new Label { Text = r.Name, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+        name.AddThemeFontSizeOverride("font_size", 13);
+        name.AddThemeColorOverride("font_color", UiKit.WoodText);
+        v.AddChild(name);
+
+        var tag = new Label { Text = r.IsNew ? "MỚI!" : "Trùng", HorizontalAlignment = HorizontalAlignment.Center };
+        tag.AddThemeFontSizeOverride("font_size", 12);
+        tag.AddThemeColorOverride("font_color", r.IsNew ? UiKit.BuyGreenHi : UiKit.WoodTextDim);
+        v.AddChild(tag);
+
+        card.AddChild(v);
+        return card;
+    }
+
+    private static Color SkinSwatchColor(string skinId)
+    {
+        var def = SkinManager.Instance?.Get(skinId);
+        return def?.ColorValue ?? Colors.White;
+    }
+
+    private static Rarity ParseRarity(string s) => (s ?? "").ToLowerInvariant() switch
+    {
+        "rare"      => Rarity.Rare,
+        "epic"      => Rarity.Epic,
+        "legendary" => Rarity.Legendary,
+        _           => Rarity.Common,
+    };
+
+    private void ShowReveal(List<ItemEntry> results)
+    {
+        _revealLayer.Visible     = true;
+        _revealLayer.MouseFilter = Control.MouseFilterEnum.Stop;
+        foreach (Node c in _revealGrid.GetChildren()) c.QueueFree();
+        _revealGrid.Columns  = results.Count > 1 ? 5 : 1;
+        _revealTitle.Text    = results.Count > 1 ? $"Quay {results.Count} lần!" : "Kết quả";
+
+        Rarity best = Rarity.Common;
+        foreach (var d in results) if (d != null && d.Rarity > best) best = d.Rarity;
+        _revealFlash.Color = UiKit.Fade(best == Rarity.Common ? Colors.White : UiKit.RarityColor(best), 0.6f);
+        CreateTween().TweenProperty(_revealFlash, "color:a", 0f, 0.4);
+
         int i = 0;
         foreach (var def in results)
         {
             var card = MakeRevealCard(def);
             card.Modulate = new Color(1, 1, 1, 0);
             _revealGrid.AddChild(card);
-
             var tw = CreateTween();
             tw.TweenInterval(0.12 + i * 0.07);
             tw.TweenProperty(card, "modulate:a", 1f, 0.25);
@@ -746,21 +699,19 @@ public partial class ShopUi : CanvasLayer
 
     private void HideReveal()
     {
-        _reveal.Visible     = false;
-        _reveal.MouseFilter = Control.MouseFilterEnum.Ignore;
+        _revealLayer.Visible     = false;
+        _revealLayer.MouseFilter = Control.MouseFilterEnum.Ignore;
     }
 
     private Control MakeRevealCard(ItemEntry def)
     {
         Rarity r  = def?.Rarity ?? Rarity.Common;
         Color  rc = UiKit.RarityColor(r);
-
-        var card = new PanelContainer { CustomMinimumSize = new Vector2(140, 172) };
+        var card  = new PanelContainer { CustomMinimumSize = new Vector2(140, 172) };
         card.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.Fade(rc, 0.18f), 12, rc, 3, 10, 10));
 
         var v = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
         v.AddThemeConstantOverride("separation", 6);
-
         v.AddChild(UiKit.ItemIcon(def, rc, 72));
 
         var name = new Label { Text = def?.NameVi ?? "?", HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
@@ -777,7 +728,81 @@ public partial class ShopUi : CanvasLayer
         return card;
     }
 
-    // ───────────────────────── Helpers ─────────────────────────
+    // ── Buy flow ──────────────────────────────────────────────────────────────
+    private void RequestBuy(string itemId)
+    {
+        var listing = Shop.Instance?.GetListing(itemId);
+        var def     = ItemDatabase.Instance?.Get(itemId);
+        if (listing == null || def == null) return;
+        _pendingItemId       = itemId;
+        _confirmDialog.DialogText = $"Mua {def.NameVi} với giá {listing.Price:N0} {(listing.CurrencyType == ShopCurrency.MaThach ? "Aetherstone" : "Vàng")}?";
+        _confirmDialog.PopupCentered();
+    }
+
+    private async void OnBuyConfirmed()
+    {
+        if (string.IsNullOrEmpty(_pendingItemId)) return;
+        var    def    = ItemDatabase.Instance?.Get(_pendingItemId);
+        string name   = def?.NameVi ?? _pendingItemId;
+        var    result = Shop.Instance != null ? await Shop.Instance.BuyAsync(_pendingItemId) : Shop.BuyResult.InvalidItem;
+        switch (result)
+        {
+            case Shop.BuyResult.Success:        ShowFeedback($"Đã mua {name}.", ok: true);  break;
+            case Shop.BuyResult.NotEnoughMoney: ShowFeedback("Không đủ tiền.",  ok: false); break;
+            default:                            ShowFeedback("Không mua được.", ok: false); break;
+        }
+        _pendingItemId = "";
+    }
+
+    private void ShowFeedback(string msg, bool ok)
+    {
+        if (_feedbackLabel == null) return;
+        _feedbackLabel.Text = msg;
+        _feedbackLabel.AddThemeColorOverride("font_color", ok ? new Color(0.55f, 0.95f, 0.55f) : new Color(1f, 0.6f, 0.55f));
+    }
+
+    // ── Ads ───────────────────────────────────────────────────────────────────
+    private void OnWatchRewarded()
+    {
+        var ad = AdManager.Instance;
+        if (ad == null)           { ShowFeedback("Hệ thống quảng cáo chưa sẵn sàng", false); return; }
+        if (!ad.CanWatchRewarded) { ShowFeedback("Bạn đã hết lượt xem hôm nay", false);      return; }
+        ad.WatchRewardedForGold();
+    }
+
+    private void OnAdReward(int gold)
+    {
+        if (_shopRoot == null || !_shopRoot.Visible) return;
+        SetTab(Tab.Topup);
+        ShowFeedback($"+{gold} Vàng từ quảng cáo!", true);
+    }
+
+    private void OnRemoveAds()
+    {
+        var ad = AdManager.Instance;
+        if (ad == null) return;
+        ad.SetAdsRemoved(true);
+        if (_shopRoot.Visible) SetTab(Tab.Topup);
+        ShowFeedback("Đã gỡ quảng cáo (banner + interstitial). Rewarded vẫn xem được.", true);
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    private Label SectionLabel(string text)
+    {
+        var l = new Label { Text = text };
+        l.AddThemeFontSizeOverride("font_size", 15);
+        l.AddThemeColorOverride("font_color", UiKit.Accent);
+        return l;
+    }
+
+    private Button MakePackButton(string text, Vector2 size)
+    {
+        var b = new Button { Text = text, CustomMinimumSize = size };
+        UiKit.StyleButton(b, UiKit.WoodCard, UiKit.Fade(UiKit.Accent, 0.18f), UiKit.Accent);
+        b.AddThemeColorOverride("font_color", UiKit.WoodText);
+        b.Pressed += () => ShowFeedback("Nạp / quảng cáo — sắp ra mắt (cần tích hợp thanh toán)", false);
+        return b;
+    }
 
     private static void AddIcon(BoxContainer parent, string path, int size)
     {
@@ -796,19 +821,14 @@ public partial class ShopUi : CanvasLayer
     private static void IgnoreMouse(Node node)
     {
         if (node is Control c) c.MouseFilter = Control.MouseFilterEnum.Ignore;
-        foreach (var child in node.GetChildren())
-            IgnoreMouse(child);
+        foreach (var child in node.GetChildren()) IgnoreMouse(child);
     }
 
     private static void EnsureInputAction()
     {
-        if (!InputMap.HasAction("toggle_shop"))
-            InputMap.AddAction("toggle_shop");
-
+        if (!InputMap.HasAction("toggle_shop")) InputMap.AddAction("toggle_shop");
         foreach (var e in InputMap.ActionGetEvents("toggle_shop"))
-            if (e is InputEventKey k && k.PhysicalKeycode == Key.P)
-                return;
-
+            if (e is InputEventKey k && k.PhysicalKeycode == Key.P) return;
         InputMap.ActionAddEvent("toggle_shop", new InputEventKey { PhysicalKeycode = Key.P });
     }
 }

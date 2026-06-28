@@ -1,6 +1,7 @@
 using Godot;
 using FragmentOfJapanese.Entities.Player;
 using FragmentOfJapanese.Ui;
+using EnemyEntity = FragmentOfJapanese.Entities.Enemy.Enemy;
 
 namespace FragmentOfJapanese.World;
 
@@ -10,8 +11,14 @@ namespace FragmentOfJapanese.World;
 /// </summary>
 public partial class WorldController : Node3D
 {
+    // Loot rơi khi hạ quái NGOÀI map (không có DungeonController). EXP do AttackZone lo (tránh trùng).
+    [Export] public string LootItemId  { get; set; } = "item_goblin_ear";
+    [Export] public int    LootDropMin { get; set; } = 1;
+    [Export] public int    LootDropMax { get; set; } = 2;
+
     private Player _player;
     private Node3D _spawnNode;
+    private readonly RandomNumberGenerator _rng = new();
 
     public override void _Ready()
     {
@@ -19,6 +26,37 @@ public partial class WorldController : Node3D
         // _Process chờ đến khi Player vào scene rồi nối signal.
         // PlayerSpawn là anh/em (sibling) cùng cha với WorldController — phải tìm qua parent.
         _spawnNode = GetParent()?.GetNodeOrNull<Node3D>("PlayerSpawn");
+
+        _rng.Randomize();
+        // Quái đặt sẵn (đã trong cây) + quái Spawner sinh sau (qua NodeAdded) đều nối Died → rơi loot.
+        HookEnemies(GetTree().Root);
+        GetTree().NodeAdded += OnNodeAdded;
+
+        // Đồng bộ lại toàn bộ trạng thái khi vào World (phòng khi tải lại scene / vào thẳng gameplay).
+        _ = FragmentOfJapanese.Autoloads.GameSync.SyncAllAsync();
+    }
+
+    public override void _ExitTree()
+    {
+        if (GetTree() != null) GetTree().NodeAdded -= OnNodeAdded;
+    }
+
+    private void HookEnemies(Node root)
+    {
+        if (root is EnemyEntity e) e.Died += OnEnemyKilled;
+        foreach (var c in root.GetChildren()) HookEnemies(c);
+    }
+
+    private void OnNodeAdded(Node n)
+    {
+        if (n is EnemyEntity e) e.Died += OnEnemyKilled;
+    }
+
+    private void OnEnemyKilled(EnemyEntity enemy)
+    {
+        int n = _rng.RandiRange(LootDropMin, LootDropMax);
+        if (n > 0) _ = FragmentOfJapanese.Items.Inventory.Instance?.GrantAsync(LootItemId, n);
+        FragmentOfJapanese.Quests.QuestManager.Instance?.Report("kill", "goblin");
     }
 
     public override void _Process(double delta)

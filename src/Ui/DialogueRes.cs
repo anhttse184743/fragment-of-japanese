@@ -8,6 +8,7 @@ public enum DialogueAction
     None,           // chỉ đóng thoại (hoặc chỉ hiện ReplyLines)
     OpenShop,       // mở ShopUi (trao đổi / mua bán)
     OpenLearning,   // mở màn học từ (chỉ NPC dạy học mới có tác dụng)
+    OpenKanaDraw,   // mở màn luyện viết chữ kana (KanaDrawUi)
 }
 
 /// <summary>
@@ -50,4 +51,7 @@ public partial class DialogueRes : Resource
 
     /// <summary>Lựa chọn 1/2/3 hiện sau dòng cuối. Để trống = không có lựa chọn.</summary>
     [Export] public DialogueChoiceRes[] Choices { get; set; } = System.Array.Empty<DialogueChoiceRes>();
+
+    /// <summary>Ảnh chân dung NPC (hiện bên trái hộp thoại). Để trống = tự lấy frame idle đầu của sprite NPC.</summary>
+    [Export] public Texture2D Portrait { get; set; }
 }

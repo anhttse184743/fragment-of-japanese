@@ -35,10 +35,13 @@ public sealed class DialogueNode
 
     /// <summary>Chạy khi hết dòng (chỉ khi KHÔNG có Choices) rồi đóng — vd mở shop sau lời đáp.</summary>
     public Action OnEnd { get; init; }
+
+    /// <summary>Ảnh chân dung hiện bên trái (do NPC gán; rỗng = không có chân dung).</summary>
+    public Texture2D Portrait { get; set; }
 }
 
 /// <summary>
-/// Hộp thoại NPC (autoload). Gọi:  <c>DialogueUi.Instance.Start(node)</c>.
+/// Hộp thoại NPC (autoload = scene <c>res://scenes/ui/DialogueUi.tscn</c>). Gọi:  <c>DialogueUi.Instance.Start(node)</c>.
 ///  - Hiện ô thoại dưới màn hình + ẩn HUD (mọi node trong group "hud") khi đang thoại.
 ///  - Typewriter; CLICK / Enter / Space để TUA NHANH dòng đang gõ, lần nữa = sang dòng kế.
 ///  - Sau dòng cuối: hiện lựa chọn 1/2/3 (click hoặc bấm số). Lựa chọn có thể:
@@ -46,6 +49,9 @@ public sealed class DialogueNode
 ///      Action → chạy (vd <see cref="ShopUi"/> trao đổi) rồi đóng
 ///      (rỗng) → đóng thoại.
 ///  - Khi mở: chặn di chuyển/đánh của người chơi qua cờ tĩnh <see cref="Active"/>.
+///
+/// GIAO DIỆN nằm trong <c>DialogueUi.tscn</c> (chỉnh layout/font/màu trong editor) — file này CHỈ giữ logic
+/// + tham chiếu node qua <c>[Export]</c>. Nút lựa chọn tạo lúc chạy nên màu của chúng vẫn ở đây (ChoiceX).
 /// </summary>
 public partial class DialogueUi : CanvasLayer
 {
@@ -54,17 +60,26 @@ public partial class DialogueUi : CanvasLayer
     /// <summary>Đang có hội thoại mở — PlayerController đọc cờ này để khoá điều khiển.</summary>
     public static bool Active { get; private set; }
 
-    [Export] public float CharInterval { get; set; } = 0.02f;   // giây / ký tự
+    [Export] public float CharInterval { get; set; } = 0.02f;   // giây / ký tự (nhỏ = gõ nhanh)
+
+    // ── Tham chiếu node (gắn trong DialogueUi.tscn) ──
+    [Export] private Control        _root;
+    [Export] private Button         _advance;        // nền phủ màn, bắt click "tua / tiếp"
+    [Export] private PanelContainer _portraitFrame;  // khung chân dung (ẩn nếu NPC không có ảnh)
+    [Export] private TextureRect    _portrait;
+    [Export] private Label          _nameLabel;
+    [Export] private Label          _textLabel;      // tiếng Nhật (gõ typewriter)
+    [Export] private Label          _textViLabel;    // tiếng Việt (bản dịch)
+    [Export] private Label          _hint;
+    [Export] private VBoxContainer  _choiceBox;
+
+    // Màu nút lựa chọn tạo lúc chạy (phần tĩnh chỉnh trong .tscn).
+    private static readonly Color ChoiceBg     = new(0.16f, 0.15f, 0.23f);
+    private static readonly Color ChoiceBorder = new(0.86f, 0.70f, 0.38f);
+    private static readonly Color ChoiceText   = new(0.98f, 0.96f, 0.92f);
+    private static readonly Color ChoiceHi     = new(1.00f, 0.84f, 0.45f);
 
     private enum Phase { Typing, LineDone, Choosing }
-
-    private Control       _root;
-    private Button        _advance;     // nền phủ màn, bắt click "tua / tiếp"
-    private Label         _nameLabel;
-    private Label         _textLabel;     // tiếng Nhật (gõ typewriter)
-    private Label         _textViLabel;   // tiếng Việt (bản dịch)
-    private Label         _hint;
-    private VBoxContainer _choiceBox;
 
     private DialogueNode _node;
     private int          _lineIdx;
@@ -76,32 +91,39 @@ public partial class DialogueUi : CanvasLayer
     public override void _Ready()
     {
         Instance = this;
-        Layer    = 40;        // trên HUD/shop (11), dưới ConfirmUi (50)
-        BuildUi();
-        _root.Visible = false;
+        if (_advance != null) _advance.Pressed += Advance;
+        if (_root != null) _root.Visible = false;
     }
 
     // ───────────────────────── API ─────────────────────────
 
     public void Start(DialogueNode node)
     {
-        if (node == null) return;
+        if (node == null || _root == null) return;
         if (!_root.Visible)               // mở lần đầu
         {
             _root.Visible = true;
             Active        = true;
             SetHudVisible(false);
         }
+        SetPortrait(node.Portrait);       // 1 NPC = 1 chân dung suốt đoạn thoại
         GoTo(node);
     }
 
     public void Close()
     {
-        _root.Visible = false;
-        Active        = false;
-        _node         = null;
+        if (_root != null) _root.Visible = false;
+        Active = false;
+        _node  = null;
         ClearChoices();
         SetHudVisible(true);
+    }
+
+    private void SetPortrait(Texture2D tex)
+    {
+        if (_portrait == null) return;
+        _portrait.Texture = tex;
+        if (_portraitFrame != null) _portraitFrame.Visible = tex != null;
     }
 
     // ───────────────────────── Luồng thoại ─────────────────────────
@@ -133,7 +155,7 @@ public partial class DialogueUi : CanvasLayer
             _textViLabel.Visible = !string.IsNullOrEmpty(sub);
         }
         if (_hint != null) _hint.Visible = false;
-        _advance.Disabled = false;
+        if (_advance != null) _advance.Disabled = false;
     }
 
     public override void _Process(double delta)
@@ -178,8 +200,8 @@ public partial class DialogueUi : CanvasLayer
 
     private void ShowChoices()
     {
-        _phase            = Phase.Choosing;
-        _advance.Disabled = true;          // không cho "click-tiếp" khi đang chọn
+        _phase = Phase.Choosing;
+        if (_advance != null) _advance.Disabled = true;   // không cho "click-tiếp" khi đang chọn
         if (_hint != null) _hint.Visible = false;
         ClearChoices();
 
@@ -189,11 +211,14 @@ public partial class DialogueUi : CanvasLayer
             var btn = new Button
             {
                 Text              = $"{i + 1}.  {_node.Choices[i].Label}",
-                CustomMinimumSize = new Vector2(320, 44),
+                CustomMinimumSize = new Vector2(340, 46),
                 Alignment         = HorizontalAlignment.Left,
             };
-            UiKit.StyleButton(btn, UiKit.WoodCard, UiKit.Fade(UiKit.Accent, 0.22f), UiKit.Accent);
-            btn.AddThemeColorOverride("font_color", UiKit.WoodText);
+            UiKit.StyleButton(btn, ChoiceBg, UiKit.Fade(ChoiceBorder, 0.28f), UiKit.Fade(ChoiceBorder, 0.42f));
+            btn.AddThemeColorOverride("font_color",         ChoiceText);
+            btn.AddThemeColorOverride("font_hover_color",   ChoiceHi);
+            btn.AddThemeColorOverride("font_pressed_color", ChoiceHi);
+            btn.AddThemeFontSizeOverride("font_size", 17);
             btn.Pressed += () => Choose(idx);
             _choiceBox.AddChild(btn);
             if (i == 0) btn.GrabFocus();
@@ -254,99 +279,6 @@ public partial class DialogueUi : CanvasLayer
         }
 
         if (ev.IsActionPressed("ui_accept")) { Advance(); GetViewport().SetInputAsHandled(); }
-    }
-
-    // ───────────────────────── Dựng UI ─────────────────────────
-
-    private void BuildUi()
-    {
-        _root = new Control { Name = "DialogueRoot" };
-        _root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        _root.MouseFilter = Control.MouseFilterEnum.Ignore;
-        AddChild(_root);
-
-        // nền phủ toàn màn, bắt click "tua / tiếp" — nằm DƯỚI ô thoại & lựa chọn
-        _advance = new Button { FocusMode = Control.FocusModeEnum.None };
-        _advance.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        var clear = UiKit.Box(new Color(0, 0, 0, 0));
-        _advance.AddThemeStyleboxOverride("normal",  clear);
-        _advance.AddThemeStyleboxOverride("hover",   clear);
-        _advance.AddThemeStyleboxOverride("pressed", clear);
-        _advance.AddThemeStyleboxOverride("focus",   clear);
-        _advance.Pressed += Advance;
-        _root.AddChild(_advance);
-
-        // cụm dưới màn hình: [lựa chọn] trên [ô thoại]
-        var anchor = new MarginContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
-        anchor.SetAnchorsPreset(Control.LayoutPreset.BottomWide);
-        anchor.OffsetTop    = -320;
-        anchor.OffsetBottom = -28;
-        anchor.OffsetLeft   = 40;
-        anchor.OffsetRight  = -40;
-        _root.AddChild(anchor);
-
-        var col = new VBoxContainer
-        {
-            MouseFilter = Control.MouseFilterEnum.Ignore,
-            Alignment   = BoxContainer.AlignmentMode.End,   // dồn xuống đáy (ô thoại sát đáy)
-        };
-        col.AddThemeConstantOverride("separation", 10);
-        anchor.AddChild(col);
-
-        _choiceBox = new VBoxContainer { Visible = false, SizeFlagsHorizontal = Control.SizeFlags.ShrinkEnd };
-        _choiceBox.AddThemeConstantOverride("separation", 6);
-        col.AddChild(_choiceBox);
-
-        // panel + nội dung để Ignore chuột → click trên ô thoại vẫn rơi xuống _advance (tua/tiếp)
-        var panel = new PanelContainer
-        {
-            CustomMinimumSize = new Vector2(0, 150),
-            MouseFilter       = Control.MouseFilterEnum.Ignore,
-        };
-        panel.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodPanel, 14, UiKit.WoodBorder, 3, 22, 18));
-        col.AddChild(panel);
-
-        var pv = new VBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
-        pv.AddThemeConstantOverride("separation", 8);
-        panel.AddChild(pv);
-
-        _nameLabel = new Label { MouseFilter = Control.MouseFilterEnum.Ignore };
-        _nameLabel.AddThemeFontSizeOverride("font_size", 22);
-        _nameLabel.AddThemeColorOverride("font_color", UiKit.Accent);
-        pv.AddChild(_nameLabel);
-
-        _textLabel = new Label
-        {
-            AutowrapMode      = TextServer.AutowrapMode.WordSmart,
-            CustomMinimumSize = new Vector2(0, 46),
-            VerticalAlignment = VerticalAlignment.Top,
-            MouseFilter       = Control.MouseFilterEnum.Ignore,
-        };
-        _textLabel.AddThemeFontSizeOverride("font_size", 24);     // tiếng Nhật: to hơn
-        _textLabel.AddThemeColorOverride("font_color", UiKit.WoodText);
-        pv.AddChild(_textLabel);
-
-        _textViLabel = new Label
-        {
-            AutowrapMode      = TextServer.AutowrapMode.WordSmart,
-            CustomMinimumSize = new Vector2(0, 28),
-            VerticalAlignment = VerticalAlignment.Top,
-            MouseFilter       = Control.MouseFilterEnum.Ignore,
-        };
-        _textViLabel.AddThemeFontSizeOverride("font_size", 17);   // tiếng Việt: nhỏ, mờ
-        _textViLabel.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
-        pv.AddChild(_textViLabel);
-
-        _hint = new Label
-        {
-            Text                = "▼  Nhấp để tiếp",
-            HorizontalAlignment = HorizontalAlignment.Right,
-            Visible             = false,
-            MouseFilter         = Control.MouseFilterEnum.Ignore,
-        };
-        _hint.AddThemeFontSizeOverride("font_size", 14);
-        _hint.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
-        pv.AddChild(_hint);
     }
 
     /// <summary>Ẩn/hiện mọi UI thuộc group "hud" (HUD, joystick...) khi vào/ra thoại.</summary>

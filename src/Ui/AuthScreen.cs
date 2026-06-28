@@ -20,7 +20,7 @@ public partial class AuthScreen : Control
 
     private const float CardWidth        = 436f;
     private const float CardContentWidth = 380f;
-    private const float FormSlotHeight   = 268f;
+    private const float FormSlotHeight   = 340f;
 
     // ----- Bảng màu riêng của màn này (bổ sung cho UiKit) -----
     private static readonly Color BgTop    = new(0.07f, 0.08f, 0.13f);
@@ -49,7 +49,7 @@ public partial class AuthScreen : Control
     private Control _formSlot, _loginForm, _regForm;
     private Label   _msg;
     private CheckButton _remember;
-    private LineEdit _userLogin, _passLogin, _userReg, _passReg, _confirmReg;
+    private LineEdit _emailLogin, _passLogin, _userReg, _emailReg, _passReg, _confirmReg;
 
     public override void _Ready()
     {
@@ -60,9 +60,10 @@ public partial class AuthScreen : Control
         BuildCard();
 
         // Phím Enter trong ô → nhảy ô kế / gửi
-        _userLogin.TextSubmitted   += _ => _passLogin.GrabFocus();
+        _emailLogin.TextSubmitted  += _ => _passLogin.GrabFocus();
         _passLogin.TextSubmitted   += _ => Submit();
-        _userReg.TextSubmitted     += _ => _passReg.GrabFocus();
+        _userReg.TextSubmitted     += _ => _emailReg.GrabFocus();
+        _emailReg.TextSubmitted    += _ => _passReg.GrabFocus();
         _passReg.TextSubmitted     += _ => _confirmReg.GrabFocus();
         _confirmReg.TextSubmitted  += _ => Submit();
 
@@ -173,7 +174,6 @@ public partial class AuthScreen : Control
         col.AddChild(BuildFormSlot());
         col.AddChild(BuildMessage());
         col.AddChild(BuildPrimary());
-        col.AddChild(BuildFooter());
 
         UpdateTabVisual();
     }
@@ -280,8 +280,8 @@ public partial class AuthScreen : Control
         var form = new VBoxContainer();
         form.AddThemeConstantOverride("separation", 14);
 
-        _userLogin = AddField(form, "Tên đăng nhập", "Nhập tên đăng nhập", secret: false);
-        _passLogin = AddField(form, "Mật khẩu", "Nhập mật khẩu", secret: true);
+        _emailLogin = AddField(form, "Email", "Nhập email của bạn", secret: false);
+        _passLogin  = AddField(form, "Mật khẩu", "Nhập mật khẩu", secret: true);
 
         var row = new HBoxContainer();
         row.AddThemeConstantOverride("separation", 8);
@@ -308,11 +308,12 @@ public partial class AuthScreen : Control
         var form = new VBoxContainer();
         form.AddThemeConstantOverride("separation", 14);
 
-        _userReg    = AddField(form, "Tên đăng nhập", "Tạo tên đăng nhập", secret: false);
-        _passReg    = AddField(form, "Mật khẩu", "Tạo mật khẩu", secret: true);
+        _userReg    = AddField(form, "Tên đăng nhập", "Tạo tên đăng nhập (3–20 ký tự)", secret: false);
+        _emailReg   = AddField(form, "Email", "Nhập địa chỉ email", secret: false);
+        _passReg    = AddField(form, "Mật khẩu", "Tạo mật khẩu (tối thiểu 6 ký tự)", secret: true);
         _confirmReg = AddField(form, "Nhập lại mật khẩu", "Nhập lại mật khẩu", secret: true);
 
-        var hint = new Label { Text = "Tên 3–20 ký tự · Mật khẩu từ 6 ký tự.", HorizontalAlignment = HorizontalAlignment.Center };
+        var hint = new Label { Text = "Email dùng để đăng nhập về sau.", HorizontalAlignment = HorizontalAlignment.Center };
         hint.AddThemeFontSizeOverride("font_size", 12);
         hint.AddThemeColorOverride("font_color", UiKit.TextDim);
         form.AddChild(hint);
@@ -426,30 +427,6 @@ public partial class AuthScreen : Control
         return _primary;
     }
 
-    private Control BuildFooter()
-    {
-        var v = new VBoxContainer();
-        v.AddThemeConstantOverride("separation", 12);
-
-        var divider = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
-        divider.AddThemeConstantOverride("separation", 10);
-        divider.AddChild(MakeHLine());
-        var or = new Label { Text = "hoặc" };
-        or.AddThemeFontSizeOverride("font_size", 12);
-        or.AddThemeColorOverride("font_color", UiKit.TextDim);
-        divider.AddChild(or);
-        divider.AddChild(MakeHLine());
-        v.AddChild(divider);
-
-        var guest = MakeLinkButton("Chơi với tư cách khách", 14);
-        guest.Pressed += OnGuest;
-        var gc = new CenterContainer();
-        gc.AddChild(guest);
-        v.AddChild(gc);
-
-        return v;
-    }
-
     private static Control MakeHLine() => new ColorRect
     {
         Color               = UiKit.Fade(Colors.White, 0.12f),
@@ -504,7 +481,7 @@ public partial class AuthScreen : Control
         SetMessage("", UiKit.TextDim);
         _primary.Text = PrimaryText();
 
-        var first = mode == Mode.Login ? _userLogin : _userReg;
+        var first = mode == Mode.Login ? _emailLogin : _userReg;
         first.CallDeferred(Control.MethodName.GrabFocus);
     }
 
@@ -525,9 +502,9 @@ public partial class AuthScreen : Control
 
     private async void DoLogin()
     {
-        string u = _userLogin.Text.Trim();
-        string p = _passLogin.Text;
-        if (u.Length == 0 || p.Length == 0) { Fail("Vui lòng nhập đầy đủ thông tin."); return; }
+        string email = _emailLogin.Text.Trim();
+        string pass  = _passLogin.Text;
+        if (email.Length == 0 || pass.Length == 0) { Fail("Vui lòng nhập đầy đủ thông tin."); return; }
 
         SetBusy(true);
         SetMessage("Đang đăng nhập...", UiKit.TextDim);
@@ -535,7 +512,7 @@ public partial class AuthScreen : Control
         if (!IsInstanceValid(this)) return;
 
         var mgr = AccountManager.Instance;
-        var res = mgr != null ? mgr.Login(u, p, _remember.ButtonPressed) : AccountManager.AuthResult.Error;
+        var res = mgr != null ? await mgr.Login(email, pass, _remember.ButtonPressed) : AccountManager.AuthResult.Error;
 
         if (res == AccountManager.AuthResult.Ok)
         {
@@ -553,10 +530,12 @@ public partial class AuthScreen : Control
 
     private async void DoRegister()
     {
-        string u = _userReg.Text.Trim();
-        string p = _passReg.Text;
-        string c = _confirmReg.Text;
-        if (u.Length == 0 || p.Length == 0 || c.Length == 0) { Fail("Vui lòng nhập đầy đủ thông tin."); return; }
+        string user    = _userReg.Text.Trim();
+        string email   = _emailReg.Text.Trim();
+        string pass    = _passReg.Text;
+        string confirm = _confirmReg.Text;
+        if (user.Length == 0 || email.Length == 0 || pass.Length == 0 || confirm.Length == 0)
+        { Fail("Vui lòng nhập đầy đủ thông tin."); return; }
 
         SetBusy(true);
         SetMessage("Đang tạo tài khoản...", UiKit.TextDim);
@@ -564,11 +543,11 @@ public partial class AuthScreen : Control
         if (!IsInstanceValid(this)) return;
 
         var mgr = AccountManager.Instance;
-        var res = mgr != null ? mgr.Register(u, p, c) : AccountManager.AuthResult.Error;
+        var res = mgr != null ? await mgr.Register(user, email, pass, confirm) : AccountManager.AuthResult.Error;
 
         if (res == AccountManager.AuthResult.Ok)
         {
-            mgr.Login(u, p, remember: true);   // tạo xong đăng nhập luôn
+            await mgr.Login(email, pass, remember: true);   // tạo xong đăng nhập luôn bằng email
             SetMessage("Tạo tài khoản thành công!", OkColor);
             await ToSignal(GetTree().CreateTimer(0.45f), SceneTreeTimer.SignalName.Timeout);
             if (!IsInstanceValid(this)) return;
@@ -579,14 +558,6 @@ public partial class AuthScreen : Control
             SetBusy(false);
             Fail(MsgFor(res));
         }
-    }
-
-    private void OnGuest()
-    {
-        if (_busy) return;
-        AccountManager.Instance?.PlayAsGuest();
-        SetMessage("Đang vào game...", UiKit.TextDim);
-        Proceed();
     }
 
     private void Proceed()
@@ -621,12 +592,14 @@ public partial class AuthScreen : Control
     {
         AccountManager.AuthResult.EmptyFields      => "Vui lòng nhập đầy đủ thông tin.",
         AccountManager.AuthResult.InvalidUsername  => "Tên đăng nhập cần 3–20 ký tự (chữ, số, _).",
+        AccountManager.AuthResult.InvalidEmail     => "Email không hợp lệ.",
         AccountManager.AuthResult.InvalidPassword  => "Mật khẩu cần ít nhất 6 ký tự.",
         AccountManager.AuthResult.PasswordMismatch => "Mật khẩu nhập lại không khớp.",
         AccountManager.AuthResult.UserExists       => "Tên đăng nhập đã tồn tại.",
-        AccountManager.AuthResult.UserNotFound      => "Tài khoản không tồn tại.",
+        AccountManager.AuthResult.EmailExists      => "Email này đã được đăng ký.",
+        AccountManager.AuthResult.UserNotFound     => "Email chưa được đăng ký.",
         AccountManager.AuthResult.WrongPassword    => "Sai mật khẩu.",
-        _                                           => "Đã có lỗi xảy ra. Thử lại nhé.",
+        _                                          => "Đã có lỗi xảy ra. Thử lại nhé.",
     };
 
     // ───────────────────────── Hiệu ứng ─────────────────────────
@@ -643,17 +616,17 @@ public partial class AuthScreen : Control
         tw.TweenProperty(_card, "modulate:a", 1f, 0.35).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
         tw.TweenProperty(_card, "scale", Vector2.One, 0.42).SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
 
-        // Điền sẵn tên đã ghi nhớ
+        // Điền sẵn email đã ghi nhớ
         var mgr = AccountManager.Instance;
-        if (mgr != null && !string.IsNullOrEmpty(mgr.LastUsername))
+        if (mgr != null && !string.IsNullOrEmpty(mgr.LastEmail))
         {
-            _userLogin.Text          = mgr.LastUsername;
+            _emailLogin.Text         = mgr.LastEmail;
             _remember.ButtonPressed  = mgr.RememberPref;
             _passLogin.CallDeferred(Control.MethodName.GrabFocus);
         }
         else
         {
-            _userLogin.CallDeferred(Control.MethodName.GrabFocus);
+            _emailLogin.CallDeferred(Control.MethodName.GrabFocus);
         }
 
         if (_moon != null)

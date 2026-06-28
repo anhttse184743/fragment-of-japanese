@@ -4,24 +4,27 @@ using System.Collections.Generic;
 using System.Text.Json;
 using FragmentOfJapanese.Autoloads;
 using FragmentOfJapanese.Core;
+using FragmentOfJapanese.Entities.Player;
 
 namespace FragmentOfJapanese.Items;
 
 /// <summary>1 ô trong túi: 1 loại vật phẩm + số lượng.</summary>
 public class ItemStack
 {
+    public string    InventoryId { get; set; } // UUID từ server trả về
     public ItemEntry Item  { get; }
     public int       Count { get; set; }
 
-    public ItemStack(ItemEntry item, int count)
+    public ItemStack(ItemEntry item, int count, string inventoryId = "")
     {
         Item  = item;
         Count = count;
+        InventoryId = inventoryId;
     }
 }
 
 /// <summary>
-/// Túi đồ người chơi (autoload). Tự lưu user://inventory.json khi thay đổi và khi thoát game.
+/// Túi đồ người chơi (autoload). Đồng bộ từ API thay vì user://
 /// </summary>
 public partial class Inventory : Node
 {
@@ -36,112 +39,116 @@ public partial class Inventory : Node
     public event Action Changed;
     public event Action<ItemEntry> ItemUsed;
 
-    private const string SavePath = "user://inventory.json";
-    private bool _loaded;
-
     public override void _Ready()
     {
         Instance = this;
-        Load();   // ItemDatabase đứng trước Inventory trong autoload → đã sẵn sàng
     }
 
-    public override void _Notification(int what)
+    public async System.Threading.Tasks.Task SyncAsync()
     {
-        if (what == NotificationWMCloseRequest) Save();
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return;
+
+        var res = await ApiClient.Instance.GetAsync("/api/inventory");
+        if (res.IsSuccessStatusCode)
+        {
+            var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<List<InventoryItemDto>>>(res);
+            if (data?.Data != null)
+            {
+                _stacks.Clear();
+                foreach (var dto in data.Data)
+                {
+                    if (string.IsNullOrEmpty(dto.StringId)) continue;
+                    var def = ItemDatabase.Instance?.Get(dto.StringId);
+                    if (def != null)
+                    {
+                        _stacks.Add(new ItemStack(def, dto.Quantity, dto.InventoryId));
+                    }
+                }
+                Changed?.Invoke();
+            }
+        }
     }
 
     public int  CountOf(string itemId)             => Find(itemId)?.Count ?? 0;
     public bool Has(string itemId, int amount = 1) => CountOf(itemId) >= amount;
 
-    public bool Add(string itemId, int amount = 1)
+    public void AddOptimistic(string itemId, int amount = 1, string inventoryId = "")
     {
-        if (amount <= 0) return false;
+        if (amount <= 0) return;
 
         var def = ItemDatabase.Instance?.Get(itemId);
-        if (def == null)
-        {
-            GD.PushWarning($"[Inventory] Không có item id '{itemId}' trong ItemDatabase.");
-            return false;
-        }
+        if (def == null) return;
 
         var stack = Find(itemId);
-        if (stack == null) { stack = new ItemStack(def, 0); _stacks.Add(stack); }
+        if (stack == null) { stack = new ItemStack(def, 0, inventoryId); _stacks.Add(stack); }
         stack.Count = Mathf.Min(stack.Count + amount, MaxStack);
+        if (!string.IsNullOrEmpty(inventoryId)) stack.InventoryId = inventoryId;
 
         Changed?.Invoke();
-        if (_loaded) Save();
-        return true;
     }
 
-    public bool Remove(string itemId, int amount = 1)
+    /// <summary>Cộng vật phẩm (loot/gacha/redeem) — hiện ngay ở UI rồi lưu lên server, sau đó sync lại để có InventoryId.</summary>
+    public async System.Threading.Tasks.Task GrantAsync(string itemId, int amount = 1)
+    {
+        if (amount <= 0) return;
+
+        AddOptimistic(itemId, amount);   // hiện tức thì cho người chơi
+
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return;
+
+        var res = await ApiClient.Instance.PostAsync("/api/inventory/grant",
+            new { StringId = itemId, Quantity = amount });
+        if (res.IsSuccessStatusCode)
+            await SyncAsync();           // đồng bộ lại số lượng thật + gán InventoryId (để dùng được)
+        else
+            GD.PushWarning($"[Inventory] Grant '{itemId}' x{amount} thất bại: {(int)res.StatusCode}");
+    }
+
+    public void RemoveOptimistic(string itemId, int amount = 1)
     {
         var stack = Find(itemId);
-        if (stack == null || stack.Count < amount) return false;
+        if (stack == null || stack.Count < amount) return;
 
         stack.Count -= amount;
         if (stack.Count <= 0) _stacks.Remove(stack);
 
         Changed?.Invoke();
-        if (_loaded) Save();
-        return true;
     }
 
-    public bool UseItem(string itemId)
+    public async System.Threading.Tasks.Task<bool> UseItemAsync(string itemId)
     {
         var stack = Find(itemId);
-        if (stack == null || stack.Count <= 0) return false;
+        if (stack == null || stack.Count <= 0 || string.IsNullOrEmpty(stack.InventoryId)) return false;
 
-        var item = stack.Item;
-        Remove(itemId, 1);
-        ItemUsed?.Invoke(item);
-        return true;
+        var res = await ApiClient.Instance.PostAsync($"/api/inventory/{stack.InventoryId}/use", new { });
+        if (res.IsSuccessStatusCode)
+        {
+            var item = stack.Item;
+            RemoveOptimistic(itemId, 1);
+            ItemUsed?.Invoke(item);
+            
+            // Sync lại wallet vì có thể dùng bình tiền/kinh nghiệm
+            await Wallet.Instance.SyncAsync();
+            var player = GetTree().GetFirstNodeInGroup("player") as Player;
+            if (player != null) await player.SyncFromServerAsync();
+            return true;
+        }
+        return false;
     }
 
     public void Clear()
     {
         _stacks.Clear();
         Changed?.Invoke();
-        if (_loaded) Save();
     }
 
     private ItemStack Find(string itemId) => _stacks.Find(s => s.Item.Id == itemId);
 
-    public Dictionary<string, int> ToSaveData()
+    private class InventoryItemDto
     {
-        var data = new Dictionary<string, int>();
-        foreach (var s in _stacks) data[s.Item.Id] = s.Count;
-        return data;
-    }
-
-    public void LoadFromData(Dictionary<string, int> data)
-    {
-        _stacks.Clear();
-        if (data != null)
-            foreach (var kv in data) Add(kv.Key, kv.Value);
-        Changed?.Invoke();
-    }
-
-    public void Save()
-    {
-        try
-        {
-            var json = JsonSerializer.Serialize(ToSaveData());
-            using var f = FileAccess.Open(SavePath, FileAccess.ModeFlags.Write);
-            f?.StoreString(json);
-        }
-        catch (Exception e) { GD.PushWarning($"[Inventory] Save lỗi: {e.Message}"); }
-    }
-
-    private void Load()
-    {
-        _loaded = true;
-        if (!FileAccess.FileExists(SavePath)) return;
-        try
-        {
-            using var f = FileAccess.Open(SavePath, FileAccess.ModeFlags.Read);
-            var data = JsonSerializer.Deserialize<Dictionary<string, int>>(f?.GetAsText() ?? "{}");
-            LoadFromData(data);
-        }
-        catch (Exception e) { GD.PushWarning($"[Inventory] Load lỗi: {e.Message}"); }
+        public string InventoryId { get; set; }
+        public string ItemId { get; set; }
+        public string StringId { get; set; }
+        public int Quantity { get; set; }
     }
 }

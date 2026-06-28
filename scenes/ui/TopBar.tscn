@@ -1,38 +1,66 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://krs3l4ytcxd3"]
 
-[ext_resource type="Script" path="res://src/Ui/TopBar.cs" id="1_topbar"]
+[ext_resource type="Script" uid="uid://cwmm164u2j6ti" path="res://src/Ui/TopBar.cs" id="1_topbar"]
+[ext_resource type="Texture2D" uid="uid://cn0h7qrwaev5k" path="res://assets/sprites/ui/shop_icon.png" id="2_shop"]
+[ext_resource type="Texture2D" uid="uid://dgqlfr3xlq68m" path="res://assets/sprites/ui/inventory_icon.png" id="3_bag"]
+[ext_resource type="Texture2D" uid="uid://h3ggguoiuhgd" path="res://assets/sprites/ui/quest_icon.png" id="4_quest"]
+[ext_resource type="Texture2D" uid="uid://dqgcf2dfumkqs" path="res://assets/sprites/ui/setting_icon.png" id="5_opts"]
 
-[node name="TopBar" type="Control" node_paths=PackedStringArray("_shopBtn", "_bagBtn", "_optsBtn")]
+[node name="TopBar" type="Control" unique_id=540555029 node_paths=PackedStringArray("_shopBtn", "_bagBtn", "_questBtn", "_optsBtn")]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_topbar")
 _shopBtn = NodePath("Buttons/ShopBtn")
 _bagBtn = NodePath("Buttons/BagBtn")
+_questBtn = NodePath("Buttons/QuestBtn")
 _optsBtn = NodePath("Buttons/OptsBtn")
 
-[node name="Buttons" type="HBoxContainer" parent="."]
+[node name="Buttons" type="HBoxContainer" parent="." unique_id=1585724608]
+layout_mode = 1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -290.0
+offset_left = -465.0
 offset_top = 12.0
-offset_right = -16.0
-offset_bottom = 54.0
+offset_right = -29.0
+offset_bottom = 136.0
 grow_horizontal = 0
-alignment = 2
 theme_override_constants/separation = 8
+alignment = 2
 
-[node name="ShopBtn" type="Button" parent="Buttons"]
-custom_minimum_size = Vector2(80, 40)
+[node name="ShopBtn" type="Button" parent="Buttons" unique_id=1757041754]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-text = "SHOP"
+tooltip_text = "Cửa hàng"
+icon = ExtResource("2_shop")
+flat = true
+expand_icon = true
 
-[node name="BagBtn" type="Button" parent="Buttons"]
-custom_minimum_size = Vector2(80, 40)
+[node name="BagBtn" type="Button" parent="Buttons" unique_id=126974495]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-text = "BAG"
+tooltip_text = "Túi đồ"
+icon = ExtResource("3_bag")
+flat = true
+expand_icon = true
 
-[node name="OptsBtn" type="Button" parent="Buttons"]
-custom_minimum_size = Vector2(80, 40)
+[node name="QuestBtn" type="Button" parent="Buttons" unique_id=382669974]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-text = "OPTS"
+tooltip_text = "Nhiệm vụ"
+icon = ExtResource("4_quest")
+flat = true
+expand_icon = true
+
+[node name="OptsBtn" type="Button" parent="Buttons" unique_id=552921136]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+tooltip_text = "Cài đặt"
+icon = ExtResource("5_opts")
+flat = true
+expand_icon = true

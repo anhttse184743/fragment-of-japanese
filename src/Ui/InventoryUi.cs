@@ -408,7 +408,7 @@ public partial class InventoryUi : CanvasLayer
         if (_useButton  != null) _useButton.Visible = false;
     }
 
-    private void OnUsePressed()
+    private async void OnUsePressed()
     {
         if (_skinsMode)
         {
@@ -421,7 +421,12 @@ public partial class InventoryUi : CanvasLayer
         }
 
         if (!string.IsNullOrEmpty(_selectedId))
-            Inventory.Instance?.UseItem(_selectedId);   // Changed → Refresh tự chạy
+        {
+            _useButton.Disabled = true;
+            bool ok = await Inventory.Instance?.UseItemAsync(_selectedId);
+            _useButton.Disabled = false;
+            if (!ok) UiKit.Toast(_root, "Không dùng được vật phẩm này lúc này.", 2f);
+        }
     }
 
     // ───────────────────────── Tab Skin ─────────────────────────
@@ -503,7 +508,7 @@ public partial class InventoryUi : CanvasLayer
         foreach (var skin in mgr.Catalog(_skinCategory))
         {
             bool sel  = skin.Id == _selectedSkinId;
-            var  slot = MakeSkinSlot(skin, sel, skin.Id == equipped);
+            var  slot = MakeSkinSlot(skin, sel, skin.Id == equipped, mgr.IsOwned(skin.Id));
             if (sel) { _selectedSlot = slot; selAlive = true; }
             _grid.AddChild(slot);
         }
@@ -512,13 +517,13 @@ public partial class InventoryUi : CanvasLayer
         else          ClearSelection();
     }
 
-    private Button MakeSkinSlot(SkinDef skin, bool selected, bool equipped)
+    private Button MakeSkinSlot(SkinDef skin, bool selected, bool equipped, bool owned)
     {
         var btn = new Button
         {
             CustomMinimumSize   = new Vector2(96, 96),
             SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
-            TooltipText         = skin.Name,
+            TooltipText         = owned ? skin.Name : $"{skin.Name} (chưa mở khóa)",
         };
         ApplySlotStyle(btn, selected);
 
@@ -529,16 +534,27 @@ public partial class InventoryUi : CanvasLayer
         var swHolder = new CenterContainer();
         var swatch   = new PanelContainer { CustomMinimumSize = new Vector2(54, 40) };
         swatch.AddThemeStyleboxOverride("panel", UiKit.Box(skin.ColorValue, 8, UiKit.BrownBorder, 2));
+        if (!owned) swatch.Modulate = new Color(1, 1, 1, 0.28f);   // khóa → mờ đi
         swHolder.AddChild(swatch);
         v.AddChild(swHolder);
 
         var name = new Label { Text = skin.Name, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
         name.AddThemeFontSizeOverride("font_size", 12);
-        name.AddThemeColorOverride("font_color", UiKit.BrownText);
+        name.AddThemeColorOverride("font_color", owned ? UiKit.BrownText : UiKit.BrownTextDim);
         v.AddChild(name);
 
         btn.AddChild(v);
         IgnoreMouse(v);
+
+        if (!owned)
+        {
+            var lockTag = new Label { Text = "🔒", HorizontalAlignment = HorizontalAlignment.Left, MouseFilter = Control.MouseFilterEnum.Ignore };
+            lockTag.SetAnchorsPreset(Control.LayoutPreset.TopWide);
+            lockTag.OffsetTop  = 2;
+            lockTag.OffsetLeft = 6;
+            lockTag.AddThemeFontSizeOverride("font_size", 15);
+            btn.AddChild(lockTag);
+        }
 
         if (equipped)
         {
@@ -573,18 +589,20 @@ public partial class InventoryUi : CanvasLayer
         if (skin == null) { ClearSelection(); return; }
 
         bool equipped = mgr.GetEquippedId(_skinCategory) == id;
+        bool owned    = mgr.IsOwned(id);
 
         foreach (Node c in _detailImage.GetChildren()) c.QueueFree();
         var swatch = new PanelContainer { CustomMinimumSize = new Vector2(132, 96) };
         swatch.AddThemeStyleboxOverride("panel", UiKit.Box(skin.ColorValue, 12, UiKit.BrownBorder, 2));
+        if (!owned) swatch.Modulate = new Color(1, 1, 1, 0.3f);
         _detailImage.AddChild(swatch);
 
         _detailName.Text = skin.Name;
-        _detailMeta.Text = SkinCatName(_skinCategory) + (equipped ? "  •  Đang dùng" : "");
-        _detailDesc.Text = $"Skin {SkinCatName(_skinCategory).ToLower()}.";
+        _detailMeta.Text = SkinCatName(_skinCategory) + (equipped ? "  •  Đang dùng" : owned ? "" : "  •  🔒 Chưa mở khóa");
+        _detailDesc.Text = owned ? $"Skin {SkinCatName(_skinCategory).ToLower()}." : "Quay Gacha Hiệu Ứng trong Cửa hàng để mở khóa skin này.";
 
-        _useButton.Text     = equipped ? "Đang dùng" : "Trang bị";
-        _useButton.Disabled = equipped;
+        _useButton.Text     = !owned ? "Chưa mở khóa" : equipped ? "Đang dùng" : "Trang bị";
+        _useButton.Disabled = equipped || !owned;
         _useButton.Visible  = true;
     }
 

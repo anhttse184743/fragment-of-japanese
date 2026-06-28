@@ -4,45 +4,43 @@ using FragmentOfJapanese.Entities.Player;
 namespace FragmentOfJapanese.Ui;
 
 /// <summary>
-/// Joystick ảo cảm ứng (mobile) cho di chuyển. Tự vẽ — không cần ảnh. Đặt góc dưới-trái.
+/// Joystick ảo cảm ứng (mobile) cho di chuyển. Đặt góc dưới-trái.
 /// Kéo núm → set <c>PlayerController.TouchInput</c> (hướng + độ lớn 0..1 = analog, đi nhanh/chậm theo độ đẩy).
 ///
 /// - KHÓA theo đúng ngón đã chạm → đa chạm OK (ngón kia xoay camera không kéo nhầm joystick).
 /// - Remap deadzone → tốc độ tăng mượt từ 0, không nhảy bậc.
 /// - Tự "nuốt" input trong vùng → không xoay camera / không đánh nhầm.
 /// - Chạy được bằng chuột trên desktop để test. Tự tìm player qua group "player".
-/// Kéo scene này vào World là xong.
+///
+/// GIAO DIỆN nằm trong <c>VirtualJoystick.tscn</c>: node <b>Base</b> (vòng nền + viền) và <b>Knob</b> (núm) —
+/// đổi màu/kích thước/ảnh trong editor. Bán kính kéo (<see cref="Radius"/>) tự lấy theo NỬA bề ngang node Base,
+/// nên cứ resize Base trong scene là vùng kéo đổi theo. Kéo scene này vào World là xong.
 /// </summary>
 public partial class VirtualJoystick : Control
 {
-    [Export] public float Radius   = 90f;     // bán kính kéo tối đa (px)
+    [Export] public float Radius   = 90f;     // bán kính kéo tối đa (px) — tự ghi đè theo node Base nếu có
     [Export] public float DeadZone = 0.2f;    // vùng chết (0..1)
-    [Export] public Color BaseColor = new(1f, 1f, 1f, 0.20f);
-    [Export] public Color RingColor = new(1f, 1f, 1f, 0.55f);
-    [Export] public Color KnobColor = new(1f, 1f, 1f, 0.75f);
+
+    [Export] private Control _baseNode;        // vòng nền (chỉnh màu/kích thước/ảnh trong scene)
+    [Export] private Control _knobCircle;      // núm kéo
 
     public Vector2 Output { get; private set; }
 
     private int  _touchId = -1;   // index ngón đang giữ joystick (-1 = không)
     private bool _mouse;          // chuột đang giữ (desktop test)
-    private Vector2 _knob;
+    private Vector2 _knob;        // độ lệch núm so với tâm (đã kẹp trong Radius)
     private PlayerController _controller;
 
     public override void _Ready()
     {
         MouseFilter = MouseFilterEnum.Ignore;
+        if (_baseNode != null && _baseNode.Size.X > 1f)
+            Radius = _baseNode.Size.X * 0.5f;   // bán kính kéo = nửa bề ngang vòng nền
         ResolveController();
-        QueueRedraw();
+        ResetKnob();
     }
 
     private Vector2 Center => Size * 0.5f;
-
-    public override void _Draw()
-    {
-        DrawCircle(Center, Radius, BaseColor);
-        DrawArc(Center, Radius, 0f, Mathf.Tau, 48, RingColor, 3f, true);
-        DrawCircle(Center + _knob, Radius * 0.42f, KnobColor);
-    }
 
     public override void _Input(InputEvent ev)
     {
@@ -70,15 +68,14 @@ public partial class VirtualJoystick : Control
 
     private void End()
     {
-        _knob = Vector2.Zero;
         SetOutput(Vector2.Zero);
-        QueueRedraw();
+        ResetKnob();
     }
 
     private void MoveKnob(Vector2 globalPos)
     {
         _knob = (globalPos - (GlobalPosition + Center)).LimitLength(Radius);
-        QueueRedraw();
+        PlaceKnob();
 
         var dir   = _knob / Radius;          // hướng + độ lớn 0..1
         float mag = dir.Length();
@@ -86,6 +83,19 @@ public partial class VirtualJoystick : Control
             SetOutput(Vector2.Zero);
         else
             SetOutput(dir.Normalized() * Mathf.Min(1f, (mag - DeadZone) / (1f - DeadZone)));  // remap → analog mượt
+    }
+
+    private void ResetKnob()
+    {
+        _knob = Vector2.Zero;
+        PlaceKnob();
+    }
+
+    /// <summary>Đặt node núm vào tâm + độ lệch hiện tại (toạ độ cục bộ trong Control).</summary>
+    private void PlaceKnob()
+    {
+        if (_knobCircle == null) return;
+        _knobCircle.Position = Center + _knob - _knobCircle.Size * 0.5f;
     }
 
     private void SetOutput(Vector2 v)

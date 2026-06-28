@@ -4,67 +4,51 @@
 
 [sub_resource type="AtlasTexture" id="f0"]
 atlas = ExtResource("1")
-region = Rect2(12, 8, 161, 238)
+region = Rect2(32, 124, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f1"]
 atlas = ExtResource("1")
-region = Rect2(199, 8, 161, 238)
+region = Rect2(196, 124, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f2"]
 atlas = ExtResource("1")
-region = Rect2(387, 8, 161, 238)
+region = Rect2(361, 124, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f3"]
 atlas = ExtResource("1")
-region = Rect2(575, 8, 161, 238)
+region = Rect2(525, 124, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f4"]
 atlas = ExtResource("1")
-region = Rect2(12, 257, 161, 238)
+region = Rect2(689, 124, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f5"]
 atlas = ExtResource("1")
-region = Rect2(199, 257, 161, 238)
+region = Rect2(853, 124, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f6"]
 atlas = ExtResource("1")
-region = Rect2(387, 257, 161, 238)
+region = Rect2(32, 349, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f7"]
 atlas = ExtResource("1")
-region = Rect2(575, 257, 161, 238)
+region = Rect2(196, 349, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f8"]
 atlas = ExtResource("1")
-region = Rect2(12, 506, 161, 238)
+region = Rect2(361, 349, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f9"]
 atlas = ExtResource("1")
-region = Rect2(199, 506, 161, 238)
+region = Rect2(525, 349, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f10"]
 atlas = ExtResource("1")
-region = Rect2(387, 506, 161, 238)
+region = Rect2(689, 349, 138, 194)
 
 [sub_resource type="AtlasTexture" id="f11"]
 atlas = ExtResource("1")
-region = Rect2(575, 506, 161, 238)
-
-[sub_resource type="AtlasTexture" id="f12"]
-atlas = ExtResource("1")
-region = Rect2(12, 755, 161, 238)
-
-[sub_resource type="AtlasTexture" id="f13"]
-atlas = ExtResource("1")
-region = Rect2(199, 755, 161, 238)
-
-[sub_resource type="AtlasTexture" id="f14"]
-atlas = ExtResource("1")
-region = Rect2(387, 755, 161, 238)
-
-[sub_resource type="AtlasTexture" id="f15"]
-atlas = ExtResource("1")
-region = Rect2(575, 755, 161, 238)
+region = Rect2(853, 349, 138, 194)
 
 [resource]
 animations = [{
@@ -104,18 +88,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("f11")
-}, {
-"duration": 1.0,
-"texture": SubResource("f12")
-}, {
-"duration": 1.0,
-"texture": SubResource("f13")
-}, {
-"duration": 1.0,
-"texture": SubResource("f14")
-}, {
-"duration": 1.0,
-"texture": SubResource("f15")
 }],
 "loop": 1,
 "name": &"spin",

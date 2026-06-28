@@ -41,6 +41,11 @@ public partial class PlayerController : Node
     {
         EnsureInputActions();
         _camera?.MakeCurrent();
+        if (_player != null)
+        {
+            _player.FloorSnapLength  = 0.5f;   // bám đất gồ ghề, đỡ nảy lên → camera đỡ giật dọc
+            _player.FloorStopOnSlope = true;
+        }
     }
 
     // ───── API cho nút cảm ứng mobile (gọi sau) ─────
@@ -63,8 +68,12 @@ public partial class PlayerController : Node
 
         bool onFloor = _player.IsOnFloor();
 
-        // Trọng lực
-        if (!onFloor)
+        // Trọng lực — đứng trên đất thì CẮT vận tốc rơi tích lũy (hết giật dọc khi đi qua đất gồ ghề)
+        if (onFloor)
+        {
+            if (velocity.Y < 0f) velocity.Y = 0f;
+        }
+        else
             velocity.Y -= Gravity * dt;
 
         // Nhảy (chỉ khi đang trên mặt đất)

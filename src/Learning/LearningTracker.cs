@@ -11,12 +11,7 @@ namespace FragmentOfJapanese.Learning;
 
 /// <summary>
 /// Theo dõi học tập + ôn bài (spaced repetition) + KHÓA BÀI TUẦN TỰ — autoload.
-/// • Ghi mỗi lần trả lời (đúng/sai + thời gian) cho từng từ/ngữ pháp/đoạn đọc.
-/// • Phát hiện "chọn bừa": trả lời nhanh hơn GuessThresholdMs trên mục chưa thuộc → không lên bậc.
-/// • Đánh giá: đã thuộc (box≥4) / đang học / hay sai (struggling) / chưa học.
-/// • KHÓA BÀI: chỉ học MỚI ở "bài hiện tại"; phải thuộc HẾT (UnlockRatio) mới mở bài kế tiếp.
-///   Ôn lại (bài cũ đến hạn) thì lấy từ MỌI bài đã mở — đó không phải "học tùm lum".
-/// • Tự lưu user://learning.save.json.
+/// • Đồng bộ tiến trình từ server qua API.
 /// </summary>
 public partial class LearningTracker : Node
 {
@@ -29,7 +24,6 @@ public partial class LearningTracker : Node
     private const int MasteredBox = 4;
     private const int MaxBox      = 5;
     private static readonly long[] Intervals = { 0, 60, 600, 86400, 259200, 604800 }; // 0s,1ph,10ph,1d,3d,7d
-    private const string SavePath = "user://learning.save.json";
 
     private readonly Dictionary<string, ItemProgress> _progress = new();
     private readonly Random _rng = new();
@@ -41,7 +35,43 @@ public partial class LearningTracker : Node
     public override void _Ready()
     {
         Instance = this;
-        Load();
+    }
+
+    public async System.Threading.Tasks.Task SyncAsync()
+    {
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return;
+
+        var res = await ApiClient.Instance.GetAsync("/api/learning");
+        if (res.IsSuccessStatusCode)
+        {
+            var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<List<LearningProgressDto>>>(res);
+            if (data?.Data != null)
+            {
+                _progress.Clear();
+                foreach (var dto in data.Data)
+                {
+                    string k = (dto.ItemType ?? "").ToLowerInvariant();
+                    string kindStr = k == "vocab" ? "vocab" : k == "grammar" ? "grammar" : "reading";
+                    string key = kindStr + ":" + dto.ItemId;
+                    _progress[key] = new ItemProgress
+                    {
+                        Key = key,
+                        Box = dto.LeitnerBox,
+                        NextReviewAt = dto.NextReviewAt,
+                        Seen = dto.CorrectCount + dto.WrongCount,
+                        Correct = dto.CorrectCount,
+                        Wrong = dto.WrongCount
+                    };
+                }
+                RecalculateUnlock();
+            }
+        }
+    }
+
+    private void RecalculateUnlock()
+    {
+        _unlocked = 1;
+        CheckUnlock();
     }
 
     private static string KindStr(ItemKind k) => k == ItemKind.Vocab ? "vocab" : k == ItemKind.Grammar ? "grammar" : "reading";
@@ -78,7 +108,15 @@ public partial class LearningTracker : Node
             EmitSignal(SignalName.ItemMastered, KindStr(kind), id);
         }
         CheckUnlock();
-        Save();
+        
+        // Sync to server (fire and forget)
+        _ = ApiClient.Instance.PostAsync("/api/learning/answer", new 
+        { 
+            ItemType = KindStr(kind),
+            ItemId = id,
+            IsCorrect = correct,
+            IsGuess = guess
+        });
     }
 
     // ───────── Khóa bài tuần tự ─────────
@@ -133,7 +171,12 @@ public partial class LearningTracker : Node
     public ReviewItem NextItem(int lesson)
     {
         long now = Now;
-        var due  = _progress.Values.Where(p => p.Due <= now).OrderBy(p => p.Due).ToList();
+        var due  = _progress.Values.Where(p => p.NextReviewAt != null && ((DateTimeOffset)p.NextReviewAt).ToUnixTimeSeconds() <= now).OrderBy(p => p.NextReviewAt).ToList();
+        
+        // Fallback for missing NextReviewAt due to optimistic update
+        var dueFallback = _progress.Values.Where(p => p.NextReviewAt == null && p.Due <= now).OrderBy(p => p.Due).ToList();
+        if (due.Count == 0 && dueFallback.Count > 0) due = dueFallback;
+
         var news = IsUnlocked(lesson) ? NewItemsOf(lesson) : new List<(ItemKind, string)>();
 
         if (due.Count == 0 && news.Count == 0) return null;
@@ -146,7 +189,7 @@ public partial class LearningTracker : Node
     public ReviewItem NextItem(ItemKind kind)
     {
         long now = Now;
-        var due = _progress.Values.Where(p => p.Due <= now).OrderBy(p => p.Due)
+        var due = _progress.Values.Where(p => (p.NextReviewAt != null && ((DateTimeOffset)p.NextReviewAt).ToUnixTimeSeconds() <= now) || (p.NextReviewAt == null && p.Due <= now)).OrderBy(p => p.NextReviewAt ?? DateTimeOffset.FromUnixTimeSeconds(p.Due))
                             .Select(p => ToReviewItem(p.Key, false))
                             .Where(r => r.Kind == kind).ToList();
         var news = NewItemsOf(CurrentLesson).Where(t => t.Item1 == kind)
@@ -162,7 +205,7 @@ public partial class LearningTracker : Node
     public List<ReviewItem> BuildSession(int lesson, int count)
     {
         long now = Now;
-        var due  = _progress.Values.Where(p => p.Due <= now).OrderBy(p => p.Due)
+        var due  = _progress.Values.Where(p => (p.NextReviewAt != null && ((DateTimeOffset)p.NextReviewAt).ToUnixTimeSeconds() <= now) || (p.NextReviewAt == null && p.Due <= now)).OrderBy(p => p.NextReviewAt ?? DateTimeOffset.FromUnixTimeSeconds(p.Due))
                              .Select(p => ToReviewItem(p.Key, false)).ToList();
         var news = (IsUnlocked(lesson) ? NewItemsOf(lesson) : new List<(ItemKind, string)>())
                              .Select(t => new ReviewItem(t.Item1, t.Item2, true)).ToList();
@@ -217,29 +260,13 @@ public partial class LearningTracker : Node
         return new ReviewItem(k, id, isNew);
     }
 
-    // ───────── Lưu / nạp ─────────
-    private void Save()
+    private class LearningProgressDto
     {
-        var blob = new SaveBlob { Unlocked = _unlocked, Progress = _progress };
-        using var f = FileAccess.Open(SavePath, FileAccess.ModeFlags.Write);
-        f?.StoreString(JsonSerializer.Serialize(blob));
-    }
-
-    private void Load()
-    {
-        if (!FileAccess.FileExists(SavePath)) return;
-        using var f = FileAccess.Open(SavePath, FileAccess.ModeFlags.Read);
-        var blob = JsonSerializer.Deserialize<SaveBlob>(f.GetAsText(),
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        if (blob == null) return;
-        _unlocked = Math.Max(1, blob.Unlocked);
-        if (blob.Progress != null) foreach (var kv in blob.Progress) _progress[kv.Key] = kv.Value;
-        GD.Print($"[Learn] Loaded {_progress.Count} mục — mở khóa tới Bài {_unlocked}.");
-    }
-
-    private class SaveBlob
-    {
-        [JsonPropertyName("unlocked")] public int Unlocked { get; set; } = 1;
-        [JsonPropertyName("progress")] public Dictionary<string, ItemProgress> Progress { get; set; } = new();
+        public string ItemType { get; set; }
+        public string ItemId { get; set; }          // khớp LearningProgressResponse.ItemId
+        public int LeitnerBox { get; set; }
+        public DateTime? NextReviewAt { get; set; }
+        public int CorrectCount { get; set; }
+        public int WrongCount { get; set; }
     }
 }

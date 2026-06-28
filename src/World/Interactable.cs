@@ -67,14 +67,15 @@ public partial class Interactable : Area3D
 		var btn = new Button
 		{
 			Text              = ActionText,
-			CustomMinimumSize = new Vector2(220, 70),
+			CustomMinimumSize = new Vector2(240, 70),
 			FocusMode         = Control.FocusModeEnum.None,
 		};
-		btn.SetAnchorsPreset(Control.LayoutPreset.BottomLeft);
-		btn.OffsetLeft   = 20;
-		btn.OffsetBottom = -20;
-		btn.OffsetRight  = 240;
-		btn.OffsetTop    = -90;
+		// Góc dưới-PHẢI, ngay TRÊN cụm nút ATK/JUMP/FAST (tránh đè joystick bên trái).
+		btn.SetAnchorsPreset(Control.LayoutPreset.BottomRight);
+		btn.OffsetRight  = -40;
+		btn.OffsetLeft   = -280;
+		btn.OffsetBottom = -226;
+		btn.OffsetTop    = -296;
 
 		btn.AddThemeFontSizeOverride("font_size", 22);
 

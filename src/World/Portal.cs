@@ -24,6 +24,7 @@ public partial class Portal : Interactable
 			ActionText = $"Vào {DestinationName}";
 
 		base._Ready();
+		AddToGroup("portal");   // để SceneTransition tìm được cổng quay-về khi tới map khác
 		Interacted += OnInteracted;
 	}
 
@@ -48,9 +49,7 @@ public partial class Portal : Interactable
 			return;
 		}
 
-		// Lưu vị trí cổng: khi thắng dungeon sẽ về World và đứng ngay chỗ cổng này.
-		SceneTransition.PlayerStartPosition = GlobalPosition;
-
+		// Người chơi sẽ xuất hiện tại cổng quay-về của map đích (SceneTransition lo) — không cần truyền toạ độ.
 		if (SceneTransition.Instance != null)
 			SceneTransition.Instance.GoTo(ScenePath);
 		else

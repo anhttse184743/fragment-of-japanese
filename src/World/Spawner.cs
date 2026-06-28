@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Godot;
-using FragmentOfJapanese.Autoloads;
 
 namespace FragmentOfJapanese.World;
 
@@ -74,17 +73,8 @@ public partial class Spawner : Node3D
                 float r = _rng.RandfRange(ScatterRadius * 0.45f, ScatterRadius);   // đẩy ra vành ngoài, đỡ chụm
                 pos += new Vector3(Mathf.Cos(a) * r, 0f, Mathf.Sin(a) * r);
             }
-            inst.GlobalPosition = pos;
-            
-            parent.AddChild(inst);
-
-            // Thắng dungeon → về World đứng sát cổng đã vào; chết → về PlayerSpawn (null).
-            if (SceneTransition.PlayerStartPosition.HasValue && inst.IsInGroup("player"))
-            {
-                inst.GlobalPosition = SceneTransition.PlayerStartPosition.Value;
-                SceneTransition.PlayerStartPosition = null;
-            }
-
+            parent.AddChild(inst);       // vào cây trước
+            inst.GlobalPosition = pos;   // rồi mới đặt vị trí toàn cục (cần is_inside_tree)
             _alive.Add(inst);
         }
     }
