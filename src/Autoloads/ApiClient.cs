@@ -68,11 +68,16 @@ public partial class ApiClient : Node
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         try
         {
-            return await _http.PostAsync(endpoint, content);
+            GD.Print($"[ApiClient] POST {BaseUrl}{endpoint}");
+            var resp = await _http.PostAsync(endpoint, content);
+            GD.Print($"[ApiClient] POST {endpoint} → {(int)resp.StatusCode} {resp.StatusCode}");
+            return resp;
         }
         catch (Exception ex)
         {
-            GD.PushError($"[ApiClient] PostAsync failed: {ex.Message}");
+            GD.PushError($"[ApiClient] PostAsync {endpoint} FAILED: {ex.GetType().Name}: {ex.Message}");
+            if (ex.InnerException != null)
+                GD.PushError($"[ApiClient]   Inner: {ex.InnerException.GetType().Name}: {ex.InnerException.Message}");
             return new HttpResponseMessage(System.Net.HttpStatusCode.ServiceUnavailable);
         }
     }
