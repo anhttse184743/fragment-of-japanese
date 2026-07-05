@@ -51,25 +51,30 @@ public partial class ApiClient : Node
 
     public void SetAccessToken(string token)
     {
+        // Token gắn theo TỪNG request (xem BuildRequest) để tránh tranh chấp header dùng chung
+        // khi nhiều request chạy song song lúc đổi tài khoản (login/logout).
         AccessToken = token;
-        if (!string.IsNullOrEmpty(token))
-        {
-            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        }
-        else
-        {
-            _http.DefaultRequestHeaders.Authorization = null;
-        }
     }
+
+    /// <summary>Tạo request có sẵn Authorization của token hiện tại (chụp tại thời điểm gọi).</summary>
+    private HttpRequestMessage BuildRequest(HttpMethod method, string endpoint, HttpContent content = null)
+    {
+        var req = new HttpRequestMessage(method, endpoint) { Content = content };
+        var token = AccessToken;
+        if (!string.IsNullOrEmpty(token))
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        return req;
+    }
+
+    private static StringContent JsonBody<T>(T payload)
+        => new(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
     public async Task<HttpResponseMessage> PostAsync<T>(string endpoint, T payload)
     {
-        var json = JsonSerializer.Serialize(payload);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
         try
         {
             GD.Print($"[ApiClient] POST {BaseUrl}{endpoint}");
-            var resp = await _http.PostAsync(endpoint, content);
+            var resp = await _http.SendAsync(BuildRequest(HttpMethod.Post, endpoint, JsonBody(payload)));
             GD.Print($"[ApiClient] POST {endpoint} → {(int)resp.StatusCode} {resp.StatusCode}");
             return resp;
         }
@@ -84,11 +89,9 @@ public partial class ApiClient : Node
 
     public async Task<HttpResponseMessage> PutAsync<T>(string endpoint, T payload)
     {
-        var json = JsonSerializer.Serialize(payload);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
         try
         {
-            return await _http.PutAsync(endpoint, content);
+            return await _http.SendAsync(BuildRequest(HttpMethod.Put, endpoint, JsonBody(payload)));
         }
         catch (Exception ex)
         {
@@ -101,7 +104,7 @@ public partial class ApiClient : Node
     {
         try
         {
-            return await _http.GetAsync(endpoint);
+            return await _http.SendAsync(BuildRequest(HttpMethod.Get, endpoint));
         }
         catch (Exception ex)
         {

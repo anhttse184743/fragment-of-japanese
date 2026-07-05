@@ -724,13 +724,13 @@ public partial class ShopUi : CanvasLayer
     // ── Gacha ─────────────────────────────────────────────────────────────────
     private void RefreshLuck()
     {
+        var mgr = SkinManager.Instance;
+        int cur = mgr?.PityCurrent ?? 0;
+        int tgt = mgr?.PityTarget  ?? 60;
         foreach (var (lbl, isGold) in _gachaLuckLabels)
         {
             if (lbl != null && GodotObject.IsInstanceValid(lbl))
-            {
-                // Hiển thị bảo hiểm trúng thưởng (mock tạm 0/60, sau này backend trả về thì cập nhật)
-                lbl.Text = "Bảo hiểm trúng thưởng: 0/60";
-            }
+                lbl.Text = $"Bảo hiểm trúng thưởng: {cur}/{tgt}";
         }
     }
 

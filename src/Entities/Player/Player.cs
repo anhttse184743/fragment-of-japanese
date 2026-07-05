@@ -54,8 +54,9 @@ public partial class Player : CharacterBody3D, IDamageable
 			var data = await Autoloads.ApiClient.Instance.ReadAsAsync<Autoloads.AccountManager.ApiResponse<PlayerProfileDto>>(res);
 			if (data?.Data != null)
 			{
-				Data.Level = data.Data.Level;
-				Data.Exp = data.Data.Exp;
+				Data.Level  = data.Data.Level;
+				Data.Exp    = data.Data.Exp;
+				if (data.Data.MaxExp > 0) Data.MaxExp = data.Data.MaxExp;   // server là nguồn sự thật
 				EmitSignal(SignalName.ExpChanged, Data.Exp, Data.MaxExp, Data.Level);
 			}
 		}
@@ -65,6 +66,7 @@ public partial class Player : CharacterBody3D, IDamageable
 	{
 		public int Level { get; set; }
 		public int Exp { get; set; }
+		public int MaxExp { get; set; }
 	}
 
 	public override void _ExitTree()
@@ -164,33 +166,29 @@ public partial class Player : CharacterBody3D, IDamageable
 		if (Data.Hp == 0) EmitSignal(SignalName.Died);
 	}
 
+	/// <summary>Cộng EXP: server quyết định lên cấp (nguồn sự thật duy nhất), client chỉ hiển thị lại sau sync.</summary>
 	public void GainExp(int amount)
 	{
-		Data.Exp += amount;
-		if (Data.Exp >= Data.MaxExp) LevelUp();
-		EmitSignal(SignalName.ExpChanged, Data.Exp, Data.MaxExp, Data.Level);
-		_ = AwardAsync(amount, 0);   // bền hóa exp qua server (có trần, server tự lên cấp)
+		if (amount <= 0) return;
+		int before = Data.Level;
+		_ = AwardAsync(amount, 0, before);   // server cộng + lên cấp → SyncFromServer lấy Level/Exp/MaxExp thật
 	}
 
-	private void LevelUp()
-	{
-		while (Data.Exp >= Data.MaxExp)
-		{
-			Data.Level++;
-			Data.Exp   -= Data.MaxExp;
-			Data.MaxExp = (int)(Data.MaxExp * 1.25f);
-			EmitSignal(SignalName.LeveledUp);
-		}
-	}
-
-	/// <summary>Gửi phần thưởng exp/gold lên server (có trần) rồi đồng bộ lại số dư.</summary>
-	public async System.Threading.Tasks.Task AwardAsync(int exp, int gold)
+	/// <summary>Gửi phần thưởng exp/gold lên server (có trần) rồi đồng bộ lại cấp/EXP + ví.</summary>
+	public async System.Threading.Tasks.Task AwardAsync(int exp, int gold, int levelBefore = -1)
 	{
 		if (exp <= 0 && gold <= 0) return;
 		if (string.IsNullOrEmpty(Autoloads.ApiClient.Instance.AccessToken)) return;
 
 		var res = await Autoloads.ApiClient.Instance.PostAsync("/api/player/reward", new { Exp = exp, Gold = gold });
-		if (res.IsSuccessStatusCode)
+		if (!res.IsSuccessStatusCode) return;
+
+		if (exp > 0)
+		{
+			await SyncFromServerAsync();                                  // Level/Exp/MaxExp thật từ server
+			if (levelBefore >= 0 && Data.Level > levelBefore) EmitSignal(SignalName.LeveledUp);
+		}
+		if (gold > 0)
 			_ = FragmentOfJapanese.Items.Wallet.Instance?.SyncAsync();   // gold đổi → làm mới ví
 	}
 

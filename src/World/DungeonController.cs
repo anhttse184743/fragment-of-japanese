@@ -365,11 +365,14 @@ public partial class DungeonController : Node3D
     /// EXP challenge enemy cộng ở đây; Challenge=None đã cộng bởi AttackZone khi hp về 0.</summary>
     private void GrantKillLoot(EnemyEntity enemy)
     {
-        if (enemy.Challenge != GameKind.None) _player?.GainExp(enemy.ExpReward);
+        // EXP: quái Challenge=None đã được AttackZone cộng khi hp về 0 → chỉ cộng cho quái có challenge (tránh trùng).
+        int exp = enemy.Challenge != GameKind.None ? enemy.ExpReward : 0;
 
         int gold = Mathf.RoundToInt(RewardCalculator.BaseGoldPerEnemy
                    * RewardCalculator.KindMult(enemy.Challenge) * PortalCoeff);
-        _ = _player?.AwardAsync(0, gold);   // server cộng + kẹp trần, rồi đồng bộ ví
+
+        // Gộp exp + gold vào MỘT request /api/player/reward (trước đây bắn 2 request mỗi quái).
+        _ = _player?.AwardAsync(exp, gold, _player.Data?.Level ?? -1);
         _goldEarned += gold;
 
         int ears = _rng.RandiRange(LootDropMin, LootDropMax);

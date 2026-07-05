@@ -28,8 +28,9 @@ public partial class WorldController : Node3D
         _spawnNode = GetParent()?.GetNodeOrNull<Node3D>("PlayerSpawn");
 
         _rng.Randomize();
-        // Quái đặt sẵn (đã trong cây) + quái Spawner sinh sau (qua NodeAdded) đều nối Died → rơi loot.
-        HookEnemies(GetTree().Root);
+        // Chỉ nối quái THUỘC World này (đặt sẵn + Spawner sinh sau qua NodeAdded).
+        // Không quét từ root để tránh đếm chồng với DungeonController nếu hai scene lỡ cùng tồn tại.
+        HookEnemies(GetParent() ?? this);
         GetTree().NodeAdded += OnNodeAdded;
 
         // Đồng bộ lại toàn bộ trạng thái khi vào World (phòng khi tải lại scene / vào thẳng gameplay).
@@ -49,7 +50,15 @@ public partial class WorldController : Node3D
 
     private void OnNodeAdded(Node n)
     {
-        if (n is EnemyEntity e) e.Died += OnEnemyKilled;
+        // Chỉ nối quái nằm trong cây World này (bỏ qua quái của scene/arena khác).
+        if (n is EnemyEntity e && BelongsToThisWorld(e)) e.Died += OnEnemyKilled;
+    }
+
+    /// <summary>Quái có thuộc nhánh World (cha của WorldController) không?</summary>
+    private bool BelongsToThisWorld(Node n)
+    {
+        var world = GetParent();
+        return world != null ? world.IsAncestorOf(n) : IsAncestorOf(n);
     }
 
     private void OnEnemyKilled(EnemyEntity enemy)

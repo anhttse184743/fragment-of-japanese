@@ -81,7 +81,9 @@ public partial class Inventory : Node
 
         var stack = Find(itemId);
         if (stack == null) { stack = new ItemStack(def, 0, inventoryId); _stacks.Add(stack); }
-        stack.Count = Mathf.Min(stack.Count + amount, MaxStack);
+        // Không kẹp trần ở client: số lượng thật do server quyết (SyncAsync sẽ ghi đè).
+        // Nếu kẹp 99 ở đây, loot vượt 99 sẽ biến mất khỏi UI cho tới lần sync kế.
+        stack.Count += amount;
         if (!string.IsNullOrEmpty(inventoryId)) stack.InventoryId = inventoryId;
 
         Changed?.Invoke();
