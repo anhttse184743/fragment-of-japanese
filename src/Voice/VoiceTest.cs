@@ -1,4 +1,5 @@
 using Godot;
+using FragmentOfJapanese.Autoloads;
 
 namespace FragmentOfJapanese.Voice;
 
@@ -15,9 +16,11 @@ public partial class VoiceTest : Node
 	public override void _Ready()
 	{
 		_voice = new VoiceRecognizer();
-		// BẠN PHẢI ĐIỀN API KEY CỦA GROQ VÀO ĐÂY TRƯỚC KHI CHẠY
-		_voice.GroqApiKey = ""; 
-		
+		// Đọc API key từ biến môi trường GROQ_API_KEY (KHÔNG hardcode key vào source).
+		_voice.GroqApiKey = System.Environment.GetEnvironmentVariable("GROQ_API_KEY") ?? "";
+		if (string.IsNullOrEmpty(_voice.GroqApiKey))
+			GD.PushWarning("[VoiceTest] Chưa đặt biến môi trường GROQ_API_KEY — voice test sẽ không chạy.");
+
 		AddChild(_voice);
 		_voice.WordRecognized += OnWord;
 		
@@ -28,8 +31,15 @@ public partial class VoiceTest : Node
 	{
 		if (e is InputEventKey k && k.Keycode == Key.V && !k.Echo)
 		{
-			if (k.Pressed) _voice.StartListening(Lesson);
-			else           _voice.StopListening();
+			if (k.Pressed) 
+			{
+				var pool = JapaneseDB.Instance.GetByLesson(Lesson);
+				_voice.StartListening(pool);
+			}
+			else           
+			{
+				_voice.StopListening();
+			}
 		}
 	}
 
