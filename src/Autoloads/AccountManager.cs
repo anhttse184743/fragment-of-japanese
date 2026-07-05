@@ -37,6 +37,10 @@ public partial class AccountManager : Node
     public string LastEmail { get; private set; } = "";
     public bool RememberPref { get; private set; }
 
+    private string _savedRefreshToken = "";
+    /// <summary>Có phiên đã ghi nhớ (refresh token) để thử tự đăng nhập không?</summary>
+    public bool HasRememberedSession => RememberPref && !string.IsNullOrEmpty(_savedRefreshToken);
+
     public override void _Ready()
     {
         Instance = this;
@@ -123,11 +127,45 @@ public partial class AccountManager : Node
         return AuthResult.Error;
     }
 
+    /// <summary>
+    /// Tự đăng nhập lại bằng refresh token đã lưu (phiên "ghi nhớ").
+    /// Dùng khi mở lại game hoặc quay về sau khi thanh toán (Android có thể khởi động lại app).
+    /// Trả true nếu khôi phục được phiên. Refresh token hết hạn/không hợp lệ → xóa phiên, trả false.
+    /// </summary>
+    public async Task<bool> TryAutoLoginAsync()
+    {
+        if (string.IsNullOrEmpty(_savedRefreshToken)) return false;
+
+        var res = await ApiClient.Instance.PostAsync("/api/auth/refresh",
+            new RefreshRequest { RefreshToken = _savedRefreshToken });
+
+        if (!res.IsSuccessStatusCode)
+        {
+            // Refresh token hết hạn/thu hồi → bỏ phiên để lần sau không thử lại vô ích.
+            if (res.StatusCode == System.Net.HttpStatusCode.Unauthorized) { _savedRefreshToken = ""; DeleteSession(); }
+            return false;
+        }
+
+        var data = await ApiClient.Instance.ReadAsAsync<ApiResponse<AuthResponse>>(res);
+        if (data?.Data == null || string.IsNullOrEmpty(data.Data.AccessToken)) return false;
+
+        ApiClient.Instance.SetAccessToken(data.Data.AccessToken);
+        CurrentUser  = data.Data.Username;
+        CurrentEmail = LastEmail;
+        IsGuest      = false;
+        ApplyRemember(true, LastEmail, data.Data.RefreshToken);   // lưu refresh token đã xoay vòng
+        ClearLegacyData();
+        await GameSync.SyncAllAsync();
+        return true;
+    }
+
     public void Logout()
     {
         CurrentUser = null;
         CurrentEmail = null;
         IsGuest = false;
+        _savedRefreshToken = "";
+        RememberPref = false;
         ApiClient.Instance.SetAccessToken(null);
         DeleteSession();
     }
@@ -138,11 +176,13 @@ public partial class AccountManager : Node
         if (remember)
         {
             LastEmail = email;
+            _savedRefreshToken = refreshToken ?? "";
             SaveSession(email, refreshToken);
         }
         else
         {
             LastEmail = "";
+            _savedRefreshToken = "";
             DeleteSession();
         }
     }
@@ -175,7 +215,7 @@ public partial class AccountManager : Node
             {
                 LastEmail = s.User;
                 RememberPref = true;
-                // TODO: Gọi API refresh token nếu muốn auto-login
+                _savedRefreshToken = s.RefreshToken ?? "";   // dùng để tự đăng nhập lại (TryAutoLoginAsync)
             }
         }
         catch { }
@@ -221,6 +261,7 @@ public partial class AccountManager : Node
     // --- DTOs ---
     public class RegisterRequest { public string Username { get; set; } public string Email { get; set; } public string Password { get; set; } }
     public class LoginRequest { public string Email { get; set; } public string Password { get; set; } }
+    public class RefreshRequest { public string RefreshToken { get; set; } }
     public class AuthResponse { public string AccessToken { get; set; } public string RefreshToken { get; set; } public DateTime ExpiresAt { get; set; } public string Username { get; set; } public string Role { get; set; } }
     public class ApiResponse<T> { public bool Success { get; set; } public T Data { get; set; } public string Message { get; set; } }
 }

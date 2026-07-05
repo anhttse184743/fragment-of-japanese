@@ -50,6 +50,9 @@ public partial class ShopUi : CanvasLayer
     private readonly List<(Label label, bool isGold)> _gachaLuckLabels = new();
     private string _pendingItemId = "";
 
+    // Theo dõi thanh toán: sau khi mở link PayOS, tự động hỏi server tới khi cộng được (không cần thao tác).
+    private bool _watchingPayment;
+
     // Panel chính — co giãn theo màn hình
     private PanelContainer _panel;
 
@@ -646,20 +649,135 @@ public partial class ShopUi : CanvasLayer
         return card;
     }
 
-    private async void OnBuyPack(Shop.PaymentPack p)
+    private void OnBuyPack(Shop.PaymentPack p)
+    {
+        // Hỏi xác nhận TRƯỚC khi mở trang thanh toán (tránh bấm nhầm tốn tiền thật).
+        string price = $"{(p.PriceVnd ?? 0):N0}đ";
+        ShowPayConfirm(
+            "XÁC NHẬN THANH TOÁN",
+            $"Bạn có muốn mua gói\n\"{p.Name}\"?\n\nNhận {p.CurrencyAmount:N0} Ma Thạch\nGiá {price} (thanh toán qua PayOS)",
+            () => DoBuyPack(p));
+    }
+
+    private async void DoBuyPack(Shop.PaymentPack p)
     {
         if (Shop.Instance == null) return;
         ShowFeedback("Đang tạo link thanh toán...", true);
         var (url, error) = await Shop.Instance.CreatePayOsLinkAsync(p.Id);
         if (!string.IsNullOrEmpty(url))
         {
-            OS.ShellOpen(url);   // mở trình duyệt thanh toán; webhook PayOS cộng Ma Thạch khi xong
-            ShowFeedback("Đã mở trang thanh toán. Hoàn tất rồi quay lại — Ma Thạch sẽ tự cộng.", true);
+            OS.ShellOpen(url);   // mở trình duyệt thanh toán
+            StartPaymentWatch(); // tự động hỏi server tới khi cộng — người chơi không cần bấm gì
+            ShowFeedback("Đã mở trang thanh toán. Trả xong quay lại là Ma Thạch tự cộng.", true);
         }
         else
         {
             ShowFeedback(error, false);
         }
+    }
+
+    // ── Tự động xác nhận thanh toán ───────────────────────────────────────────
+    /// <summary>Bắt đầu poll ngầm sau khi mở link PayOS (ShopUi là autoload nên chạy kể cả khi đóng shop).</summary>
+    private void StartPaymentWatch()
+    {
+        if (_watchingPayment) return;
+        _watchingPayment = true;
+        _ = WatchPaymentLoop();
+    }
+
+    private async System.Threading.Tasks.Task WatchPaymentLoop()
+    {
+        // Hỏi server (server hỏi PayOS API) mỗi 4s, tối đa ~3 phút. Trả xong là cộng ngay.
+        for (int i = 0; i < 45 && _watchingPayment; i++)
+        {
+            await ToSignal(GetTree().CreateTimer(4.0), SceneTreeTimer.SignalName.Timeout);
+            if (!_watchingPayment) return;
+            if (await CheckPaymentNow() > 0) { _watchingPayment = false; return; }
+        }
+        _watchingPayment = false;
+    }
+
+    /// <summary>Một lần kiểm tra: xác nhận qua PayOS API + so số dư (bắt cả trường hợp webhook đã tự cộng).
+    /// Trả > 0 nếu Ma Thạch tăng → dừng theo dõi.</summary>
+    private async System.Threading.Tasks.Task<int> CheckPaymentNow()
+    {
+        if (Shop.Instance == null) return 0;
+        int before = Wallet.Instance?.MaThach ?? 0;
+
+        int credited = await Shop.Instance.ConfirmPendingPaymentsAsync();   // đường 1: server hỏi PayOS API
+        if (Wallet.Instance != null) { await Wallet.Instance.SyncAsync(); RefreshWallet(); }   // đường 2: webhook đã cộng sẵn
+
+        int delta = (Wallet.Instance?.MaThach ?? 0) - before;
+        if (delta > 0) GlobalToast($"✓ Đã cộng {delta:N0} Ma Thạch!");
+        return delta > 0 ? delta : credited;
+    }
+
+    /// <summary>Khi app/cửa sổ được focus lại (vừa thanh toán xong quay về) → kiểm tra ngay lập tức.</summary>
+    public override void _Notification(int what)
+    {
+        if ((what == NotificationApplicationFocusIn || what == NotificationWMWindowFocusIn) && _watchingPayment)
+            _ = CheckPaymentNow();
+    }
+
+    /// <summary>Toast phủ toàn màn hình (hiện kể cả khi shop đang đóng).</summary>
+    private void GlobalToast(string msg)
+    {
+        var ctrl = new Control { MouseFilter = Control.MouseFilterEnum.Ignore };
+        ctrl.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        AddChild(ctrl);
+        UiKit.Toast(ctrl, msg, 2.5f);
+        var t = GetTree().CreateTimer(3.0);
+        t.Timeout += () => { if (GodotObject.IsInstanceValid(ctrl)) ctrl.QueueFree(); };
+    }
+
+    /// <summary>Hộp thoại xác nhận đơn giản (Đồng ý / Hủy). Dựng ngay tại thời điểm gọi.</summary>
+    private void ShowPayConfirm(string title, string msg, System.Action onYes)
+    {
+        var overlay = new Control();
+        overlay.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        _shopRoot.AddChild(overlay);
+
+        var dim = new ColorRect { Color = new Color(0, 0, 0, 0.78f), MouseFilter = Control.MouseFilterEnum.Stop };
+        dim.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        overlay.AddChild(dim);
+
+        var center = new CenterContainer();
+        center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        overlay.AddChild(center);
+
+        var panel = new PanelContainer { CustomMinimumSize = new Vector2(560, 0) };
+        panel.AddThemeStyleboxOverride("panel", UiKit.Box(new Color(0.24f, 0.17f, 0.13f, 0.98f), 24, UiKit.MaThach, 3, 32, 32));
+        center.AddChild(panel);
+
+        var vbox = new VBoxContainer();
+        vbox.AddThemeConstantOverride("separation", 24);
+        panel.AddChild(vbox);
+
+        var t = new Label { Text = title, HorizontalAlignment = HorizontalAlignment.Center };
+        t.AddThemeFontSizeOverride("font_size", 28);
+        t.AddThemeColorOverride("font_color", UiKit.Accent);
+        vbox.AddChild(t);
+
+        var m = new Label { Text = msg, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+        m.AddThemeFontSizeOverride("font_size", 22);
+        m.AddThemeColorOverride("font_color", new Color(0.95f, 0.9f, 0.8f));
+        vbox.AddChild(m);
+
+        var row = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+        row.AddThemeConstantOverride("separation", 20);
+        vbox.AddChild(row);
+
+        var yes = new Button { Text = "ĐỒNG Ý", CustomMinimumSize = new Vector2(200, 64) };
+        UiKit.StyleButton(yes, new Color(0.2f, 0.5f, 0.3f, 1f), new Color(0.25f, 0.6f, 0.35f, 1f), new Color(0.15f, 0.4f, 0.25f, 1f), radius: 16);
+        yes.AddThemeFontSizeOverride("font_size", 22);
+        yes.Pressed += () => { overlay.QueueFree(); onYes?.Invoke(); };
+        row.AddChild(yes);
+
+        var no = new Button { Text = "HỦY BỎ", CustomMinimumSize = new Vector2(200, 64) };
+        UiKit.StyleButton(no, new Color(0.7f, 0.25f, 0.25f), new Color(0.85f, 0.35f, 0.35f), new Color(0.55f, 0.15f, 0.15f), radius: 16);
+        no.AddThemeFontSizeOverride("font_size", 22);
+        no.Pressed += () => overlay.QueueFree();
+        row.AddChild(no);
     }
 
     // ── Tab Nhập Code ─────────────────────────────────────────────────────────

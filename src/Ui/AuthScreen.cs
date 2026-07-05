@@ -68,6 +68,24 @@ public partial class AuthScreen : Control
         _confirmReg.TextSubmitted  += _ => Submit();
 
         PlayIntro();
+        TryAutoLogin();
+    }
+
+    /// <summary>Có phiên "ghi nhớ" → thử tự đăng nhập lại; thành công thì vào thẳng World.</summary>
+    private async void TryAutoLogin()
+    {
+        var mgr = AccountManager.Instance;
+        if (mgr == null || !mgr.HasRememberedSession) return;
+
+        SetBusy(true);
+        SetMessage("Đang đăng nhập lại...", OkColor);
+        bool ok = await mgr.TryAutoLoginAsync();
+        if (!IsInstanceValid(this)) return;
+
+        if (ok) { Proceed(); return; }
+
+        SetBusy(false);
+        SetMessage("", OkColor);   // phiên hết hạn → để người chơi đăng nhập tay
     }
 
     // ───────────────────────── Nền ─────────────────────────
