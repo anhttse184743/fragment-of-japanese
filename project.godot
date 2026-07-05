@@ -43,6 +43,8 @@ SceneTransition="*res://src/Autoloads/SceneTransition.cs"
 ConfirmUi="*res://src/Ui/ConfirmUi.cs"
 DialogueUi="*res://scenes/ui/DialogueUi.tscn"
 ChallengeUi="*res://scenes/ui/challenge/ChallengeUi.tscn"
+HiraganaChartUi="*res://scenes/ui/HiraganaChartUi.tscn"
+MinigameUi="*res://scenes/ui/MinigameUi.tscn"
 SaveSystem="*res://src/Autoloads/SaveSystem.cs"
 GameManager="*res://src/Autoloads/GameManager.cs"
 

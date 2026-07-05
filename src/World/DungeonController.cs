@@ -383,8 +383,9 @@ public partial class DungeonController : Node3D
         // Vàng/EXP/Tai đã cấp NGAY mỗi lần hạ quái (GrantKillLoot). Win chỉ cộng bonus đọc + tổng kết.
         if (_bonusGold > 0) { _ = _player?.AwardAsync(0, _bonusGold); _goldEarned += _bonusGold; }
         GD.Print($"[Dungeon] WIN — tổng +{_goldEarned} Vàng, +{_earsDropped} Tai Goblin ({_defeated.Count} quái).");
-        ShowBanner($"🏆 Hoàn thành ải!   +{_goldEarned} Vàng · +{_earsDropped} Tai Goblin");
-        Leave();
+        
+        // Hiển thị màn hình phần thưởng, nó sẽ gọi Leave() khi người chơi nhấn nút
+        DungeonRewardUi.ShowReward(this, _goldEarned, _earsDropped, _defeated.Count);
     }
 
     private void OnPlayerDied()
@@ -399,7 +400,7 @@ public partial class DungeonController : Node3D
         Leave();
     }
 
-    private void Leave()
+    public void Leave()
     {
         if (SceneTransition.Instance != null) SceneTransition.Instance.GoTo(ReturnScene);
         else GetTree().ChangeSceneToFile(ReturnScene);

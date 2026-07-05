@@ -36,7 +36,34 @@ public partial class ChallengeUi : CanvasLayer
     {
         Instance = this;        // Layer 128 + ProcessMode=Always đặt trong ChallengeUi.tscn
         _rng.Randomize();
-        if (_root != null) _root.Visible = false;
+        
+        if (_root != null) 
+        {
+            _root.Visible = false;
+            if (_root is PanelContainer pc)
+            {
+                pc.AddThemeStyleboxOverride("panel", 
+                    UiKit.Box(new Color(0.24f, 0.17f, 0.13f, 0.98f), 24, new Color(0.4f, 0.28f, 0.2f, 1f), 4, 32, 32));
+            }
+        }
+        
+        if (_content != null)
+        {
+            _content.AddThemeConstantOverride("separation", 24);
+        }
+        
+        if (_title != null)
+        {
+            _title.AddThemeFontSizeOverride("font_size", 32);
+            _title.AddThemeColorOverride("font_color", UiKit.Accent);
+        }
+
+        if (_timer != null)
+        {
+            _timer.AddThemeFontSizeOverride("font_size", 46);
+            _timer.AddThemeColorOverride("font_color", UiKit.Gold);
+        }
+        
         SetProcess(false);
     }
 
@@ -50,8 +77,28 @@ public partial class ChallengeUi : CanvasLayer
         var q = _engine.Generate(target, pool, QuizType.KanaToMeaning);
         string correct = q.CorrectAnswer;
 
-        _content.AddChild(MkLabel(target.Kana, 50, Colors.White));
-        if (showMeaning) _content.AddChild(MkLabel($"nghĩa: {target.MeaningVi}", 18, UiKit.TextDim));
+        if (showMeaning)
+        {
+            var newWord = MkLabel("✨ TỪ MỚI", 24, UiKit.Gold);
+            _content.AddChild(newWord);
+            
+            _content.AddChild(MkLabel(target.Kana, 72, UiKit.WoodText));
+            _content.AddChild(MkLabel($"Nghĩa: {target.MeaningVi}", 26, UiKit.Accent));
+        }
+        else
+        {
+            _content.AddChild(MkLabel(target.Kana, 72, UiKit.WoodText));
+        }
+        
+        var spacer = new Control { CustomMinimumSize = new Vector2(0, 12) };
+        _content.AddChild(spacer);
+        
+        var warningLbl = MkLabel("⚠️ Trả lời sai có thể khiến quái vật sống lại!", 20, new Color(0.95f, 0.4f, 0.4f));
+        _content.AddChild(warningLbl);
+        
+        var spacer2 = new Control { CustomMinimumSize = new Vector2(0, 16) };
+        _content.AddChild(spacer2);
+
         AddChoiceGrid(q.Choices, ans => Finish(ans == correct));
         Show();
     }
@@ -65,14 +112,45 @@ public partial class ChallengeUi : CanvasLayer
         // stage 0: THẺ HỌC — xem + mở khóa, diệt 1 phát (luôn đúng)
         if (stage <= 0)
         {
-            if (!Begin("📖  NGỮ PHÁP MỚI", 0, false, onDone)) { onDone?.Invoke(false, 0); return; }
-            _content.AddChild(MkLabel(g.Pattern, 32, Colors.White));
-            _content.AddChild(MkLabel(g.MeaningVi, 18, UiKit.Gold));
-            _content.AddChild(WrapLabel(g.ExplanationVi, UiKit.BrownTextDim));
-            _content.AddChild(WrapLabel($"例: {g.ExampleJa}\n     {g.ExampleVi}", UiKit.TextDim));
-            var btn = MkButton("⚔  Khắc cốt — Diệt!");
+            if (!Begin("✨ KHÁM PHÁ NGỮ PHÁP", 0, false, onDone)) { onDone?.Invoke(false, 0); return; }
+            
+            _content.AddChild(MkLabel(g.Pattern, 56, UiKit.WoodText));
+            _content.AddChild(MkLabel(g.MeaningVi, 26, UiKit.Gold));
+            
+            var sep = new HSeparator();
+            sep.AddThemeConstantOverride("separation", 16);
+            sep.Modulate = new Color(1, 1, 1, 0.2f);
+            _content.AddChild(sep);
+            
+            var expl = WrapLabel(g.ExplanationVi, UiKit.WoodTextDim);
+            expl.AddThemeFontSizeOverride("font_size", 20);
+            _content.AddChild(expl);
+            
+            var sep2 = new HSeparator();
+            sep2.AddThemeConstantOverride("separation", 16);
+            sep2.Modulate = new Color(1, 1, 1, 0.2f);
+            _content.AddChild(sep2);
+            
+            var exJa = WrapLabel($"Ví dụ:\n{g.ExampleJa}", UiKit.Accent);
+            exJa.AddThemeFontSizeOverride("font_size", 22);
+            _content.AddChild(exJa);
+            
+            var exVi = WrapLabel(g.ExampleVi, UiKit.WoodTextDim);
+            exVi.AddThemeFontSizeOverride("font_size", 18);
+            _content.AddChild(exVi);
+            
+            var spacer = new Control { CustomMinimumSize = new Vector2(0, 16) };
+            _content.AddChild(spacer);
+            
+            var btn = MkButton("⚔ Khắc Cốt Ghi Tâm!");
+            btn.CustomMinimumSize = new Vector2(400, 70);
+            btn.SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter;
+            btn.AddThemeFontSizeOverride("font_size", 26);
+            UiKit.StyleButton(btn, new Color(0.6f, 0.25f, 0.25f, 1f), new Color(0.7f, 0.35f, 0.35f, 1f), new Color(0.5f, 0.2f, 0.2f, 1f), radius: 14);
+            
             btn.Pressed += () => Finish(true);
             _content.AddChild(btn);
+            
             Show();
             return;
         }
@@ -163,7 +241,7 @@ public partial class ChallengeUi : CanvasLayer
         foreach (var i in order)
         {
             var b = MkButton(parts[i]);
-            b.CustomMinimumSize = new Vector2(0, 50);
+            b.CustomMinimumSize = new Vector2(0, 56);
             string part = parts[i];
             b.Pressed += () =>
             {
@@ -219,7 +297,27 @@ public partial class ChallengeUi : CanvasLayer
     {
         if (!_active || !_timed) return;
         _remaining -= delta;
-        _timer.Text = $"⏱ {Mathf.Max(0, Mathf.CeilToInt((float)_remaining))}s";
+        int secs = Mathf.Max(0, Mathf.CeilToInt((float)_remaining));
+        
+        if (_timer != null)
+        {
+            _timer.Text = $"⏱ {secs}s";
+            
+            // Tăng kịch tính khi sắp hết giờ (dưới 5 giây)
+            if (_remaining < 5.0)
+            {
+                _timer.AddThemeColorOverride("font_color", new Color(1f, 0.25f, 0.25f, 1f));
+                // Hiệu ứng rung đập nhịp tim nhẹ
+                float pulse = 46 + Mathf.Sin((float)_remaining * 12f) * 6f;
+                _timer.AddThemeFontSizeOverride("font_size", (int)pulse);
+            }
+            else
+            {
+                _timer.AddThemeColorOverride("font_color", UiKit.Gold);
+                _timer.AddThemeFontSizeOverride("font_size", 46);
+            }
+        }
+        
         if (_remaining <= 0) Finish(false);
     }
 
@@ -251,13 +349,13 @@ public partial class ChallengeUi : CanvasLayer
 
     private void AddChoiceGrid(IReadOnlyList<string> choices, Action<string> onPick)
     {
-        var grid = new GridContainer { Columns = 2 };
-        grid.AddThemeConstantOverride("h_separation", 12);
-        grid.AddThemeConstantOverride("v_separation", 12);
+        var grid = new GridContainer { Columns = 2, SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter };
+        grid.AddThemeConstantOverride("h_separation", 20);
+        grid.AddThemeConstantOverride("v_separation", 20);
         foreach (var c in choices)
         {
             var b = MkButton(c);
-            b.CustomMinimumSize = new Vector2(250, 56);
+            b.CustomMinimumSize = new Vector2(280, 70);
             string ans = c;
             b.Pressed += () => { if (_active) onPick(ans); };
             grid.AddChild(b);
@@ -267,16 +365,11 @@ public partial class ChallengeUi : CanvasLayer
 
     private Button MkButton(string text)
     {
-        if (_answerBtnScene != null)
-        {
-            var btn = _answerBtnScene.Instantiate<Button>();   // mẫu chỉnh trong AnswerButton.tscn
-            btn.Text = text;
-            return btn;
-        }
-        // fallback nếu chưa gán mẫu
-        var b = new Button { Text = text };
-        b.AddThemeFontSizeOverride("font_size", 20);
-        UiKit.StyleButton(b, UiKit.CardBg, UiKit.Fade(UiKit.Accent, 0.5f), UiKit.Accent);
+        var b = new Button { Text = text, FocusMode = Control.FocusModeEnum.None };
+        b.AddThemeFontSizeOverride("font_size", 24);
+        b.AddThemeColorOverride("font_color", UiKit.WoodText);
+        b.AddThemeColorOverride("font_hover_color", Colors.White);
+        UiKit.StyleButton(b, UiKit.WoodCard, UiKit.Fade(UiKit.Accent, 0.3f), UiKit.Accent, radius: 14);
         return b;
     }
 

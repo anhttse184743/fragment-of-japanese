@@ -6,13 +6,10 @@ using FragmentOfJapanese.Items;
 namespace FragmentOfJapanese.Ui;
 
 /// <summary>
-/// Màn đổi vật phẩm với trưởng làng. Hiện danh sách vật phẩm Trade trong túi đồ,
-/// mỗi thứ kèm tỷ lệ đổi → vàng. Bấm "Đổi" để gửi API bán và cộng vàng.
-/// Mở dạng overlay qua <see cref="Open"/>.
+/// Màn đổi vật phẩm với trưởng làng.
 /// </summary>
 public partial class TradeUi : Control
 {
-    // Tỷ lệ đổi: 1 vật phẩm = bao nhiêu vàng
     private static readonly Dictionary<string, (string nameVi, int goldPer)> _rates = new()
     {
         { "item_goblin_ear", ("Tai Goblin", 25) },
@@ -24,7 +21,6 @@ public partial class TradeUi : Control
     public static void Open()
     {
         if (Engine.GetMainLoop() is not SceneTree tree) return;
-        // Đóng overlay cũ nếu đã mở
         var old = tree.Root.GetNodeOrNull("TradeOverlay");
         old?.QueueFree();
 
@@ -37,6 +33,7 @@ public partial class TradeUi : Control
     {
         BuildUi();
         RefreshList();
+        GetViewport().SizeChanged += () => Size = GetViewport().GetVisibleRect().Size;
     }
 
     // ─── Xây giao diện ───────────────────────────────────────────────────────
@@ -50,28 +47,39 @@ public partial class TradeUi : Control
         // Nền mờ toàn màn
         var bg = new ColorRect { Color = new Color(0.04f, 0.05f, 0.08f, 0.88f) };
         bg.SetAnchorsPreset(LayoutPreset.FullRect);
+        bg.MouseFilter = MouseFilterEnum.Stop;
         AddChild(bg);
 
-        // Panel trung tâm
         var center = new CenterContainer();
         center.SetAnchorsPreset(LayoutPreset.FullRect);
-        center.MouseFilter = MouseFilterEnum.Ignore;
         AddChild(center);
 
-        var panel = new PanelContainer { CustomMinimumSize = new Vector2(480, 0) };
+        var panel = new PanelContainer { CustomMinimumSize = new Vector2(800, 650) };
         panel.AddThemeStyleboxOverride("panel",
-            UiKit.Box(new Color(0.14f, 0.10f, 0.06f), 14, UiKit.Accent, 2, 20, 18));
+            UiKit.Box(new Color(0.24f, 0.17f, 0.13f, 0.98f), 24, new Color(0.4f, 0.28f, 0.2f, 1f), 4, 32, 32));
         center.AddChild(panel);
 
         var vb = new VBoxContainer();
-        vb.AddThemeConstantOverride("separation", 14);
+        vb.AddThemeConstantOverride("separation", 24);
         panel.AddChild(vb);
 
-        // Tiêu đề
-        var title = MkLabel("🪙  Đổi Chiến Lợi Phẩm", 22, UiKit.Accent);
-        vb.AddChild(title);
+        // Header
+        var headerBox = new HBoxContainer();
+        var title = MkLabel("THU MUA CHIẾN LỢI PHẨM", 34, UiKit.Accent);
+        title.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+        title.HorizontalAlignment = HorizontalAlignment.Left;
+        headerBox.AddChild(title);
 
-        var sub = MkLabel("Đổi vật phẩm trade lấy Vàng từ trưởng làng.", 15, UiKit.WoodTextDim);
+        var closeBtn = new Button { Text = "X", CustomMinimumSize = new Vector2(56, 56) };
+        UiKit.StyleButton(closeBtn, new Color(0.7f, 0.25f, 0.25f), new Color(0.85f, 0.35f, 0.35f), new Color(0.55f, 0.15f, 0.15f), radius: 16);
+        closeBtn.AddThemeFontSizeOverride("font_size", 24);
+        closeBtn.Pressed += Close;
+        headerBox.AddChild(closeBtn);
+        
+        vb.AddChild(headerBox);
+
+        var sub = MkLabel("Đổi các vật phẩm thu thập được từ quái vật để lấy Vàng.", 20, UiKit.WoodTextDim);
+        sub.HorizontalAlignment = HorizontalAlignment.Left;
         vb.AddChild(sub);
 
         var sep = new HSeparator();
@@ -79,21 +87,19 @@ public partial class TradeUi : Control
         vb.AddChild(sep);
 
         // Danh sách
-        var scroll = new ScrollContainer { CustomMinimumSize = new Vector2(0, 280) };
+        var scroll = new ScrollContainer { CustomMinimumSize = new Vector2(0, 420) };
         scroll.SizeFlagsVertical = SizeFlags.ExpandFill;
+        scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled;
         vb.AddChild(scroll);
 
         _listContainer = new VBoxContainer();
-        _listContainer.AddThemeConstantOverride("separation", 8);
+        _listContainer.AddThemeConstantOverride("separation", 16);
+        _listContainer.SizeFlagsHorizontal = SizeFlags.ExpandFill;
         scroll.AddChild(_listContainer);
 
         // Feedback
-        _feedbackLabel = MkLabel("", 16, UiKit.BuyGreenHi);
+        _feedbackLabel = MkLabel("", 20, UiKit.BuyGreenHi);
         vb.AddChild(_feedbackLabel);
-
-        // Nút đóng
-        var closeBtn = MkButton("✕  Đóng", Close);
-        vb.AddChild(closeBtn);
     }
 
     // ─── Làm mới danh sách ───────────────────────────────────────────────────
@@ -105,7 +111,7 @@ public partial class TradeUi : Control
         var inv = Inventory.Instance;
         if (inv == null)
         {
-            _listContainer.AddChild(MkLabel("Không thể đọc túi đồ.", 16, UiKit.TextDim));
+            _listContainer.AddChild(MkLabel("Không thể đọc túi đồ.", 20, UiKit.TextDim));
             return;
         }
 
@@ -119,44 +125,96 @@ public partial class TradeUi : Control
         }
 
         if (!hasAny)
-            _listContainer.AddChild(MkLabel("Bạn không có vật phẩm nào để đổi.", 16, UiKit.TextDim));
+        {
+            var noItem = MkLabel("Bạn không có vật phẩm nào để đổi lúc này.", 22, UiKit.WoodTextDim);
+            noItem.CustomMinimumSize = new Vector2(0, 300);
+            noItem.VerticalAlignment = VerticalAlignment.Center;
+            _listContainer.AddChild(noItem);
+        }
     }
 
     // ─── Dòng item ───────────────────────────────────────────────────────────
-    private Control MakeRow(string itemId, string nameVi, int goldPer, int qty)
+    private Control MakeRow(string itemId, string nameVi, int goldPer, int maxQty)
     {
         var row = new PanelContainer();
         row.AddThemeStyleboxOverride("panel",
-            UiKit.Box(new Color(0.20f, 0.14f, 0.08f), 10, UiKit.Fade(UiKit.Accent, 0.25f), 1, 12, 8));
+            UiKit.Box(new Color(0.18f, 0.12f, 0.09f, 1f), 16, new Color(0.4f, 0.28f, 0.2f, 1f), 2, 20, 20));
 
         var hb = new HBoxContainer();
-        hb.AddThemeConstantOverride("separation", 10);
+        hb.AddThemeConstantOverride("separation", 24);
         row.AddChild(hb);
 
         // Icon vật phẩm
-        var icon = UiKit.ItemIcon(ItemDatabase.Instance?.Get(itemId), UiKit.Gold, 44);
+        var icon = UiKit.ItemIcon(ItemDatabase.Instance?.Get(itemId), UiKit.Gold, 96);
         hb.AddChild(icon);
 
         // Thông tin
-        var info = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-        info.AddThemeConstantOverride("separation", 2);
+        var info = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
+        info.AddThemeConstantOverride("separation", 8);
         hb.AddChild(info);
 
-        var nameLbl = MkLabel($"{nameVi}  ×{qty}", 17, UiKit.WoodText);
+        var nameLbl = MkLabel(nameVi, 26, UiKit.WoodText);
         nameLbl.HorizontalAlignment = HorizontalAlignment.Left;
         info.AddChild(nameLbl);
 
-        int total = goldPer * qty;
-        var rateLbl = MkLabel($"Đổi hết → 🪙 {total} Vàng  ({goldPer}/cái)", 14, UiKit.WoodTextDim);
+        var rateLbl = MkLabel($"Giá: {goldPer} Vàng / cái", 18, UiKit.Accent);
         rateLbl.HorizontalAlignment = HorizontalAlignment.Left;
         info.AddChild(rateLbl);
+        
+        var stockLbl = MkLabel($"Bạn đang có: {maxQty}", 18, UiKit.WoodTextDim);
+        stockLbl.HorizontalAlignment = HorizontalAlignment.Left;
+        info.AddChild(stockLbl);
 
-        // Nút đổi hết
-        var tradeBtn = MkButton($"Đổi hết ({qty})", () => OnTrade(itemId, nameVi, goldPer, qty));
-        tradeBtn.CustomMinimumSize = new Vector2(120, 44);
-        hb.AddChild(tradeBtn);
+        // Vùng thao tác
+        var actionCol = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+        actionCol.AddThemeConstantOverride("separation", 16);
+        hb.AddChild(actionCol);
+
+        var qtyRow = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+        qtyRow.AddThemeConstantOverride("separation", 12);
+        actionCol.AddChild(qtyRow);
+
+        int currentQty = maxQty; // Default to max
+
+        var qtyLbl = MkLabel(currentQty.ToString(), 26, Colors.White);
+        
+        var qtyPanel = new PanelContainer { CustomMinimumSize = new Vector2(90, 50) };
+        qtyPanel.AddThemeStyleboxOverride("panel", UiKit.Box(new Color(0.12f, 0.08f, 0.06f, 1f), 8, UiKit.WoodBorder, 2));
+        var qtyCenter = new CenterContainer();
+        qtyCenter.AddChild(qtyLbl);
+        qtyPanel.AddChild(qtyCenter);
+
+        var btnTrade = MkButton($"ĐỔI ({currentQty * goldPer} Vàng)", null);
+        btnTrade.CustomMinimumSize = new Vector2(280, 56);
+        UiKit.StyleButton(btnTrade, new Color(0.2f, 0.5f, 0.3f, 1f), new Color(0.25f, 0.6f, 0.35f, 1f), new Color(0.15f, 0.4f, 0.25f, 1f), radius: 12);
+        btnTrade.AddThemeFontSizeOverride("font_size", 22);
+
+        void UpdateQty(int newQty)
+        {
+            currentQty = Mathf.Clamp(newQty, 1, maxQty);
+            qtyLbl.Text = currentQty.ToString();
+            btnTrade.Text = $"ĐỔI ({currentQty * goldPer} Vàng)";
+        }
+
+        qtyRow.AddChild(MakeSmallBtn("-10", () => UpdateQty(currentQty - 10)));
+        qtyRow.AddChild(MakeSmallBtn("-", () => UpdateQty(currentQty - 1)));
+        qtyRow.AddChild(qtyPanel);
+        qtyRow.AddChild(MakeSmallBtn("+", () => UpdateQty(currentQty + 1)));
+        qtyRow.AddChild(MakeSmallBtn("+10", () => UpdateQty(currentQty + 10)));
+
+        btnTrade.Pressed += () => OnTrade(itemId, nameVi, goldPer, currentQty);
+        actionCol.AddChild(btnTrade);
 
         return row;
+    }
+
+    private Button MakeSmallBtn(string text, System.Action onPressed)
+    {
+        var b = new Button { Text = text, CustomMinimumSize = new Vector2(45, 50) };
+        UiKit.StyleButton(b, new Color(0.3f, 0.22f, 0.16f, 1f), new Color(0.4f, 0.3f, 0.22f, 1f), UiKit.Accent, radius: 12);
+        b.AddThemeFontSizeOverride("font_size", 20);
+        b.Pressed += onPressed;
+        return b;
     }
 
     // ─── Logic đổi ───────────────────────────────────────────────────────────
@@ -180,7 +238,7 @@ public partial class TradeUi : Control
             _ = wallet.SyncAsync();
             _ = inv.SyncAsync();
 
-            SetFeedback($"✓ Đổi {qty}× {nameVi} → +{totalGold} Vàng!", UiKit.BuyGreenHi);
+            SetFeedback($"✓ Đã bán {qty} {nameVi} lấy {totalGold} Vàng!", UiKit.BuyGreenHi);
             RefreshList();
         }
         else
@@ -215,7 +273,8 @@ public partial class TradeUi : Control
         var b = new Button { Text = text };
         b.AddThemeFontSizeOverride("font_size", 16);
         UiKit.StyleButton(b, UiKit.WoodCard, UiKit.Fade(UiKit.Accent, 0.5f), UiKit.Accent);
-        b.Pressed += onPressed;
+        if (onPressed != null) b.Pressed += onPressed;
         return b;
     }
 }
+

@@ -23,7 +23,7 @@ public partial class AttackZone : Node3D
     [Export] public float Height        = 1.6f;
     [Export] public float ForwardOffset = 0.4f;     // đẩy vùng ra trước, tránh ôm vào thân
     [Export(PropertyHint.Layers3DPhysics)] public uint TargetMask = 1;  // layer của mục tiêu
-    [Export] public bool  ShowDebug     = true;     // vùng đỏ mờ để quan sát
+    [Export] public bool  ShowDebug     = false;     // vùng đỏ mờ để quan sát
     [Export] public float TurnThreshold = 0.15f;    // tốc độ tối thiểu để xoay hướng
 
     /// <summary>Phát mỗi khi đòn đánh trúng 1 mục tiêu, kèm vị trí trúng (cho hiệu ứng tia trúng).</summary>

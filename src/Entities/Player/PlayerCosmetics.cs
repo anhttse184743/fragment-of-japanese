@@ -9,7 +9,7 @@ namespace FragmentOfJapanese.Entities.Player;
 ///   - Vệt chém (AttackSwing) khi bấm đánh
 ///   - Bụi chạy (RunDust) khi chạy nhanh trên mặt đất
 ///   - Tia trúng đòn (HitSpark) khi AttackZone đánh trúng quái
-///   - Hào quang (LevelUpAura) khi lên cấp
+///   - Hào quang lên cấp (Cố định màu vàng kim)
 ///   - Vệt chân (Footstep) khi di chuyển
 /// Hiệu ứng dựng bằng texture procedural (<see cref="FxTextures"/>) nên không cần art ngoài.
 /// </summary>
@@ -20,10 +20,12 @@ public partial class PlayerCosmetics : Node
     [Export] private PlayerController  _controller;
     [Export] private AttackZone        _attackZone;
 
-    [Export] public float DustInterval = 0.10f;   // giây giữa 2 hạt bụi khi chạy
+    [Export] public float DustInterval = 0.18f;   // giây giữa 2 hạt bụi khi chạy
     [Export] public float StepInterval = 0.34f;   // giây giữa 2 vệt chân
 
     private Node3D _world;
+    private float  _basePixel;   // pixel_size gốc của Visual (skin dùng cỡ mặc định)
+    private float  _baseY;       // Y gốc của Visual
     private float  _dustTimer;
     private float  _stepTimer;
     private readonly RandomNumberGenerator _rng = new();
@@ -32,6 +34,7 @@ public partial class PlayerCosmetics : Node
     {
         _rng.Randomize();
         _world = _player?.GetParent() as Node3D ?? GetTree().CurrentScene as Node3D;
+        if (_visual != null) { _basePixel = _visual.PixelSize; _baseY = _visual.Position.Y; }
 
         if (SkinManager.Instance != null) SkinManager.Instance.SkinChanged += OnSkinChanged;
         if (_controller != null) _controller.AttackPressed += OnAttack;
@@ -73,6 +76,12 @@ public partial class PlayerCosmetics : Node
             }
         }
         _visual.Modulate = def.ColorValue;   // tông màu (mặc định #ffffff = không đổi)
+
+        // Skin cỡ frame khác (vd sakura 256px) → đặt pixel_size/Y riêng, else giữ mặc định của node.
+        _visual.PixelSize = def.PixelSize > 0f ? def.PixelSize : _basePixel;
+        var vp = _visual.Position;
+        vp.Y = def.VisualY > 0f ? def.VisualY : _baseY;
+        _visual.Position = vp;
     }
 
     // ───────── Hiệu ứng định kỳ (bụi / vệt chân) ─────────
@@ -97,9 +106,12 @@ public partial class PlayerCosmetics : Node
     private void OnAttack()
     {
         if (_attackZone == null) return;
-        var tex = FxTextures.Crescent(ColorOf(SkinCategory.AttackSwing));
-        var s   = MakeSprite(tex, billboard: true, pixelSize: 0.012f);
+        var fallback = FxTextures.Crescent(ColorOf(SkinCategory.AttackSwing));
+        var tex = GetTextureOf(SkinCategory.AttackSwing, fallback);
+        var s   = MakeSprite(tex, billboard: false, pixelSize: 0.012f);
+        if (tex != fallback) CropToSquare(s, tex);
         _attackZone.AddChild(s);
+        s.RotationDegrees = new Vector3(-90f, 0f, 0f); // Nằm phẳng theo phương ngang
         s.Position = new Vector3(0f, _attackZone.Height * 0.5f, _attackZone.ForwardOffset + _attackZone.Range * 0.5f);
         s.Scale    = Vector3.One * 0.4f;
         PopFade(s, 1.3f, 0.18f);
@@ -107,16 +119,18 @@ public partial class PlayerCosmetics : Node
 
     private void OnHit(Vector3 pos)
     {
-        var tex = FxTextures.SoftCircle(ColorOf(SkinCategory.HitSpark));
-        var s   = MakeSprite(tex, billboard: true, pixelSize: 0.02f);
+        var fallback = FxTextures.SoftCircle(ColorOf(SkinCategory.HitSpark));
+        var tex = GetTextureOf(SkinCategory.HitSpark, fallback);
+        var s   = MakeSprite(tex, billboard: true, pixelSize: 0.01f);
+        if (tex != fallback) CropToSquare(s, tex);
         AddToWorld(s, pos);
-        s.Scale = Vector3.One * 0.2f;
-        PopFade(s, 1.0f, 0.16f);
+        s.Scale = Vector3.One * 0.15f;
+        PopFade(s, 0.6f, 0.16f);
     }
 
     private void OnLevelUp()
     {
-        Color col = ColorOf(SkinCategory.LevelUpAura);
+        Color col = Godot.Color.FromHtml("#ffd24a"); // Mặc định vàng kim
 
         // vòng sáng lan dưới chân
         var ring = MakeSprite(FxTextures.Ring(col), billboard: false, pixelSize: 0.02f);
@@ -146,25 +160,29 @@ public partial class PlayerCosmetics : Node
 
     private void SpawnDust()
     {
-        var s = MakeSprite(FxTextures.SoftCircle(ColorOf(SkinCategory.RunDust)), billboard: true, pixelSize: 0.01f);
+        var fallback = FxTextures.SoftCircle(ColorOf(SkinCategory.RunDust));
+        var tex = GetTextureOf(SkinCategory.RunDust, fallback);
+        var s = MakeSprite(tex, billboard: true, pixelSize: 0.01f);
         var jitter = new Vector3(_rng.RandfRange(-0.15f, 0.15f), 0f, _rng.RandfRange(-0.15f, 0.15f));
         AddToWorld(s, _player.GlobalPosition + Vector3.Up * 0.08f + jitter);
-        s.Scale    = Vector3.One * 0.35f;
+        s.Scale    = Vector3.One * 0.25f;
         s.Modulate = new Color(1f, 1f, 1f, 0.7f);
         var tw = s.CreateTween();
         tw.SetParallel(true);
         tw.TweenProperty(s, "global_position:y", s.GlobalPosition.Y + 0.45f, 0.45);
-        tw.TweenProperty(s, "scale", Vector3.One * 0.8f, 0.45);
+        tw.TweenProperty(s, "scale", Vector3.One * 0.55f, 0.45);
         tw.TweenProperty(s, "modulate:a", 0f, 0.45);
         tw.Chain().TweenCallback(Callable.From(s.QueueFree));
     }
 
     private void SpawnFootstep()
     {
-        var s = MakeSprite(FxTextures.SoftCircle(ColorOf(SkinCategory.Footstep)), billboard: false, pixelSize: 0.01f);
+        var fallback = FxTextures.SoftCircle(ColorOf(SkinCategory.Footstep));
+        var tex = GetTextureOf(SkinCategory.Footstep, fallback);
+        var s = MakeSprite(tex, billboard: false, pixelSize: 0.01f);
         s.RotationDegrees = new Vector3(-90f, 0f, 0f);   // nằm phẳng trên đất
         AddToWorld(s, _player.GlobalPosition + Vector3.Up * 0.02f);
-        s.Scale    = new Vector3(0.5f, 0.32f, 1f);
+        s.Scale    = Vector3.One * 0.45f;
         s.Modulate = new Color(1f, 1f, 1f, 0.6f);
         var tw = s.CreateTween();
         tw.TweenProperty(s, "modulate:a", 0f, 1.0).SetDelay(0.2);
@@ -172,6 +190,25 @@ public partial class PlayerCosmetics : Node
     }
 
     // ───────── Helper ─────────
+
+    private static Texture2D GetTextureOf(SkinCategory cat, Texture2D fallback)
+    {
+        var def = SkinManager.Instance?.GetEquipped(cat);
+        if (def != null && !string.IsNullOrEmpty(def.Frames) && ResourceLoader.Exists(def.Frames))
+        {
+            var tex = GD.Load<Texture2D>(def.Frames);
+            if (tex != null) return tex;
+        }
+        return fallback;
+    }
+
+    private static void CropToSquare(Sprite3D s, Texture2D tex)
+    {
+        if (tex == null) return;
+        int minDim = Mathf.Min(tex.GetWidth(), tex.GetHeight());
+        s.RegionEnabled = true;
+        s.RegionRect = new Rect2(0, 0, minDim, minDim);
+    }
 
     private static Color ColorOf(SkinCategory cat) =>
         SkinManager.Instance?.GetEquipped(cat)?.ColorValue ?? Colors.White;

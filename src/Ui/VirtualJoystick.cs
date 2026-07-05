@@ -34,16 +34,64 @@ public partial class VirtualJoystick : Control
     public override void _Ready()
     {
         MouseFilter = MouseFilterEnum.Ignore;
-        if (_baseNode != null && _baseNode.Size.X > 1f)
-            Radius = _baseNode.Size.X * 0.5f;   // bán kính kéo = nửa bề ngang vòng nền
+        
+        if (_baseNode != null)
+        {
+            // Dựa vào kích thước thực tế của Base trong scene và tăng lên 1 chút (20%) cho vừa vặn hơn
+            float baseSide = Mathf.Max(_baseNode.Size.X, _baseNode.Size.Y) * 1.2f;
+            if (baseSide < 10) baseSide = Mathf.Min(Size.X, Size.Y) * 0.8f; // Dự phòng
+            
+            // Gỡ neo để không bị parent kéo giãn thành hình bầu dục
+            _baseNode.SetAnchorsPreset(LayoutPreset.TopLeft);
+            _baseNode.Size = new Vector2(baseSide, baseSide);
+            _baseNode.Position = (Size - _baseNode.Size) * 0.5f; // Căn giữa
+            Radius = baseSide * 0.5f;
+            
+            // Cập nhật bo góc để luôn là hình tròn
+            if (_baseNode is Panel pBase && pBase.GetThemeStylebox("panel") is StyleBoxFlat style)
+            {
+                var newStyle = (StyleBoxFlat)style.Duplicate();
+                int rad = Mathf.RoundToInt(baseSide * 0.5f);
+                newStyle.CornerRadiusTopLeft = rad;
+                newStyle.CornerRadiusTopRight = rad;
+                newStyle.CornerRadiusBottomRight = rad;
+                newStyle.CornerRadiusBottomLeft = rad;
+                pBase.AddThemeStyleboxOverride("panel", newStyle);
+            }
+        }
+        
+        if (_knobCircle != null)
+        {
+            _knobCircle.SetAnchorsPreset(LayoutPreset.TopLeft);
+            // Nếu núm đang bị méo, lấy cạnh lớn nhất để vuông lại
+            float knobSide = Mathf.Max(_knobCircle.Size.X, _knobCircle.Size.Y);
+            _knobCircle.Size = new Vector2(knobSide, knobSide);
+            
+            if (_knobCircle is Panel pKnob && pKnob.GetThemeStylebox("panel") is StyleBoxFlat style)
+            {
+                var newStyle = (StyleBoxFlat)style.Duplicate();
+                int rad = Mathf.RoundToInt(knobSide * 0.5f);
+                newStyle.CornerRadiusTopLeft = rad;
+                newStyle.CornerRadiusTopRight = rad;
+                newStyle.CornerRadiusBottomRight = rad;
+                newStyle.CornerRadiusBottomLeft = rad;
+                pKnob.AddThemeStyleboxOverride("panel", newStyle);
+            }
+        }
+
         ResolveController();
-        ResetKnob();
+        
+        // Cần đảm bảo _knob = 0 và gọi PlaceKnob ngay, nếu dùng ResetKnob() sẽ có tween khi khởi tạo.
+        _knob = Vector2.Zero;
+        PlaceKnob();
     }
 
     private Vector2 Center => Size * 0.5f;
 
     public override void _Input(InputEvent ev)
     {
+        if (!IsVisibleInTree()) return;
+
         switch (ev)
         {
             // ----- Cảm ứng: khóa theo đúng ngón -----
@@ -87,8 +135,16 @@ public partial class VirtualJoystick : Control
 
     private void ResetKnob()
     {
-        _knob = Vector2.Zero;
-        PlaceKnob();
+        if (_knob == Vector2.Zero) 
+        {
+            PlaceKnob();
+            return;
+        }
+        
+        var t = CreateTween();
+        t.TweenMethod(Callable.From<Vector2>(v => { _knob = v; PlaceKnob(); }), _knob, Vector2.Zero, 0.15f)
+         .SetTrans(Tween.TransitionType.Back)
+         .SetEase(Tween.EaseType.Out);
     }
 
     /// <summary>Đặt node núm vào tâm + độ lệch hiện tại (toạ độ cục bộ trong Control).</summary>

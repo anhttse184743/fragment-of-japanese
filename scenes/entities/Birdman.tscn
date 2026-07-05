@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/Entities/Npc/Npc.cs" id="1_npc"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/npcs/birdman/birdman_frames.tres" id="2_frames"]
+[ext_resource type="Script" path="res://src/World/Interactable.cs" id="3_int"]
+[ext_resource type="Script" path="res://src/Entities/Npc/NpcDirectionalIdle.cs" id="4_idle"]
+
+[sub_resource type="CapsuleShape3D" id="cap_body"]
+radius = 0.35
+height = 1.75
+
+[sub_resource type="CylinderShape3D" id="cyl_zone"]
+radius = 2.2
+height = 3.0
+
+[node name="Birdman" type="StaticBody3D" node_paths=PackedStringArray("_interactable")]
+script = ExtResource("1_npc")
+NpcId = "birdman"
+NpcName = "Người Chim"
+_interactable = NodePath("Interactable")
+
+[node name="Visual" type="AnimatedSprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8705, 0)
+pixel_size = 0.00372
+billboard = 2
+alpha_cut = 1
+texture_filter = 0
+sprite_frames = ExtResource("2_frames")
+animation = &"idle_down"
+autoplay = "idle_down"
+
+[node name="Body" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("cap_body")
+
+[node name="Idle" type="Node" parent="." node_paths=PackedStringArray("_sprite")]
+script = ExtResource("4_idle")
+_sprite = NodePath("../Visual")
+
+[node name="Interactable" type="Area3D" parent="."]
+script = ExtResource("3_int")
+ActionText = "Nói chuyện"
+PromptOffset = Vector3(0, 2.3, 0)
+
+[node name="Zone" type="CollisionShape3D" parent="Interactable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("cyl_zone")

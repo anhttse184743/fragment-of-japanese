@@ -1,0 +1,110 @@
+[gd_scene format=3 uid="uid://cmemyknowui01"]
+
+[ext_resource type="Script" path="res://src/Ui/MemoryKnowledgeUi.cs" id="1_script"]
+
+[node name="MemoryKnowledgeUi" type="Control" node_paths=PackedStringArray("_lessonListContainer", "_contentLabel", "_closeBtn", "_lessonTitleLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+_lessonListContainer = NodePath("Panel/HBox/LeftCol/Scroll/LessonList")
+_contentLabel = NodePath("Panel/HBox/RightCol/ContentScroll/ContentText")
+_closeBtn = NodePath("Panel/HBox/RightCol/CloseBtn")
+_lessonTitleLabel = NodePath("Panel/HBox/RightCol/Title")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.05, 0.08, 0.8)
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -700.0
+offset_top = -450.0
+offset_right = 700.0
+offset_bottom = 450.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 30.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 40
+
+[node name="LeftCol" type="VBoxContainer" parent="Panel/HBox"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="Panel/HBox/LeftCol"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "DANH SÁCH BÀI HỌC"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/HBox/LeftCol"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="LessonList" type="VBoxContainer" parent="Panel/HBox/LeftCol/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="VSeparator" type="VSeparator" parent="Panel/HBox"]
+layout_mode = 2
+
+[node name="RightCol" type="VBoxContainer" parent="Panel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="Panel/HBox/RightCol"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "CHỌN MỘT BÀI HỌC"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/HBox/RightCol"]
+layout_mode = 2
+
+[node name="ContentScroll" type="ScrollContainer" parent="Panel/HBox/RightCol"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ContentText" type="RichTextLabel" parent="Panel/HBox/RightCol/ContentScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 26
+bbcode_enabled = true
+text = "Hãy chọn một bài học ở cột bên trái để xem nội dung Từ Vựng, Ngữ Pháp và Bài Đọc đã học."
+
+[node name="CloseBtn" type="Button" parent="Panel/HBox/RightCol"]
+custom_minimum_size = Vector2(300, 70)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "ĐÓNG SỔ TAY"

@@ -92,14 +92,14 @@ public static class UiKit
     }
 
     /// <summary>Tô màu 4 trạng thái cho 1 Button (bo góc, bỏ viền focus).</summary>
-    public static Button StyleButton(Button b, Color normal, Color hover, Color pressed, Color? disabled = null)
+    public static Button StyleButton(Button b, Color normal, Color hover, Color pressed, Color? disabled = null, int radius = 8)
     {
-        b.AddThemeStyleboxOverride("normal",        Box(normal, 8));
-        b.AddThemeStyleboxOverride("hover",         Box(hover, 8));
-        b.AddThemeStyleboxOverride("pressed",       Box(pressed, 8));
-        b.AddThemeStyleboxOverride("hover_pressed", Box(pressed, 8));
-        b.AddThemeStyleboxOverride("disabled",      Box(disabled ?? new Color(0.20f, 0.21f, 0.25f), 8));
-        b.AddThemeStyleboxOverride("focus",         Box(new Color(0, 0, 0, 0), 8));
+        b.AddThemeStyleboxOverride("normal",        Box(normal, radius));
+        b.AddThemeStyleboxOverride("hover",         Box(hover, radius));
+        b.AddThemeStyleboxOverride("pressed",       Box(pressed, radius));
+        b.AddThemeStyleboxOverride("hover_pressed", Box(pressed, radius));
+        b.AddThemeStyleboxOverride("disabled",      Box(disabled ?? new Color(0.20f, 0.21f, 0.25f), radius));
+        b.AddThemeStyleboxOverride("focus",         Box(new Color(0, 0, 0, 0), radius));
         b.AddThemeColorOverride("font_color",          Colors.White);
         b.AddThemeColorOverride("font_hover_color",    Colors.White);
         b.AddThemeColorOverride("font_pressed_color",  Colors.White);

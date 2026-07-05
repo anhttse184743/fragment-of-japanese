@@ -81,6 +81,14 @@ public partial class CharacterAnimator : Node
         _currentAnim = "";
     }
 
+    public void FaceTarget(Vector3 targetGlobalPos)
+    {
+        if (_body == null) return;
+        var dir = targetGlobalPos - _body.GlobalPosition;
+        _facingYaw = Mathf.Atan2(dir.X, dir.Z);
+        _currentAnim = ""; // Bắt buộc phát lại anim để quay mặt ngay lập tức
+    }
+
     private void Play(string state, bool force = false)
     {
         string anim = $"{state}_{DirSuffix()}";
@@ -93,7 +101,8 @@ public partial class CharacterAnimator : Node
     private string DirSuffix()
     {
         int n = Directions <= 4 ? 4 : 8;
-        float camYaw = _camera != null ? _camera.GlobalRotation.Y : 0f;
+        var activeCam = GetViewport()?.GetCamera3D() ?? _camera;
+        float camYaw = activeCam != null ? activeCam.GlobalRotation.Y : 0f;
         float rel = Mathf.Wrap(_facingYaw - camYaw + Mathf.DegToRad(AngleOffsetDeg), 0f, Mathf.Tau);
         int i = Mathf.RoundToInt(rel / (Mathf.Tau / n)) % n;
         return n == 4 ? Dir4[i] : Dir8[i];

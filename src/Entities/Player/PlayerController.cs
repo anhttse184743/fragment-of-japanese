@@ -36,6 +36,9 @@ public partial class PlayerController : Node
     public event Action AttackPressed;
 
     private bool _jumpRequested;
+    private float _runStaminaTimer;
+    private float _regenDelayTimer;
+    private float _regenTickTimer;
 
     public override void _Ready()
     {
@@ -88,6 +91,41 @@ public partial class PlayerController : Node
             : Input.GetVector("move_left", "move_right", "move_up", "move_down");
         if (input == Vector2.Zero && TouchInput != Vector2.Zero && !locked)
             input = TouchInput;
+
+        bool isMoving = input != Vector2.Zero;
+        Player p = _player as Player;
+
+        if (p != null)
+        {
+            if (IsRunning && isMoving)
+            {
+                _regenDelayTimer = 0f;
+                _runStaminaTimer += dt;
+                if (_runStaminaTimer >= 0.5f)
+                {
+                    _runStaminaTimer -= 0.5f;
+                    if (!p.UseStamina(1))
+                        IsRunning = false;
+                }
+            }
+            else
+            {
+                _runStaminaTimer = 0f;
+                _regenDelayTimer += dt;
+                if (_regenDelayTimer >= 3.0f)
+                {
+                    _regenTickTimer += dt;
+                    if (_regenTickTimer >= 0.5f)
+                    {
+                        _regenTickTimer -= 0.5f;
+                        p.RestoreStamina(1);
+                    }
+                }
+            }
+
+            if (p.Data.Stamina <= 0)
+                IsRunning = false;
+        }
 
         float speed = IsRunning ? RunSpeed : MoveSpeed;
 

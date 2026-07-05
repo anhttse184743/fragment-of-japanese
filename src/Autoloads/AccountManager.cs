@@ -30,6 +30,7 @@ public partial class AccountManager : Node
     private const string SessionPath = "user://session.json";
 
     public string CurrentUser { get; private set; }
+    public string CurrentEmail { get; private set; }
     public bool IsGuest { get; private set; }
     public bool IsLoggedIn => !string.IsNullOrEmpty(CurrentUser);
 
@@ -65,6 +66,7 @@ public partial class AccountManager : Node
             {
                 ApiClient.Instance.SetAccessToken(data.Data.AccessToken);
                 CurrentUser = data.Data.Username;
+                CurrentEmail = email;
                 IsGuest = false;
                 ApplyRemember(true, email, data.Data.RefreshToken);
                 ClearLegacyData();
@@ -102,6 +104,7 @@ public partial class AccountManager : Node
             {
                 ApiClient.Instance.SetAccessToken(data.Data.AccessToken);
                 CurrentUser = data.Data.Username;
+                CurrentEmail = email;
                 IsGuest = false;
                 ApplyRemember(remember, email, data.Data.RefreshToken);
                 ClearLegacyData();
@@ -123,6 +126,7 @@ public partial class AccountManager : Node
     public void Logout()
     {
         CurrentUser = null;
+        CurrentEmail = null;
         IsGuest = false;
         ApiClient.Instance.SetAccessToken(null);
         DeleteSession();

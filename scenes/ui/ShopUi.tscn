@@ -2,6 +2,88 @@
 
 [ext_resource type="Script" uid="uid://c00ukll4rbyhn" path="res://src/Ui/ShopUi.cs" id="1"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_MainPanel"]
+bg_color = Color(0.117647, 0.12549, 0.172549, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.243137, 0.254902, 0.345098, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 10
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Sidebar"]
+bg_color = Color(0.0823529, 0.0862745, 0.121569, 0.95)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 12.0
+content_margin_top = 16.0
+content_margin_right = 12.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TabNormal"]
+bg_color = Color(0.15, 0.15, 0.18, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TabHover"]
+bg_color = Color(0.243137, 0.254902, 0.345098, 0.5)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TabPressed"]
+bg_color = Color(0.298039, 0.419608, 0.705882, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Pill"]
+bg_color = Color(0, 0, 0, 0.5)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+content_margin_left = 16.0
+content_margin_top = 4.0
+content_margin_right = 16.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_CloseNormal"]
+bg_color = Color(0.819608, 0.219608, 0.219608, 0.8)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_CloseHover"]
+bg_color = Color(0.9, 0.3, 0.3, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ClosePressed"]
+bg_color = Color(0.6, 0.1, 0.1, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
 [node name="ShopUi" type="CanvasLayer" unique_id=1093033968 node_paths=PackedStringArray("_shopRoot", "_goldLabel", "_aetherLabel", "_contentArea", "_feedbackLabel", "_confirmDialog", "_tabFeatured", "_tabItems", "_tabGacha", "_tabTopup", "_tabRedeem", "_closeButton", "_revealLayer", "_revealTitle", "_revealGrid", "_revealFlash", "_revealBackdrop")]
 layer = 11
 script = ExtResource("1")
@@ -54,15 +136,17 @@ grow_vertical = 2
 [node name="Panel" type="PanelContainer" parent="ShopRoot/Center" unique_id=1242137674]
 custom_minimum_size = Vector2(940, 600)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_MainPanel")
 
 [node name="RootH" type="HBoxContainer" parent="ShopRoot/Center/Panel" unique_id=659202610]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 20
 
 [node name="Sidebar" type="PanelContainer" parent="ShopRoot/Center/Panel/RootH" unique_id=570653278]
-custom_minimum_size = Vector2(146, 0)
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Sidebar")
 
 [node name="SidebarVBox" type="VBoxContainer" parent="ShopRoot/Center/Panel/RootH/Sidebar" unique_id=28379466]
 layout_mode = 2
@@ -70,51 +154,76 @@ theme_override_constants/separation = 8
 
 [node name="ShopTitle" type="Label" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=493590729]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "SHOP"
+theme_override_colors/font_color = Color(0.95, 0.8, 0.35, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 26
+text = "CỬA HÀNG"
 horizontal_alignment = 1
 
 [node name="SidebarSep" type="HSeparator" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=308608966]
+modulate = Color(1, 1, 1, 0.2)
 layout_mode = 2
+theme_override_constants/separation = 12
 
 [node name="TabFeatured" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=1952978986]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_TabNormal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_TabHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_TabPressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_TabNormal")
 toggle_mode = true
 button_pressed = true
 text = "Nổi bật"
 
 [node name="TabItems" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=1430681892]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_TabNormal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_TabHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_TabPressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_TabNormal")
 toggle_mode = true
 text = "Vật phẩm"
 
 [node name="TabGacha" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=875746252]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_TabNormal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_TabHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_TabPressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_TabNormal")
 toggle_mode = true
 text = "Gacha"
 
 [node name="TabTopup" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=232217086]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_TabNormal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_TabHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_TabPressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_TabNormal")
 toggle_mode = true
 text = "Nạp"
 
 [node name="TabRedeem" type="Button" parent="ShopRoot/Center/Panel/RootH/Sidebar/SidebarVBox" unique_id=1704365992]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_TabNormal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_TabHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_TabPressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_TabNormal")
 toggle_mode = true
 text = "Nhập Code"
 
@@ -125,7 +234,7 @@ size_flags_vertical = 3
 [node name="RightColumn" type="VBoxContainer" parent="ShopRoot/Center/Panel/RootH" unique_id=1362948588]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 16
 
 [node name="TopBar" type="HBoxContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn" unique_id=1791503871]
 layout_mode = 2
@@ -137,6 +246,7 @@ size_flags_horizontal = 3
 
 [node name="GoldPill" type="PanelContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar" unique_id=718729549]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_Pill")
 
 [node name="GoldPillH" type="HBoxContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar/GoldPill" unique_id=1280621395]
 layout_mode = 2
@@ -157,6 +267,7 @@ vertical_alignment = 1
 
 [node name="AetherPill" type="PanelContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar" unique_id=316706033]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_Pill")
 
 [node name="AetherPillH" type="HBoxContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn/TopBar/AetherPill" unique_id=1521363629]
 layout_mode = 2
@@ -183,12 +294,16 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(42, 42)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_CloseNormal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_CloseHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ClosePressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_CloseNormal")
 text = "X"
 
 [node name="ContentArea" type="MarginContainer" parent="ShopRoot/Center/Panel/RootH/RightColumn" unique_id=118584653]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/margin_top = 2
+theme_override_constants/margin_top = 12
 
 [node name="FeedbackLabel" type="Label" parent="ShopRoot/Center/Panel/RootH/RightColumn" unique_id=22533019]
 layout_mode = 2

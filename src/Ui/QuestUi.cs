@@ -17,6 +17,7 @@ public partial class QuestUi : CanvasLayer
 
     private Control       _root;
     private VBoxContainer _list;
+    private PanelContainer _panel;
 
     public override void _Ready()
     {
@@ -25,6 +26,9 @@ public partial class QuestUi : CanvasLayer
 
         BuildUi();
         _root.Visible = false;
+
+        ResizePanel();
+        GetViewport().SizeChanged += ResizePanel;
 
         var qm = QuestManager.Instance;
         if (qm != null)
@@ -46,8 +50,22 @@ public partial class QuestUi : CanvasLayer
     }
 
     public void Toggle() { if (_root.Visible) Close(); else Open(); }
-    public void Open()   { _root.Visible = true; Refresh(); }
+    public void Open()   
+    { 
+        _root.Visible = true; 
+        ResizePanel();
+        Refresh(); 
+    }
     public void Close()  { _root.Visible = false; }
+
+    private void ResizePanel()
+    {
+        if (_panel == null) return;
+        var vp = GetViewport().GetVisibleRect().Size;
+        float w = Mathf.Min(vp.X * 0.94f, 1000f);
+        float h = Mathf.Min(vp.Y * 0.92f, 850f);
+        _panel.CustomMinimumSize = new Vector2(w, h);
+    }
 
     private void RefreshIfOpen() { if (_root != null && _root.Visible) Refresh(); }
 
@@ -77,24 +95,24 @@ public partial class QuestUi : CanvasLayer
         center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         _root.AddChild(center);
 
-        var panel = new PanelContainer { CustomMinimumSize = new Vector2(720, 600) };
-        panel.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodPanel, 14, UiKit.WoodBorder, 3, 14, 12));
-        center.AddChild(panel);
+        _panel = new PanelContainer();
+        _panel.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodPanel, 20, UiKit.WoodBorder, 4, 24, 24));
+        center.AddChild(_panel);
 
         var col = new VBoxContainer();
-        col.AddThemeConstantOverride("separation", 10);
-        panel.AddChild(col);
+        col.AddThemeConstantOverride("separation", 16);
+        _panel.AddChild(col);
 
         // Header: tiêu đề + nút X
         var header = new HBoxContainer();
         var title = new Label { Text = "NHIỆM VỤ", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-        title.AddThemeFontSizeOverride("font_size", 26);
+        title.AddThemeFontSizeOverride("font_size", 32);
         title.AddThemeColorOverride("font_color", UiKit.Accent);
         header.AddChild(title);
 
-        var x = new Button { Text = "X", CustomMinimumSize = new Vector2(42, 42) };
-        UiKit.StyleButton(x, UiKit.WoodDark, new Color(0.55f, 0.25f, 0.22f), new Color(0.40f, 0.18f, 0.16f));
-        x.AddThemeFontSizeOverride("font_size", 18);
+        var x = new Button { Text = "X", CustomMinimumSize = new Vector2(60, 60) };
+        UiKit.StyleButton(x, UiKit.WoodDark, new Color(0.55f, 0.25f, 0.22f), new Color(0.40f, 0.18f, 0.16f), radius: 12);
+        x.AddThemeFontSizeOverride("font_size", 24);
         x.Pressed += Close;
         header.AddChild(x);
         col.AddChild(header);
@@ -136,7 +154,7 @@ public partial class QuestUi : CanvasLayer
         if (quests.Count == 0) return;
 
         var head = new Label { Text = title };
-        head.AddThemeFontSizeOverride("font_size", 17);
+        head.AddThemeFontSizeOverride("font_size", 24);
         head.AddThemeColorOverride("font_color", UiKit.Accent);
         _list.AddChild(head);
 
@@ -151,25 +169,25 @@ public partial class QuestUi : CanvasLayer
         bool claimed = qm.IsClaimed(q.Id);
 
         var card = new PanelContainer();
-        card.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodCard, 10, UiKit.WoodBorder, 2, 12, 10));
+        card.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.WoodCard, 16, UiKit.WoodBorder, 3, 20, 20));
 
         var row = new HBoxContainer();
-        row.AddThemeConstantOverride("separation", 12);
+        row.AddThemeConstantOverride("separation", 20);
         card.AddChild(row);
 
         // Trái: tên + mô tả + thanh tiến độ + dòng thưởng
         var left = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-        left.AddThemeConstantOverride("separation", 4);
+        left.AddThemeConstantOverride("separation", 8);
 
         var name = new Label { Text = q.NameVi };
-        name.AddThemeFontSizeOverride("font_size", 16);
+        name.AddThemeFontSizeOverride("font_size", 24);
         name.AddThemeColorOverride("font_color", UiKit.WoodText);
         left.AddChild(name);
 
         if (!string.IsNullOrEmpty(q.DescriptionVi))
         {
             var desc = new Label { Text = q.DescriptionVi, AutowrapMode = TextServer.AutowrapMode.WordSmart };
-            desc.AddThemeFontSizeOverride("font_size", 12);
+            desc.AddThemeFontSizeOverride("font_size", 18);
             desc.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
             left.AddChild(desc);
         }
@@ -179,40 +197,40 @@ public partial class QuestUi : CanvasLayer
             MaxValue          = q.Target,
             Value             = count,
             ShowPercentage    = false,
-            CustomMinimumSize = new Vector2(0, 16),
+            CustomMinimumSize = new Vector2(0, 24),
         };
-        bar.AddThemeStyleboxOverride("background", UiKit.Box(UiKit.WoodDark, 6));
-        bar.AddThemeStyleboxOverride("fill",       UiKit.Box(done ? UiKit.BuyGreen : UiKit.Accent, 6));
+        bar.AddThemeStyleboxOverride("background", UiKit.Box(UiKit.WoodDark, 12));
+        bar.AddThemeStyleboxOverride("fill",       UiKit.Box(done ? UiKit.BuyGreen : UiKit.Accent, 12));
         left.AddChild(bar);
 
         var info = new Label { Text = $"{count}/{q.Target}   {RewardText(q.Reward)}" };
-        info.AddThemeFontSizeOverride("font_size", 12);
+        info.AddThemeFontSizeOverride("font_size", 18);
         info.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
         left.AddChild(info);
 
         row.AddChild(left);
 
         // Phải: nút Nhận
-        var claim = new Button { CustomMinimumSize = new Vector2(112, 0) };
+        var claim = new Button { CustomMinimumSize = new Vector2(160, 64) };
         if (claimed)
         {
             claim.Text     = "Đã nhận ✓";
             claim.Disabled = true;
-            UiKit.StyleButton(claim, UiKit.WoodDark, UiKit.WoodDark, UiKit.WoodDark, UiKit.WoodDark);
+            UiKit.StyleButton(claim, UiKit.WoodDark, UiKit.WoodDark, UiKit.WoodDark, UiKit.WoodDark, radius: 12);
         }
         else if (done)
         {
             claim.Text = "Nhận";
-            UiKit.StyleButton(claim, UiKit.BuyGreen, UiKit.BuyGreenHi, UiKit.BuyGreen);
+            UiKit.StyleButton(claim, UiKit.BuyGreen, UiKit.BuyGreenHi, UiKit.BuyGreen, radius: 12);
             claim.Pressed += () => { QuestManager.Instance?.Claim(q.Id); Refresh(); };
         }
         else
         {
             claim.Text     = "Chưa xong";
             claim.Disabled = true;
-            UiKit.StyleButton(claim, UiKit.WoodDark, UiKit.WoodDark, UiKit.WoodDark, UiKit.WoodDark);
+            UiKit.StyleButton(claim, UiKit.WoodDark, UiKit.WoodDark, UiKit.WoodDark, UiKit.WoodDark, radius: 12);
         }
-        claim.AddThemeFontSizeOverride("font_size", 14);
+        claim.AddThemeFontSizeOverride("font_size", 20);
 
         var claimWrap = new CenterContainer();
         claimWrap.AddChild(claim);

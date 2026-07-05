@@ -1,179 +1,261 @@
 using Godot;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Text.Json;
-using Vosk;
 using FragmentOfJapanese.Autoloads;
 using FragmentOfJapanese.Core;
 
 namespace FragmentOfJapanese.Voice;
 
-/// <summary>
-/// Spike nhận dạng giọng đọc tiếng Nhật bằng Vosk (offline).
-/// Lấy danh sách từ của một bài (JapaneseDB.GetHiraganaReadable) làm "grammar" để khóa
-/// bộ nhận dạng → người chơi đọc 1 từ trong bài, so khớp với cách đọc kana.
-/// Chạy ở editor/desktop. Cần model ở data/vosk/ + libvosk.dll — xem data/vosk/README.md.
-/// </summary>
 public partial class VoiceRecognizer : Node
 {
-	[Signal] public delegate void WordRecognizedEventHandler(string rawText, bool matched, string matchedId);
+	[Signal] public delegate void WordRecognizedEventHandler(string rawText, bool matched, string matchedId, float similarity);
 
-	[Export] public bool  UseGrammar = true;   // tắt để test nhận dạng tự do (xem model phiên âm ra chữ gì)
-	[Export] public bool  MuteMicBus = false;  // true = hạ volume cho khỏi nghe tiếng mình (capture vẫn chạy)
-	[Export] public float MicGain    = 12f;    // khuếch đại mic yếu (đỉnh thô ~0.03 → cần ×10-20)
+	[Export] public string GroqApiKey = ""; 
+	[Export] public bool MuteMicBus = false;
 
-	private const string ModelResPath = "res://data/vosk/vosk-model-small-ja-0.22";
-	private const float  VoskRate     = 16000f;
-
-	private Model _model;
-	private VoskRecognizer _rec;
 	private AudioEffectCapture _capture;
 	private AudioStreamPlayer _micPlayer;
 	private int _busIdx = -1;
-	private bool _listening;
-	private double _resamplePos;
-	private long _samplesFed;   // chẩn đoán: số mẫu đã đẩy vào Vosk
-	private float _peak;        // chẩn đoán: biên độ đỉnh THÔ (trước gain); 0 = im lặng
+	private bool _listening = false;
+	private List<Vector2> _recordedFrames = new();
 	private List<VocabularyEntry> _candidates = new();
+	private HttpRequest _httpRequest;
+
+	private const string API_URL = "https://api.groq.com/openai/v1/audio/transcriptions";
 
 	public override void _Ready()
 	{
-		global::Vosk.Vosk.SetLogLevel(-1);
-
-		string modelPath = ProjectSettings.GlobalizePath(ModelResPath);
-		if (!System.IO.Directory.Exists(modelPath))
-		{
-			GD.PushError($"[Voice] Chưa thấy model Vosk: {modelPath}\n→ Tải vosk-model-small-ja-0.22 giải nén vào data/vosk/ (xem data/vosk/README.md).");
-			return;
-		}
-
-		_model = new Model(modelPath);
 		SetupMicBus();
-		GD.Print("[Voice] Model + mic sẵn sàng.");
-		GD.Print($"[Voice] Mic đang dùng: '{AudioServer.InputDevice}' | Các mic: {string.Join(" | ", AudioServer.GetInputDeviceList())}");
+		
+		_httpRequest = new HttpRequest();
+		AddChild(_httpRequest);
+		_httpRequest.RequestCompleted += OnRequestCompleted;
+
+		GD.Print("[Voice] Đã khởi tạo VoiceRecognizer (Groq API).");
 	}
 
 	private void SetupMicBus()
 	{
 		AudioServer.AddBus();
 		_busIdx = AudioServer.BusCount - 1;
-		AudioServer.SetBusName(_busIdx, "VoskCapture");
+		AudioServer.SetBusName(_busIdx, "CloudCapture");
 		_capture = new AudioEffectCapture();
 		AudioServer.AddBusEffect(_busIdx, _capture);
-		// KHÔNG bus-mute: mute làm AudioEffectCapture nhận toàn 0.
-		// Muốn khỏi nghe tiếng mình thì hạ volume (áp dụng SAU effect nên capture vẫn full tín hiệu).
+		
 		if (MuteMicBus) AudioServer.SetBusVolumeDb(_busIdx, -80f);
 
 		_micPlayer = new AudioStreamPlayer();
 		_micPlayer.Stream = new AudioStreamMicrophone();
-		_micPlayer.Bus = "VoskCapture";
+		_micPlayer.Bus = "CloudCapture";
 		AddChild(_micPlayer);
 		_micPlayer.Play();
 	}
 
 	public void StartListening(int lesson)
 	{
-		if (_model == null) { GD.PushWarning("[Voice] Model chưa sẵn sàng."); return; }
-		if (JapaneseDB.Instance == null) { GD.PushWarning("[Voice] JapaneseDB chưa nạp (autoload?)."); return; }
-
-		_candidates = new List<VocabularyEntry>(JapaneseDB.Instance.GetHiraganaReadable(lesson));
-		if (_candidates.Count == 0) { GD.PushWarning($"[Voice] Bài {lesson} không có từ hiragana."); return; }
-
-		_rec?.Dispose();
-		if (UseGrammar)
-		{
-			var words = new List<string>();
-			foreach (var v in _candidates) words.Add(v.Kana);
-			words.Add("[unk]");
-			string grammar = JsonSerializer.Serialize(words);
-			_rec = new VoskRecognizer(_model, VoskRate, grammar);
-			GD.Print($"[Voice] Nghe Bài {lesson} — {_candidates.Count} từ. Grammar: {grammar}");
-		}
-		else
-		{
-			_rec = new VoskRecognizer(_model, VoskRate);
-			GD.Print($"[Voice] Nghe Bài {lesson} — nhận dạng TỰ DO (không grammar).");
-		}
+		if (JapaneseDB.Instance != null)
+			_candidates = new List<VocabularyEntry>(JapaneseDB.Instance.GetHiraganaReadable(lesson));
 
 		_capture.ClearBuffer();
-		_resamplePos = 0;
-		_samplesFed = 0;
-		_peak = 0f;
+		_recordedFrames.Clear();
 		_listening = true;
-	}
-
-	public void StopListening()
-	{
-		if (!_listening || _rec == null) return;
-		_listening = false;
-
-		string json = _rec.FinalResult();
-		string raw = ExtractText(json);
-		GD.Print($"[Voice] Đã nạp {_samplesFed} mẫu (~{_samplesFed / 16000.0:0.0}s), đỉnh THÔ={_peak:0.000} (gain ×{MicGain}). [thô≈0=mic câm · ~0.0x=mic quá nhỏ · >0.2=tốt]");
-		var (matched, id) = Match(raw);
-		GD.Print($"[Voice] Thô='{raw}'  matched={matched} id={id}  (JSON {json})");
-		EmitSignal(SignalName.WordRecognized, raw, matched, id ?? "");
+		GD.Print($"[Voice] Bắt đầu ghi âm...");
 	}
 
 	public override void _Process(double delta)
 	{
-		if (!_listening || _rec == null || _capture == null) return;
+		if (!_listening || _capture == null) return;
 		int avail = _capture.GetFramesAvailable();
-		if (avail <= 0) return;
-
-		byte[] pcm = ResampleToPcm16Mono(_capture.GetBuffer(avail));
-		if (pcm.Length > 0)
+		if (avail > 0)
 		{
-			_rec.AcceptWaveform(pcm, pcm.Length);
-			_samplesFed += pcm.Length / 2;
+			_recordedFrames.AddRange(_capture.GetBuffer(avail));
 		}
 	}
 
-	// Downmix mono + khuếch đại (MicGain) + hạ tần số mixRate→16k + float→int16 little-endian
-	private byte[] ResampleToPcm16Mono(Vector2[] frames)
+	public void StopListening()
 	{
-		if (frames.Length == 0) return System.Array.Empty<byte>();
-		double step = AudioServer.GetMixRate() / VoskRate;
-		var outBytes = new List<byte>();
-		while (_resamplePos < frames.Length)
+		if (!_listening) return;
+		_listening = false;
+		
+		// Flush buffer
+		int avail = _capture.GetFramesAvailable();
+		if (avail > 0) _recordedFrames.AddRange(_capture.GetBuffer(avail));
+
+		if (string.IsNullOrEmpty(GroqApiKey))
 		{
-			Vector2 f = frames[(int)_resamplePos];
+			GD.PushError("[Voice] Thiếu Groq API Key! Hãy nhập vào thuộc tính GroqApiKey của Node VoiceRecognizer.");
+			return;
+		}
+
+		if (_recordedFrames.Count == 0)
+		{
+			GD.PushWarning("[Voice] Không thu được âm thanh nào.");
+			return;
+		}
+
+		GD.Print($"[Voice] Đã ghi âm xong ({_recordedFrames.Count} frames). Đang mã hóa và gửi lên Groq...");
+		byte[] wavBytes = GenerateWavBytes(_recordedFrames, (int)AudioServer.GetMixRate());
+		SendToGroq(wavBytes);
+	}
+
+	private byte[] GenerateWavBytes(List<Vector2> frames, int sampleRate)
+	{
+		using var ms = new MemoryStream();
+		using var bw = new BinaryWriter(ms);
+
+		short numChannels = 1;
+		short bitsPerSample = 16;
+		int byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+		short blockAlign = (short)(numChannels * (bitsPerSample / 8));
+
+		int dataChunkSize = frames.Count * blockAlign;
+		int fileSize = 36 + dataChunkSize;
+
+		// RIFF header
+		bw.Write(Encoding.ASCII.GetBytes("RIFF"));
+		bw.Write(fileSize);
+		bw.Write(Encoding.ASCII.GetBytes("WAVE"));
+
+		// fmt subchunk
+		bw.Write(Encoding.ASCII.GetBytes("fmt "));
+		bw.Write(16); // Subchunk1Size
+		bw.Write((short)1); // AudioFormat (PCM)
+		bw.Write(numChannels);
+		bw.Write(sampleRate);
+		bw.Write(byteRate);
+		bw.Write(blockAlign);
+		bw.Write(bitsPerSample);
+
+		// data subchunk
+		bw.Write(Encoding.ASCII.GetBytes("data"));
+		bw.Write(dataChunkSize);
+
+		// data payload (convert float Vector2 to 16-bit mono)
+		foreach (var f in frames)
+		{
 			float mono = (f.X + f.Y) * 0.5f;
-			if (Mathf.Abs(mono) > _peak) _peak = Mathf.Abs(mono);   // đỉnh THÔ (trước gain) để chẩn đoán
-			float amp = Mathf.Clamp(mono * MicGain, -1f, 1f);
-			short s = (short)(amp * 32767f);
-			outBytes.Add((byte)(s & 0xFF));
-			outBytes.Add((byte)((s >> 8) & 0xFF));
-			_resamplePos += step;
+			mono = Mathf.Clamp(mono * 5.0f, -1f, 1f); // Gain x5
+			short s = (short)(mono * 32767f);
+			bw.Write(s);
 		}
-		_resamplePos -= frames.Length;
-		return outBytes.ToArray();
+
+		return ms.ToArray();
 	}
 
-	private static string ExtractText(string json)
+	private void SendToGroq(byte[] wavBytes)
 	{
+		string boundary = "----GodotBoundary" + GD.Randi().ToString();
+		string[] headers = new string[]
+		{
+			$"Authorization: Bearer {GroqApiKey}",
+			$"Content-Type: multipart/form-data; boundary={boundary}"
+		};
+
+		var body = new List<byte>();
+
+		// Model param
+		body.AddRange(Encoding.UTF8.GetBytes($"--{boundary}\r\n"));
+		body.AddRange(Encoding.UTF8.GetBytes("Content-Disposition: form-data; name=\"model\"\r\n\r\n"));
+		body.AddRange(Encoding.UTF8.GetBytes("whisper-large-v3\r\n"));
+
+		// Language param
+		body.AddRange(Encoding.UTF8.GetBytes($"--{boundary}\r\n"));
+		body.AddRange(Encoding.UTF8.GetBytes("Content-Disposition: form-data; name=\"language\"\r\n\r\n"));
+		body.AddRange(Encoding.UTF8.GetBytes("ja\r\n"));
+
+		// File param
+		body.AddRange(Encoding.UTF8.GetBytes($"--{boundary}\r\n"));
+		body.AddRange(Encoding.UTF8.GetBytes("Content-Disposition: form-data; name=\"file\"; filename=\"audio.wav\"\r\n"));
+		body.AddRange(Encoding.UTF8.GetBytes("Content-Type: audio/wav\r\n\r\n"));
+		body.AddRange(wavBytes);
+		body.AddRange(Encoding.UTF8.GetBytes("\r\n"));
+
+		// End boundary
+		body.AddRange(Encoding.UTF8.GetBytes($"--{boundary}--\r\n"));
+
+		_httpRequest.RequestRaw(API_URL, headers, HttpClient.Method.Post, body.ToArray());
+	}
+
+	private void OnRequestCompleted(long result, long responseCode, string[] headers, byte[] body)
+	{
+		if (responseCode != 200)
+		{
+			GD.PushError($"[Voice] Lỗi API: Code {responseCode} - {Encoding.UTF8.GetString(body)}");
+			return;
+		}
+
+		string json = Encoding.UTF8.GetString(body);
+		string rawText = "";
+
 		try
 		{
 			using var doc = JsonDocument.Parse(json);
 			if (doc.RootElement.TryGetProperty("text", out var t))
-				return (t.GetString() ?? "").Replace(" ", "");
+			{
+				rawText = t.GetString() ?? "";
+			}
 		}
 		catch { }
-		return "";
+
+		// Xóa khoảng trắng và dấu câu tiếng Nhật thông dụng
+		rawText = rawText.Replace(" ", "").Replace("、", "").Replace("。", "").Replace("？", "").Replace("！", "");
+		
+		var (matched, id, sim) = Match(rawText);
+		GD.Print($"[Voice] Groq nghe: '{rawText}' | matched={matched} id={id} sim={sim*100:0.0}%");
+		EmitSignal(SignalName.WordRecognized, rawText, matched, id ?? "", sim);
 	}
 
-	private (bool, string) Match(string raw)
+	private (bool, string, float) Match(string raw)
 	{
-		if (string.IsNullOrEmpty(raw) || raw == "[unk]") return (false, null);
+		if (string.IsNullOrEmpty(raw)) return (false, null, 0f);
+		
+		float bestMatch = 0f;
+		string bestId = null;
+		
 		foreach (var v in _candidates)
-			if (raw == v.Kana.Replace(" ", "") || raw == v.Kanji.Replace(" ", "") || raw == v.Romaji.Replace(" ", ""))
-				return (true, v.Id);
-		return (false, null);
+		{
+			float kanaMatch = CalculateSimilarity(raw, v.Kana.Replace(" ", ""));
+			float kanjiMatch = CalculateSimilarity(raw, v.Kanji.Replace(" ", ""));
+			float romajiMatch = CalculateSimilarity(raw, v.Romaji.Replace(" ", ""));
+			
+			float maxForWord = Mathf.Max(kanaMatch, Mathf.Max(kanjiMatch, romajiMatch));
+			if (maxForWord > bestMatch)
+			{
+				bestMatch = maxForWord;
+				bestId = v.Id;
+			}
+		}
+		
+		return (bestMatch >= 0.7f, bestId, bestMatch);
+	}
+
+	private float CalculateSimilarity(string source, string target)
+	{
+		if (string.IsNullOrEmpty(source)) return string.IsNullOrEmpty(target) ? 1f : 0f;
+		if (string.IsNullOrEmpty(target)) return 0f;
+		
+		int[,] d = new int[source.Length + 1, target.Length + 1];
+		for (int i = 0; i <= source.Length; i++) d[i, 0] = i;
+		for (int j = 0; j <= target.Length; j++) d[0, j] = j;
+		
+		for (int i = 1; i <= source.Length; i++)
+		{
+			for (int j = 1; j <= target.Length; j++)
+			{
+				int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
+				d[i, j] = Mathf.Min(Mathf.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
+			}
+		}
+		
+		int maxLength = Mathf.Max(source.Length, target.Length);
+		return 1.0f - ((float)d[source.Length, target.Length] / maxLength);
 	}
 
 	public override void _ExitTree()
 	{
-		_rec?.Dispose();
-		_model?.Dispose();
 		if (_busIdx >= 0 && _busIdx < AudioServer.BusCount)
 			AudioServer.RemoveBus(_busIdx);
 	}

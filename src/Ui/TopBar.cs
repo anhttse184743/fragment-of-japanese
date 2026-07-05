@@ -22,11 +22,47 @@ public partial class TopBar : Control
         if (_bagBtn   != null) _bagBtn.Pressed   += () => InventoryUi.Instance?.Toggle();
         if (_questBtn != null) _questBtn.Pressed += () => QuestUi.Instance?.Toggle();
         if (_optsBtn  != null) _optsBtn.Pressed  += OnOpts;
+
+        StyleTopBtn(_shopBtn);
+        StyleTopBtn(_bagBtn);
+        StyleTopBtn(_questBtn);
+        StyleTopBtn(_optsBtn);
+    }
+
+    private void StyleTopBtn(Button btn)
+    {
+        if (btn == null) return;
+        
+        btn.FocusMode = FocusModeEnum.None;
+        
+        var normalBg = new Color(0.18f, 0.12f, 0.09f, 0.85f);
+        var hoverBg = UiKit.Fade(UiKit.Accent, 0.5f);
+        var pressedBg = UiKit.Accent;
+        
+        UiKit.StyleButton(btn, normalBg, hoverBg, pressedBg, radius: 16);
+        
+        // Cập nhật tâm xoay/thu phóng khi kích thước nút thay đổi
+        btn.Resized += () => btn.PivotOffset = btn.Size / 2f;
+        
+        // Hiệu ứng "lún xuống" khi nhấn
+        btn.ButtonDown += () => 
+        {
+            btn.PivotOffset = btn.Size / 2f; // Dự phòng
+            var t = btn.CreateTween();
+            t.TweenProperty(btn, "scale", new Vector2(0.85f, 0.85f), 0.05f);
+        };
+        
+        btn.ButtonUp += () => 
+        {
+            var t = btn.CreateTween();
+            t.TweenProperty(btn, "scale", Vector2.One, 0.15f)
+             .SetTrans(Tween.TransitionType.Back)
+             .SetEase(Tween.EaseType.Out);
+        };
     }
 
     private void OnOpts()
     {
-        SettingsMenu.BackScene = "res://scenes/world/World.tscn";
-        SceneTransition.Instance?.GoTo("res://scenes/ui/SettingsMenu.tscn");
+        SettingsMenu.ShowSettings();
     }
 }

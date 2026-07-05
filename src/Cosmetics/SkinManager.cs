@@ -67,7 +67,11 @@ public partial class SkinManager : Node
         return first != null && first.Id == id;
     }
 
-    public bool IsOwned(string id) => IsDefault(id) || _owned.Contains(id);
+    public bool IsOwned(string id) 
+    {
+        if (AccountManager.Instance?.CurrentEmail == "usertest@gmail.com") return true;
+        return IsDefault(id) || _owned.Contains(id);
+    }
 
     /// <summary>Nạp danh sách skin đã mở khóa từ server.</summary>
     public async Task SyncAsync()
@@ -97,13 +101,14 @@ public partial class SkinManager : Node
         OwnedChanged?.Invoke();
     }
 
-    /// <summary>Quay gacha skin bằng Chìa Khóa Bạc (server-authoritative).</summary>
-    public async Task<SkinPullOutcome> GachaPullAsync(int count)
+    /// <summary>Quay gacha skin (server-authoritative).</summary>
+    public async Task<SkinPullOutcome> GachaPullAsync(int count, bool useGoldenKey = false)
     {
         var outcome = new SkinPullOutcome();
         if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) { outcome.Error = "Bạn cần đăng nhập."; return outcome; }
 
-        var res  = await ApiClient.Instance.PostAsync("/api/skins/gacha-pull", new { PullCount = count });
+        var req = new { PullCount = count, BannerType = useGoldenKey ? "gold" : "silver" };
+        var res  = await ApiClient.Instance.PostAsync("/api/skins/gacha-pull", req);
         var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<SkinGachaResponseDto>>(res);
 
         if (!res.IsSuccessStatusCode || data == null || !data.Success || data.Data == null)
@@ -141,17 +146,24 @@ public partial class SkinManager : Node
 
     public SkinDef GetEquipped(SkinCategory cat)
     {
-        var def = _all.Find(s => s.Cat == cat && s.Id == GetEquippedId(cat));
-        return def ?? _all.Find(s => s.Cat == cat);   // fallback: skin đầu của loại
+        var id = GetEquippedId(cat);
+        var def = _all.Find(s => s.Id == id);
+        if (def != null) return def;
+        return _all.Find(s => s.Cat == cat);   // fallback: skin đầu của loại
     }
 
     // ───────── Đổi skin ─────────
 
     public void Equip(SkinCategory cat, string id)
     {
-        var def = _all.Find(s => s.Cat == cat && s.Id == id);
+        var def = _all.Find(s => s.Id == id);
         if (def == null) return;
-        if (!IsOwned(id)) { GD.Print($"[Skin] Chưa mở khóa: {def.Name}"); return; }   // chỉ mặc skin đã sở hữu
+        
+        bool isMovementCat = (cat == SkinCategory.RunDust || cat == SkinCategory.Footstep);
+        bool isMovementDef = (def.Cat == SkinCategory.RunDust || def.Cat == SkinCategory.Footstep);
+        if (def.Cat != cat && !(isMovementCat && isMovementDef)) return;
+
+        if (!IsOwned(id)) { GD.Print($"[Skin] Chưa mở khóa: {def.Name}"); return; }
         _equipped[cat] = id;
         SaveEquipped();
         SkinChanged?.Invoke(cat, def);

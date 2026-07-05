@@ -23,10 +23,35 @@ public partial class ActionButtons : Control
 
     public override void _Ready()
     {
+        StyleActionBtn(_jumpBtn);
+        StyleActionBtn(_atkBtn);
+        StyleActionBtn(_fastBtn);
+
         if (_jumpBtn != null) _jumpBtn.ButtonDown += () => Ctrl()?.RequestJump();
         if (_atkBtn  != null) _atkBtn.ButtonDown  += () => Ctrl()?.RequestAttack();
         if (_fastBtn != null) _fastBtn.Pressed    += OnFast;
         // DrawBtn / VoiceBtn: placeholder trong scene — nối sau (viết kana / đọc từ).
+    }
+
+    private void StyleActionBtn(Button btn)
+    {
+        if (btn == null) return;
+        btn.FocusMode = FocusModeEnum.None;
+        
+        btn.Resized += () => btn.PivotOffset = btn.Size / 2f;
+        
+        btn.ButtonDown += () => 
+        {
+            btn.PivotOffset = btn.Size / 2f;
+            btn.CreateTween().TweenProperty(btn, "scale", new Vector2(0.85f, 0.85f), 0.05f);
+        };
+        
+        btn.ButtonUp += () => 
+        {
+            btn.CreateTween().TweenProperty(btn, "scale", Vector2.One, 0.15f)
+               .SetTrans(Tween.TransitionType.Back)
+               .SetEase(Tween.EaseType.Out);
+        };
     }
 
     private void OnFast()

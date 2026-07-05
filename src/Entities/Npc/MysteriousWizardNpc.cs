@@ -13,6 +13,7 @@ public partial class MysteriousWizardNpc : Npc
     protected override DialogueNode DefaultDialogue()
     {
         var openDraw = ResolveAction(DialogueAction.OpenKanaDraw);
+        var openBattle = ResolveAction(DialogueAction.OpenDrawBattle);
         string name = string.IsNullOrEmpty(NpcName) ? "Pháp sư bí ẩn" : NpcName;
 
         return new DialogueNode
@@ -20,21 +21,31 @@ public partial class MysteriousWizardNpc : Npc
             Speaker = name,
             Lines   = new[]
             {
-                new DialogueLine("ほう… 文字を 書く 練習を したいか？", "Hô… Ngươi muốn luyện viết chữ à?"),
+                new DialogueLine("ほう… 文字を 書く 練習を したいか？ それとも戦うか？", "Hô… Ngươi muốn luyện viết chữ? Hay là muốn chiến đấu?"),
             },
             Choices = new[]
             {
                 new DialogueChoice
                 {
-                    Label = "Vâng, dạy ta viết",
+                    Label = "Dạy ta viết",
                     Next  = new DialogueNode
                     {
                         Speaker = name,
                         Lines   = new[] { new DialogueLine("よし、筆を 取れ！", "Tốt! Cầm bút lên.") },
-                        OnEnd   = openDraw,   // hết lời đáp → mở màn luyện viết
+                        OnEnd   = openDraw,
                     },
                 },
-                new DialogueChoice { Label = "Thôi, để sau" },   // Action rỗng → đóng thoại
+                new DialogueChoice
+                {
+                    Label = "Chiến đấu (Mini-game)",
+                    Next  = new DialogueNode
+                    {
+                        Speaker = name,
+                        Lines   = new[] { new DialogueLine("面白い、かかってこい！", "Thú vị lắm, nhào vô!") },
+                        OnEnd   = openBattle,
+                    },
+                },
+                new DialogueChoice { Label = "Thôi, để sau" },
             },
         };
     }

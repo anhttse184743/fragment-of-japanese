@@ -1,0 +1,41 @@
+﻿  { "id": "basic_swing", "category": "AttackSwing", "name": "Basic Swing", "color": "#ffffff", "frames": "res://assets/sprites/effect/attack_swing/basic_swing.png" }
+  { "id": "sakura_attack_swing", "category": "AttackSwing", "name": "Sakura Attack Swing", "color": "#ffffff", "frames": "res://assets/sprites/effect/attack_swing/sakura_attack_swing.png" }
+  { "id": "basic_spark", "category": "HitSpark", "name": "Basic Spark", "color": "#ffffff", "frames": "res://assets/sprites/effect/hit_spark/basic_spark.png" }
+  { "id": "sakura_spark", "category": "HitSpark", "name": "Sakura Spark", "color": "#ffffff", "frames": "res://assets/sprites/effect/hit_spark/sakura_spark.png" }
+  { "id": "sakura_bento", "category": "RunDust", "name": "Sakura Bento", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/sakura_bento.png" }
+  { "id": "sakura_cherry_drink", "category": "RunDust", "name": "Sakura Cherry Drink", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/sakura_cherry_drink.png" }
+  { "id": "sakura_dango", "category": "RunDust", "name": "Sakura Dango", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/sakura_dango.png" }
+  { "id": "sakura_flute", "category": "RunDust", "name": "Sakura Flute", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/sakura_flute.png" }
+  { "id": "sakura_geta", "category": "RunDust", "name": "Sakura Geta", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/sakura_geta.png" }
+  { "id": "sakura_matcha", "category": "RunDust", "name": "Sakura Matcha", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/sakura_matcha.png" }
+  { "id": "sakura_mochi", "category": "RunDust", "name": "Sakura Mochi", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/sakura_mochi.png" }
+  { "id": "sakura_peach_blossom", "category": "RunDust", "name": "Sakura Peach Blossom", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/sakura_peach_blossom.png" }
+  { "id": "sakura_peach_blossom_petal", "category": "RunDust", "name": "Sakura Peach Blossom Petal", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/sakura_peach_blossom_petal.png" }
+  { "id": "summer_bubble", "category": "RunDust", "name": "Summer Bubble", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_bubble.png" }
+  { "id": "summer_buckets_sholvet", "category": "RunDust", "name": "Summer Buckets Sholvet", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_buckets_sholvet.png" }
+  { "id": "summer_coconut", "category": "RunDust", "name": "Summer Coconut", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_coconut.png" }
+  { "id": "summer_coral", "category": "RunDust", "name": "Summer Coral", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_coral.png" }
+  { "id": "summer_crab", "category": "RunDust", "name": "Summer Crab", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_crab.png" }
+  { "id": "summer_dolphin", "category": "RunDust", "name": "Summer Dolphin", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_dolphin.png" }
+  { "id": "summer_duck_toy", "category": "RunDust", "name": "Summer Duck Toy", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_duck_toy.png" }
+  { "id": "summer_flip_flops", "category": "RunDust", "name": "Summer Flip Flops", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_flip_flops.png" }
+  { "id": "summer_ice", "category": "RunDust", "name": "Summer Ice", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_ice.png" }
+  { "id": "summer_ice_cream", "category": "RunDust", "name": "Summer Ice Cream", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_ice_cream.png" }
+  { "id": "summer_jbl", "category": "RunDust", "name": "Summer Jbl", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_jbl.png" }
+  { "id": "summer_kate", "category": "RunDust", "name": "Summer Kate", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_kate.png" }
+  { "id": "summer_lemon_drink", "category": "RunDust", "name": "Summer Lemon Drink", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_lemon_drink.png" }
+  { "id": "summer_lifebuoy", "category": "RunDust", "name": "Summer Lifebuoy", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_lifebuoy.png" }
+  { "id": "summer_orange_juice", "category": "RunDust", "name": "Summer Orange Juice", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_orange_juice.png" }
+  { "id": "summer_sandcastle", "category": "RunDust", "name": "Summer Sandcastle", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_sandcastle.png" }
+  { "id": "summer_shell", "category": "RunDust", "name": "Summer Shell", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_shell.png" }
+  { "id": "summer_starfish", "category": "RunDust", "name": "Summer Starfish", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_starfish.png" }
+  { "id": "summer_sunflower", "category": "RunDust", "name": "Summer Sunflower", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_sunflower.png" }
+  { "id": "summer_sunglasses", "category": "RunDust", "name": "Summer Sunglasses", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_sunglasses.png" }
+  { "id": "summer_sunscreen", "category": "RunDust", "name": "Summer Sunscreen", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_sunscreen.png" }
+  { "id": "summer_surfboard", "category": "RunDust", "name": "Summer Surfboard", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_surfboard.png" }
+  { "id": "summer_swimming_goggles", "category": "RunDust", "name": "Summer Swimming Goggles", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_swimming_goggles.png" }
+  { "id": "summer_towel", "category": "RunDust", "name": "Summer Towel", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_towel.png" }
+  { "id": "summer_turtle", "category": "RunDust", "name": "Summer Turtle", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_turtle.png" }
+  { "id": "summer_volleyball", "category": "RunDust", "name": "Summer Volleyball", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_volleyball.png" }
+  { "id": "summer_watermelon", "category": "RunDust", "name": "Summer Watermelon", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_watermelon.png" }
+  { "id": "summer_wave", "category": "RunDust", "name": "Summer Wave", "color": "#ffffff", "frames": "res://assets/sprites/effect/movement_effects/summer_wave.png" }

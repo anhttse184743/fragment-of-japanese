@@ -9,6 +9,8 @@ public enum DialogueAction
     OpenShop,       // mở ShopUi (trao đổi / mua bán)
     OpenLearning,   // mở màn học từ (chỉ NPC dạy học mới có tác dụng)
     OpenKanaDraw,   // mở màn luyện viết chữ kana (KanaDrawUi)
+    OpenMemoryKnowledge, // Mở Sổ tay kiến thức
+    OpenDrawBattle  // Mở màn chiến đấu vẽ chữ (DrawBattleUi)
 }
 
 /// <summary>

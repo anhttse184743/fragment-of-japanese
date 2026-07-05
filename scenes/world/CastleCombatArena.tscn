@@ -739,6 +739,17 @@ shape = SubResource("BoxShape3D_81gfm")
 [node name="MysteriousWizard" parent="." unique_id=609074805 instance=ExtResource("15_yoprv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.714344, 6.6593246, -7.6662335)
 
+[node name="BattleArena" type="Node3D" parent="." unique_id=1600995404]
+
+[node name="PlayerBattlePos" type="Marker3D" parent="BattleArena" unique_id=1677764391]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 6.87, 0)
+
+[node name="EnemyBattlePos" type="Marker3D" parent="BattleArena" unique_id=105225367]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -5, 6.87, 0)
+
+[node name="BattleCamera" type="Camera3D" parent="BattleArena" unique_id=521771995]
+transform = Transform3D(1, 0, 0, 0, 0.97404724, 0.22634473, 0, -0.22634473, 0.97404724, 0, 9.7907095, 8.314)
+
 [editable path="stone_table"]
 [editable path="stone_table2"]
 [editable path="Castle_minimap"]

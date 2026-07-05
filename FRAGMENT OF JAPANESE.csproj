@@ -5,9 +5,6 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>FRAGMENTOFJAPANESE</RootNamespace>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Vosk" Version="0.3.38" />
-  </ItemGroup>
 
   <!--
     BẬT QUẢNG CÁO THẬT (AdMob): bỏ comment khối dưới SAU KHI đã cài plugin

@@ -17,6 +17,7 @@ public partial class SenseiNpc : Npc
     protected override Action ResolveAction(DialogueAction action) => action switch
     {
         DialogueAction.OpenLearning => OpenLearning,
+        DialogueAction.OpenMemoryKnowledge => MemoryKnowledgeUi.ShowUI,
         _                           => base.ResolveAction(action),
     };
 
@@ -31,6 +32,7 @@ public partial class SenseiNpc : Npc
         Choices = new[]
         {
             new DialogueChoice { Label = "Học từ mới", Action = OpenLearning },
+            new DialogueChoice { Label = "Sổ tay kiến thức", Action = MemoryKnowledgeUi.ShowUI },
             new DialogueChoice
             {
                 Label = "Nghe lời khuyên",

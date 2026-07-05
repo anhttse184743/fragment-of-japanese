@@ -35,9 +35,15 @@ public partial class InventoryUi : CanvasLayer
 
     // Tab Skin (ngoài 4 tab vật phẩm)
     private bool          _skinsMode;
-    private SkinCategory  _skinCategory = SkinCategory.Player;
+    private enum SkinTab { Player, AttackSwing, HitSpark, LevelUpAura, Movement }
+    private SkinTab       _currentSkinTab = SkinTab.Player;
     private string        _selectedSkinId = "";
+    public string         SelectedSkinId => _selectedSkinId;
     private HBoxContainer _skinCatBar;
+
+    private SkinDropSlot _dropRunDust;
+    private SkinDropSlot _dropFootstep;
+    private HBoxContainer _multiEquipBox;
 
     public override void _Ready()
     {
@@ -91,19 +97,27 @@ public partial class InventoryUi : CanvasLayer
         center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         _root.AddChild(center);
 
-        var panel = new PanelContainer { CustomMinimumSize = new Vector2(900, 600) };
-        panel.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.BrownPanel, 14, UiKit.BrownBorder, 3));
+        var panel = new PanelContainer { CustomMinimumSize = new Vector2(1100, 680) };
+        var mainBox = new StyleBoxFlat
+        {
+            BgColor = new Color(0.14f, 0.15f, 0.18f, 0.98f),
+            BorderWidthLeft = 2, BorderWidthTop = 2, BorderWidthRight = 2, BorderWidthBottom = 2,
+            BorderColor = new Color(0.28f, 0.30f, 0.35f, 1f),
+            CornerRadiusTopLeft = 20, CornerRadiusTopRight = 20, CornerRadiusBottomRight = 20, CornerRadiusBottomLeft = 20,
+            ShadowColor = new Color(0, 0, 0, 0.5f), ShadowSize = 12
+        };
+        panel.AddThemeStyleboxOverride("panel", mainBox);
         center.AddChild(panel);
 
         var outer = new MarginContainer();
-        outer.AddThemeConstantOverride("margin_left",   16);
-        outer.AddThemeConstantOverride("margin_right",  16);
-        outer.AddThemeConstantOverride("margin_top",    14);
-        outer.AddThemeConstantOverride("margin_bottom", 14);
+        outer.AddThemeConstantOverride("margin_left",   20);
+        outer.AddThemeConstantOverride("margin_right",  20);
+        outer.AddThemeConstantOverride("margin_top",    20);
+        outer.AddThemeConstantOverride("margin_bottom", 20);
         panel.AddChild(outer);
 
         var vbox = new VBoxContainer();
-        vbox.AddThemeConstantOverride("separation", 10);
+        vbox.AddThemeConstantOverride("separation", 16);
         outer.AddChild(vbox);
 
         // ===== Thanh trên: tab + tiền tệ + X =====
@@ -123,13 +137,21 @@ public partial class InventoryUi : CanvasLayer
         topRow.AddChild(MakeCurrency(UiKit.AetherIconPath, out _aetherLabel));
         topRow.AddChild(new Control { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
 
-        var xBtn = new Button { Text = "X", CustomMinimumSize = new Vector2(42, 42) };
-        UiKit.StyleButton(xBtn, UiKit.BrownDark, new Color(0.55f, 0.25f, 0.22f), new Color(0.40f, 0.18f, 0.16f));
-        xBtn.AddThemeFontSizeOverride("font_size", 18);
+        var xBtn = new Button { Text = "X", CustomMinimumSize = new Vector2(54, 54) };
+        var xNormal = new StyleBoxFlat { BgColor = new Color(0.75f, 0.25f, 0.25f, 0.9f), CornerRadiusTopLeft = 16, CornerRadiusTopRight = 16, CornerRadiusBottomRight = 16, CornerRadiusBottomLeft = 16 };
+        var xHover = new StyleBoxFlat { BgColor = new Color(0.85f, 0.35f, 0.35f, 1f), CornerRadiusTopLeft = 16, CornerRadiusTopRight = 16, CornerRadiusBottomRight = 16, CornerRadiusBottomLeft = 16 };
+        var xPressed = new StyleBoxFlat { BgColor = new Color(0.55f, 0.15f, 0.15f, 1f), CornerRadiusTopLeft = 16, CornerRadiusTopRight = 16, CornerRadiusBottomRight = 16, CornerRadiusBottomLeft = 16 };
+        xBtn.AddThemeStyleboxOverride("normal", xNormal);
+        xBtn.AddThemeStyleboxOverride("hover", xHover);
+        xBtn.AddThemeStyleboxOverride("pressed", xPressed);
+        xBtn.AddThemeStyleboxOverride("focus", xNormal);
+        xBtn.AddThemeFontSizeOverride("font_size", 24);
         xBtn.Pressed += Close;
         topRow.AddChild(xBtn);
 
-        vbox.AddChild(new HSeparator());
+        var sep = new HSeparator();
+        sep.Modulate = new Color(1, 1, 1, 0.1f);
+        vbox.AddChild(sep);
 
         // ===== Thân: lưới (trái) + chi tiết (phải) =====
         var body = new HBoxContainer();
@@ -155,8 +177,8 @@ public partial class InventoryUi : CanvasLayer
 
         _grid = new GridContainer { Columns = Columns };
         _grid.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-        _grid.AddThemeConstantOverride("h_separation", 8);
-        _grid.AddThemeConstantOverride("v_separation", 8);
+        _grid.AddThemeConstantOverride("h_separation", 12);
+        _grid.AddThemeConstantOverride("v_separation", 12);
         _itemScroll.AddChild(_grid);
 
         body.AddChild(BuildDetailPanel());
@@ -164,38 +186,67 @@ public partial class InventoryUi : CanvasLayer
 
     private Control BuildDetailPanel()
     {
-        var detail = new PanelContainer { CustomMinimumSize = new Vector2(280, 0) };
+        var detail = new PanelContainer { CustomMinimumSize = new Vector2(360, 0) };
         detail.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
-        detail.AddThemeStyleboxOverride("panel", UiKit.Box(UiKit.BrownDark, 12, UiKit.BrownBorder, 2, 14, 14));
+        var detailBox = new StyleBoxFlat
+        {
+            BgColor = new Color(0.11f, 0.12f, 0.15f, 0.95f),
+            CornerRadiusTopLeft = 20, CornerRadiusTopRight = 20, CornerRadiusBottomRight = 20, CornerRadiusBottomLeft = 20,
+            ContentMarginLeft = 20, ContentMarginRight = 20, ContentMarginTop = 24, ContentMarginBottom = 24
+        };
+        detail.AddThemeStyleboxOverride("panel", detailBox);
 
         var dv = new VBoxContainer();
-        dv.AddThemeConstantOverride("separation", 8);
+        dv.AddThemeConstantOverride("separation", 16);
         detail.AddChild(dv);
 
-        _detailImage = new CenterContainer { CustomMinimumSize = new Vector2(0, 150) };
+        _detailImage = new CenterContainer { CustomMinimumSize = new Vector2(0, 160) };
         dv.AddChild(_detailImage);
 
         _detailName = new Label { HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
-        _detailName.AddThemeFontSizeOverride("font_size", 20);
-        _detailName.AddThemeColorOverride("font_color", UiKit.BrownText);
+        _detailName.AddThemeFontSizeOverride("font_size", 26);
+        _detailName.AddThemeColorOverride("font_color", new Color(0.96f, 0.85f, 0.45f));
+        _detailName.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.6f));
         dv.AddChild(_detailName);
 
         _detailMeta = new Label { HorizontalAlignment = HorizontalAlignment.Center };
-        _detailMeta.AddThemeFontSizeOverride("font_size", 13);
-        _detailMeta.AddThemeColorOverride("font_color", UiKit.Accent);
+        _detailMeta.AddThemeFontSizeOverride("font_size", 16);
+        _detailMeta.AddThemeColorOverride("font_color", new Color(0.75f, 0.8f, 0.9f));
         dv.AddChild(_detailMeta);
 
+        var sep = new HSeparator();
+        sep.Modulate = new Color(1, 1, 1, 0.15f);
+        dv.AddChild(sep);
+
         _detailDesc = new Label { AutowrapMode = TextServer.AutowrapMode.WordSmart };
-        _detailDesc.AddThemeColorOverride("font_color", UiKit.BrownTextDim);
+        _detailDesc.AddThemeColorOverride("font_color", new Color(0.85f, 0.88f, 0.92f));
+        _detailDesc.AddThemeFontSizeOverride("font_size", 18);
         dv.AddChild(_detailDesc);
 
         dv.AddChild(new Control { SizeFlagsVertical = Control.SizeFlags.ExpandFill });   // đẩy nút xuống đáy
 
-        _useButton = new Button { Text = "Dùng", CustomMinimumSize = new Vector2(0, 44), Visible = false };
-        UiKit.StyleButton(_useButton, UiKit.BuyGreen, UiKit.BuyGreenHi, new Color(0.16f, 0.42f, 0.24f));
-        _useButton.AddThemeFontSizeOverride("font_size", 18);
+        _useButton = new Button { Text = "Dùng", CustomMinimumSize = new Vector2(0, 56), Visible = false };
+        var useNormal = new StyleBoxFlat { BgColor = new Color(0.25f, 0.65f, 0.35f, 1f), CornerRadiusTopLeft = 16, CornerRadiusTopRight = 16, CornerRadiusBottomRight = 16, CornerRadiusBottomLeft = 16 };
+        var useHover = new StyleBoxFlat { BgColor = new Color(0.3f, 0.75f, 0.4f, 1f), CornerRadiusTopLeft = 16, CornerRadiusTopRight = 16, CornerRadiusBottomRight = 16, CornerRadiusBottomLeft = 16 };
+        var usePressed = new StyleBoxFlat { BgColor = new Color(0.15f, 0.45f, 0.2f, 1f), CornerRadiusTopLeft = 16, CornerRadiusTopRight = 16, CornerRadiusBottomRight = 16, CornerRadiusBottomLeft = 16 };
+        _useButton.AddThemeStyleboxOverride("normal", useNormal);
+        _useButton.AddThemeStyleboxOverride("hover", useHover);
+        _useButton.AddThemeStyleboxOverride("pressed", usePressed);
+        _useButton.AddThemeStyleboxOverride("focus", useNormal);
+        _useButton.AddThemeFontSizeOverride("font_size", 22);
         _useButton.Pressed += OnUsePressed;
         dv.AddChild(_useButton);
+
+        _multiEquipBox = new HBoxContainer { Visible = false };
+        _multiEquipBox.AddThemeConstantOverride("separation", 16);
+        _multiEquipBox.Alignment = BoxContainer.AlignmentMode.Center;
+        dv.AddChild(_multiEquipBox);
+
+        _dropRunDust = new SkinDropSlot { TargetCategory = SkinCategory.RunDust, OnDropAction = EquipMovementSkin, CustomMinimumSize = new Vector2(100, 120), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        _dropFootstep = new SkinDropSlot { TargetCategory = SkinCategory.Footstep, OnDropAction = EquipMovementSkin, CustomMinimumSize = new Vector2(100, 120), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+
+        _multiEquipBox.AddChild(_dropRunDust);
+        _multiEquipBox.AddChild(_dropFootstep);
 
         return detail;
     }
@@ -208,21 +259,46 @@ public partial class InventoryUi : CanvasLayer
             ToggleMode        = true,
             ButtonGroup       = group,
             ButtonPressed     = first,
-            CustomMinimumSize = new Vector2(88, 38),
+            CustomMinimumSize = new Vector2(110, 52),
         };
-        UiKit.StyleButton(btn, UiKit.BrownDark, new Color(0.50f, 0.37f, 0.24f), UiKit.Accent);
-        btn.AddThemeColorOverride("font_color",         UiKit.BrownText);
-        btn.AddThemeColorOverride("font_hover_color",   UiKit.BrownText);
-        btn.AddThemeColorOverride("font_pressed_color", new Color(0.22f, 0.14f, 0.07f));   // chữ tối trên nền vàng (tab đang chọn)
-        btn.AddThemeFontSizeOverride("font_size", 14);
+        ApplyModernTabStyle(btn);
         btn.Pressed += () => SetTab(type);
         bar.AddChild(btn);
     }
 
-    private HBoxContainer MakeCurrency(string iconPath, out Label label)
+    private static void ApplyModernTabStyle(Button btn)
     {
+        var normal = new StyleBoxFlat { BgColor = new Color(0.18f, 0.19f, 0.24f, 0.6f), CornerRadiusTopLeft = 12, CornerRadiusTopRight = 12, CornerRadiusBottomRight = 12, CornerRadiusBottomLeft = 12 };
+        var hover = new StyleBoxFlat { BgColor = new Color(0.25f, 0.27f, 0.33f, 0.8f), CornerRadiusTopLeft = 12, CornerRadiusTopRight = 12, CornerRadiusBottomRight = 12, CornerRadiusBottomLeft = 12 };
+        var pressed = new StyleBoxFlat { BgColor = new Color(0.3f, 0.55f, 0.9f, 1f), CornerRadiusTopLeft = 12, CornerRadiusTopRight = 12, CornerRadiusBottomRight = 12, CornerRadiusBottomLeft = 12 };
+
+        btn.AddThemeStyleboxOverride("normal", normal);
+        btn.AddThemeStyleboxOverride("hover", hover);
+        btn.AddThemeStyleboxOverride("pressed", pressed);
+        btn.AddThemeStyleboxOverride("focus", normal);
+
+        btn.AddThemeColorOverride("font_color", new Color(0.85f, 0.85f, 0.9f));
+        btn.AddThemeColorOverride("font_hover_color", Colors.White);
+        btn.AddThemeColorOverride("font_pressed_color", Colors.White);
+        btn.AddThemeFontSizeOverride("font_size", 18);
+    }
+
+    private PanelContainer MakeCurrency(string iconPath, out Label label)
+    {
+        var pill = new PanelContainer();
+        var pillBox = new StyleBoxFlat
+        {
+            BgColor = new Color(0, 0, 0, 0.5f),
+            CornerRadiusTopLeft = 20, CornerRadiusTopRight = 20,
+            CornerRadiusBottomRight = 20, CornerRadiusBottomLeft = 20,
+            ContentMarginLeft = 12, ContentMarginTop = 4,
+            ContentMarginRight = 12, ContentMarginBottom = 4
+        };
+        pill.AddThemeStyleboxOverride("panel", pillBox);
+
         var h = new HBoxContainer();
         h.AddThemeConstantOverride("separation", 6);
+        pill.AddChild(h);
 
         if (ResourceLoader.Exists(iconPath))
         {
@@ -231,17 +307,17 @@ public partial class InventoryUi : CanvasLayer
                 h.AddChild(new TextureRect
                 {
                     Texture           = tex,
-                    CustomMinimumSize = new Vector2(30, 30),
+                    CustomMinimumSize = new Vector2(32, 32),
                     StretchMode       = TextureRect.StretchModeEnum.KeepAspectCentered,
                     ExpandMode        = TextureRect.ExpandModeEnum.IgnoreSize,
                 });
         }
 
         label = new Label { VerticalAlignment = VerticalAlignment.Center };
-        label.AddThemeFontSizeOverride("font_size", 18);
-        label.AddThemeColorOverride("font_color", UiKit.BrownText);
+        label.AddThemeFontSizeOverride("font_size", 20);
+        label.AddThemeColorOverride("font_color", Colors.White);
         h.AddChild(label);
-        return h;
+        return pill;
     }
 
     // ───────────────────────── Tabs / Refresh ─────────────────────────
@@ -293,7 +369,7 @@ public partial class InventoryUi : CanvasLayer
         if (shown == 0)
         {
             var empty = new Label { Text = "Không có vật phẩm trong nhóm này." };
-            empty.AddThemeColorOverride("font_color", UiKit.BrownTextDim);
+            empty.AddThemeColorOverride("font_color", new Color(0.6f, 0.6f, 0.7f));
             _grid.AddChild(empty);
         }
 
@@ -307,14 +383,14 @@ public partial class InventoryUi : CanvasLayer
 
         var btn = new Button
         {
-            CustomMinimumSize   = new Vector2(96, 96),
+            CustomMinimumSize   = new Vector2(116, 116),
             SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
             TooltipText         = item.NameVi,
         };
         ApplySlotStyle(btn, selected);
 
         // Ảnh item — căn giữa, phủ toàn ô
-        var icon = UiKit.ItemIcon(item, UiKit.TypeColor(item.Type), 60);
+        var icon = UiKit.ItemIcon(item, UiKit.TypeColor(item.Type), 72);
         icon.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 
         // Số lượng — góc dưới phải
@@ -326,9 +402,10 @@ public partial class InventoryUi : CanvasLayer
         bottom.AddChild(new Control { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
 
         var qtyPill = new PanelContainer();
-        qtyPill.AddThemeStyleboxOverride("panel", UiKit.Box(new Color(0.12f, 0.08f, 0.04f, 0.82f), 6, null, 0, 6, 1));
+        var pillStyle = new StyleBoxFlat { BgColor = new Color(0f, 0f, 0f, 0.7f), CornerRadiusTopLeft = 8, CornerRadiusTopRight = 8, CornerRadiusBottomRight = 8, CornerRadiusBottomLeft = 8, ContentMarginLeft = 8, ContentMarginRight = 8, ContentMarginTop = 4, ContentMarginBottom = 4 };
+        qtyPill.AddThemeStyleboxOverride("panel", pillStyle);
         var qty = new Label { Text = $"{stack.Count}" };
-        qty.AddThemeFontSizeOverride("font_size", 14);
+        qty.AddThemeFontSizeOverride("font_size", 16);
         qty.AddThemeColorOverride("font_color", Colors.White);
         qtyPill.AddChild(qty);
         bottom.AddChild(qtyPill);
@@ -346,14 +423,17 @@ public partial class InventoryUi : CanvasLayer
 
     private static void ApplySlotStyle(Button btn, bool selected)
     {
-        Color border = selected ? UiKit.Accent : UiKit.BrownBorder;
+        Color border = selected ? new Color(0.4f, 0.65f, 0.95f) : new Color(0.28f, 0.3f, 0.35f);
         int   bw     = selected ? 3 : 2;
-        Color bg     = selected ? UiKit.Fade(UiKit.Accent, 0.22f) : UiKit.BrownSlot;
+        Color bg     = selected ? new Color(0.2f, 0.3f, 0.5f, 0.8f) : new Color(0.18f, 0.19f, 0.24f, 0.9f);
 
-        btn.AddThemeStyleboxOverride("normal",  UiKit.Box(bg, 8, border, bw));
-        btn.AddThemeStyleboxOverride("hover",   UiKit.Box(UiKit.Fade(UiKit.Accent, 0.12f), 8, border, bw));
-        btn.AddThemeStyleboxOverride("pressed", UiKit.Box(UiKit.Fade(UiKit.Accent, 0.22f), 8, border, bw));
-        btn.AddThemeStyleboxOverride("focus",   UiKit.Box(new Color(0, 0, 0, 0), 8));
+        var normal = new StyleBoxFlat { BgColor = bg, BorderColor = border, BorderWidthLeft = bw, BorderWidthTop = bw, BorderWidthRight = bw, BorderWidthBottom = bw, CornerRadiusTopLeft = 16, CornerRadiusTopRight = 16, CornerRadiusBottomRight = 16, CornerRadiusBottomLeft = 16 };
+        var hover = new StyleBoxFlat { BgColor = new Color(0.22f, 0.24f, 0.3f, 1f), BorderColor = border, BorderWidthLeft = bw, BorderWidthTop = bw, BorderWidthRight = bw, BorderWidthBottom = bw, CornerRadiusTopLeft = 16, CornerRadiusTopRight = 16, CornerRadiusBottomRight = 16, CornerRadiusBottomLeft = 16 };
+
+        btn.AddThemeStyleboxOverride("normal", normal);
+        btn.AddThemeStyleboxOverride("hover", hover);
+        btn.AddThemeStyleboxOverride("pressed", normal);
+        btn.AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
     }
 
     private static void IgnoreMouse(Node node)
@@ -406,6 +486,7 @@ public partial class InventoryUi : CanvasLayer
         if (_detailMeta != null) _detailMeta.Text = "";
         if (_detailDesc != null) _detailDesc.Text = "Chọn một vật phẩm để xem thông tin.";
         if (_useButton  != null) _useButton.Visible = false;
+        if (_multiEquipBox != null) _multiEquipBox.Visible = false;
     }
 
     private async void OnUsePressed()
@@ -414,7 +495,8 @@ public partial class InventoryUi : CanvasLayer
         {
             if (!string.IsNullOrEmpty(_selectedSkinId))
             {
-                SkinManager.Instance?.Equip(_skinCategory, _selectedSkinId);
+                SkinCategory cat = GetRealCategory(_currentSkinTab);
+                SkinManager.Instance?.Equip(cat, _selectedSkinId);
                 RefreshSkins();
             }
             return;
@@ -438,15 +520,43 @@ public partial class InventoryUi : CanvasLayer
             Text              = text,
             ToggleMode        = true,
             ButtonGroup       = group,
-            CustomMinimumSize = new Vector2(88, 38),
+            CustomMinimumSize = new Vector2(110, 52),
         };
-        UiKit.StyleButton(btn, UiKit.BrownDark, new Color(0.50f, 0.37f, 0.24f), UiKit.Accent);
-        btn.AddThemeColorOverride("font_color",         UiKit.BrownText);
-        btn.AddThemeColorOverride("font_hover_color",   UiKit.BrownText);
-        btn.AddThemeColorOverride("font_pressed_color", new Color(0.22f, 0.14f, 0.07f));
-        btn.AddThemeFontSizeOverride("font_size", 14);
+        ApplyModernTabStyle(btn);
         btn.Pressed += EnterSkinsMode;
         bar.AddChild(btn);
+    }
+
+    private SkinCategory GetRealCategory(SkinTab tab) => tab switch {
+        SkinTab.Player => SkinCategory.Player,
+        SkinTab.AttackSwing => SkinCategory.AttackSwing,
+        SkinTab.HitSpark => SkinCategory.HitSpark,
+        SkinTab.LevelUpAura => SkinCategory.LevelUpAura,
+        _ => SkinCategory.Player
+    };
+
+    private static string TabName(SkinTab t) => t switch {
+        SkinTab.Player => "Nhân vật",
+        SkinTab.AttackSwing => "Đòn đánh",
+        SkinTab.HitSpark => "Tia trúng",
+        SkinTab.LevelUpAura => "Hào quang",
+        SkinTab.Movement => "Di chuyển",
+        _ => ""
+    };
+
+    private void EquipMovementSkin(SkinCategory targetCat, string skinId)
+    {
+        if (string.IsNullOrEmpty(skinId)) return;
+        var mgr = SkinManager.Instance;
+        if (mgr == null) return;
+
+        SkinCategory otherCat = targetCat == SkinCategory.RunDust ? SkinCategory.Footstep : SkinCategory.RunDust;
+        if (mgr.GetEquippedId(otherCat) == skinId)
+        {
+            mgr.Equip(otherCat, "");
+        }
+        mgr.Equip(targetCat, skinId);
+        RefreshSkins();
     }
 
     private HBoxContainer BuildSkinCatBar()
@@ -456,26 +566,27 @@ public partial class InventoryUi : CanvasLayer
 
         var group = new ButtonGroup();
         bool first = true;
-        foreach (SkinCategory cat in System.Enum.GetValues<SkinCategory>())
+        foreach (SkinTab tab in System.Enum.GetValues<SkinTab>())
         {
-            var c = cat;
+            var t = tab;
             var btn = new Button
             {
-                Text                = SkinCatName(cat),
+                Text                = TabName(tab),
                 ToggleMode          = true,
                 ButtonGroup         = group,
                 ButtonPressed       = first,
-                CustomMinimumSize   = new Vector2(0, 32),
+                CustomMinimumSize   = new Vector2(0, 44),
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
             };
-            UiKit.StyleButton(btn, UiKit.BrownSlot, new Color(0.50f, 0.37f, 0.24f), UiKit.Accent);
-            btn.AddThemeColorOverride("font_color",         UiKit.BrownText);
-            btn.AddThemeColorOverride("font_pressed_color", new Color(0.22f, 0.14f, 0.07f));
-            btn.AddThemeFontSizeOverride("font_size", 13);
+            ApplyModernTabStyle(btn);
+            btn.AddThemeFontSizeOverride("font_size", 16);
             btn.Pressed += () =>
             {
-                _skinCategory   = c;
-                _selectedSkinId = SkinManager.Instance?.GetEquippedId(c) ?? "";
+                _currentSkinTab = t;
+                if (t == SkinTab.Movement)
+                    _selectedSkinId = "";
+                else
+                    _selectedSkinId = SkinManager.Instance?.GetEquippedId(GetRealCategory(t)) ?? "";
                 RefreshSkins();
             };
             bar.AddChild(btn);
@@ -489,7 +600,10 @@ public partial class InventoryUi : CanvasLayer
         _skinsMode      = true;
         _selectedId     = "";
         _selectedSlot   = null;
-        _selectedSkinId = SkinManager.Instance?.GetEquippedId(_skinCategory) ?? "";
+        if (_currentSkinTab == SkinTab.Movement)
+            _selectedSkinId = "";
+        else
+            _selectedSkinId = SkinManager.Instance?.GetEquippedId(GetRealCategory(_currentSkinTab)) ?? "";
         if (_skinCatBar != null) _skinCatBar.Visible = true;
         RefreshSkins();
     }
@@ -502,13 +616,24 @@ public partial class InventoryUi : CanvasLayer
 
         var mgr = SkinManager.Instance;
         if (mgr == null) return;
-        string equipped = mgr.GetEquippedId(_skinCategory);
+        
+        System.Collections.Generic.IEnumerable<SkinDef> catalog;
+        if (_currentSkinTab == SkinTab.Movement)
+            catalog = System.Linq.Enumerable.Concat(mgr.Catalog(SkinCategory.RunDust), mgr.Catalog(SkinCategory.Footstep));
+        else
+            catalog = mgr.Catalog(GetRealCategory(_currentSkinTab));
 
         bool selAlive = false;
-        foreach (var skin in mgr.Catalog(_skinCategory))
+        foreach (var skin in catalog)
         {
             bool sel  = skin.Id == _selectedSkinId;
-            var  slot = MakeSkinSlot(skin, sel, skin.Id == equipped, mgr.IsOwned(skin.Id));
+            bool equipped;
+            if (_currentSkinTab == SkinTab.Movement)
+                equipped = mgr.GetEquippedId(SkinCategory.RunDust) == skin.Id || mgr.GetEquippedId(SkinCategory.Footstep) == skin.Id;
+            else
+                equipped = mgr.GetEquippedId(GetRealCategory(_currentSkinTab)) == skin.Id;
+
+            var  slot = MakeSkinSlot(skin, sel, equipped, mgr.IsOwned(skin.Id));
             if (sel) { _selectedSlot = slot; selAlive = true; }
             _grid.AddChild(slot);
         }
@@ -519,9 +644,10 @@ public partial class InventoryUi : CanvasLayer
 
     private Button MakeSkinSlot(SkinDef skin, bool selected, bool equipped, bool owned)
     {
-        var btn = new Button
+        var btn = new DraggableSkinSlot
         {
-            CustomMinimumSize   = new Vector2(96, 96),
+            SkinId              = skin.Id,
+            CustomMinimumSize   = new Vector2(116, 116),
             SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
             TooltipText         = owned ? skin.Name : $"{skin.Name} (chưa mở khóa)",
         };
@@ -532,15 +658,28 @@ public partial class InventoryUi : CanvasLayer
         v.AddThemeConstantOverride("separation", 4);
 
         var swHolder = new CenterContainer();
-        var swatch   = new PanelContainer { CustomMinimumSize = new Vector2(54, 40) };
-        swatch.AddThemeStyleboxOverride("panel", UiKit.Box(skin.ColorValue, 8, UiKit.BrownBorder, 2));
-        if (!owned) swatch.Modulate = new Color(1, 1, 1, 0.28f);   // khóa → mờ đi
-        swHolder.AddChild(swatch);
+        bool hasTex = !string.IsNullOrEmpty(skin.Frames) && skin.Frames.EndsWith(".png") && ResourceLoader.Exists(skin.Frames);
+        if (hasTex)
+        {
+            var tex = GD.Load<Texture2D>(skin.Frames);
+            btn.DragIcon = tex;
+            var tr = new TextureRect { Texture = tex, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(54, 54) };
+            if (!owned) tr.Modulate = new Color(1, 1, 1, 0.28f);
+            swHolder.AddChild(tr);
+        }
+        else
+        {
+            var swatch   = new PanelContainer { CustomMinimumSize = new Vector2(54, 40) };
+            var swatchStyle = new StyleBoxFlat { BgColor = skin.ColorValue, CornerRadiusTopLeft = 8, CornerRadiusTopRight = 8, CornerRadiusBottomRight = 8, CornerRadiusBottomLeft = 8, BorderWidthLeft = 2, BorderWidthTop = 2, BorderWidthRight = 2, BorderWidthBottom = 2, BorderColor = new Color(0.243f, 0.255f, 0.345f) };
+            swatch.AddThemeStyleboxOverride("panel", swatchStyle);
+            if (!owned) swatch.Modulate = new Color(1, 1, 1, 0.28f);   // khóa → mờ đi
+            swHolder.AddChild(swatch);
+        }
         v.AddChild(swHolder);
 
         var name = new Label { Text = skin.Name, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
-        name.AddThemeFontSizeOverride("font_size", 12);
-        name.AddThemeColorOverride("font_color", owned ? UiKit.BrownText : UiKit.BrownTextDim);
+        name.AddThemeFontSizeOverride("font_size", 14);
+        name.AddThemeColorOverride("font_color", owned ? new Color(0.9f, 0.9f, 0.95f) : new Color(0.6f, 0.6f, 0.7f));
         v.AddChild(name);
 
         btn.AddChild(v);
@@ -550,9 +689,9 @@ public partial class InventoryUi : CanvasLayer
         {
             var lockTag = new Label { Text = "🔒", HorizontalAlignment = HorizontalAlignment.Left, MouseFilter = Control.MouseFilterEnum.Ignore };
             lockTag.SetAnchorsPreset(Control.LayoutPreset.TopWide);
-            lockTag.OffsetTop  = 2;
-            lockTag.OffsetLeft = 6;
-            lockTag.AddThemeFontSizeOverride("font_size", 15);
+            lockTag.OffsetTop  = 4;
+            lockTag.OffsetLeft = 8;
+            lockTag.AddThemeFontSizeOverride("font_size", 18);
             btn.AddChild(lockTag);
         }
 
@@ -560,9 +699,9 @@ public partial class InventoryUi : CanvasLayer
         {
             var tag = new Label { Text = "✓", HorizontalAlignment = HorizontalAlignment.Right, MouseFilter = Control.MouseFilterEnum.Ignore };
             tag.SetAnchorsPreset(Control.LayoutPreset.TopWide);
-            tag.OffsetTop   = 2;
-            tag.OffsetRight = -6;
-            tag.AddThemeFontSizeOverride("font_size", 16);
+            tag.OffsetTop   = 4;
+            tag.OffsetRight = -8;
+            tag.AddThemeFontSizeOverride("font_size", 20);
             tag.AddThemeColorOverride("font_color", new Color(0.55f, 0.95f, 0.55f));
             btn.AddChild(tag);
         }
@@ -588,22 +727,56 @@ public partial class InventoryUi : CanvasLayer
         var skin = mgr?.Get(id);
         if (skin == null) { ClearSelection(); return; }
 
-        bool equipped = mgr.GetEquippedId(_skinCategory) == id;
-        bool owned    = mgr.IsOwned(id);
+        bool owned = mgr.IsOwned(id);
 
         foreach (Node c in _detailImage.GetChildren()) c.QueueFree();
-        var swatch = new PanelContainer { CustomMinimumSize = new Vector2(132, 96) };
-        swatch.AddThemeStyleboxOverride("panel", UiKit.Box(skin.ColorValue, 12, UiKit.BrownBorder, 2));
-        if (!owned) swatch.Modulate = new Color(1, 1, 1, 0.3f);
-        _detailImage.AddChild(swatch);
+
+        bool hasTex = !string.IsNullOrEmpty(skin.Frames) && skin.Frames.EndsWith(".png") && ResourceLoader.Exists(skin.Frames);
+        if (hasTex)
+        {
+            var tex = GD.Load<Texture2D>(skin.Frames);
+            var tr = new TextureRect { Texture = tex, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(132, 132) };
+            if (!owned) tr.Modulate = new Color(1, 1, 1, 0.3f);
+            _detailImage.AddChild(tr);
+        }
+        else
+        {
+            var swatch = new PanelContainer { CustomMinimumSize = new Vector2(132, 96) };
+            var swatchStyle = new StyleBoxFlat { BgColor = skin.ColorValue, CornerRadiusTopLeft = 12, CornerRadiusTopRight = 12, CornerRadiusBottomRight = 12, CornerRadiusBottomLeft = 12, BorderWidthLeft = 2, BorderWidthTop = 2, BorderWidthRight = 2, BorderWidthBottom = 2, BorderColor = new Color(0.243f, 0.255f, 0.345f) };
+            swatch.AddThemeStyleboxOverride("panel", swatchStyle);
+            if (!owned) swatch.Modulate = new Color(1, 1, 1, 0.3f);
+            _detailImage.AddChild(swatch);
+        }
 
         _detailName.Text = skin.Name;
-        _detailMeta.Text = SkinCatName(_skinCategory) + (equipped ? "  •  Đang dùng" : owned ? "" : "  •  🔒 Chưa mở khóa");
-        _detailDesc.Text = owned ? $"Skin {SkinCatName(_skinCategory).ToLower()}." : "Quay Gacha Hiệu Ứng trong Cửa hàng để mở khóa skin này.";
 
-        _useButton.Text     = !owned ? "Chưa mở khóa" : equipped ? "Đang dùng" : "Trang bị";
-        _useButton.Disabled = equipped || !owned;
-        _useButton.Visible  = true;
+        if (_currentSkinTab == SkinTab.Movement)
+        {
+            _useButton.Visible = false;
+            _multiEquipBox.Visible = true;
+            
+            bool eqRunDust = mgr.GetEquippedId(SkinCategory.RunDust) == id;
+            bool eqFootstep = mgr.GetEquippedId(SkinCategory.Footstep) == id;
+
+            _detailMeta.Text = "Di chuyển" + (eqRunDust || eqFootstep ? "  •  Đang dùng" : owned ? "" : "  •  🔒 Chưa mở khóa");
+            _detailDesc.Text = owned ? "Kéo thả hiệu ứng này vào một trong hai ô bên dưới để trang bị." : "Quay Gacha Hiệu Ứng trong Cửa hàng để mở khóa skin này.";
+
+            UpdateDropSlot(_dropRunDust, mgr.GetEquippedId(SkinCategory.RunDust), "Gia tốc");
+            UpdateDropSlot(_dropFootstep, mgr.GetEquippedId(SkinCategory.Footstep), "Dấu chân");
+        }
+        else
+        {
+            _useButton.Visible = true;
+            if (_multiEquipBox != null) _multiEquipBox.Visible = false;
+
+            SkinCategory cat = GetRealCategory(_currentSkinTab);
+            bool equipped = mgr.GetEquippedId(cat) == id;
+            _detailMeta.Text = SkinCatName(cat) + (equipped ? "  •  Đang dùng" : owned ? "" : "  •  🔒 Chưa mở khóa");
+            _detailDesc.Text = owned ? $"Skin {SkinCatName(cat).ToLower()}." : "Quay Gacha Hiệu Ứng trong Cửa hàng để mở khóa skin này.";
+
+            _useButton.Text     = !owned ? "Chưa mở khóa" : equipped ? "Đang dùng" : "Trang bị";
+            _useButton.Disabled = equipped || !owned;
+        }
     }
 
     private static string SkinCatName(SkinCategory c) => c switch
@@ -617,6 +790,52 @@ public partial class InventoryUi : CanvasLayer
         _                        => "",
     };
 
+    private void UpdateDropSlot(SkinDropSlot slot, string equippedId, string labelText)
+    {
+        foreach (Node child in slot.GetChildren()) child.QueueFree();
+
+        var vbox = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+        vbox.AddThemeConstantOverride("separation", 8);
+        vbox.MouseFilter = Control.MouseFilterEnum.Ignore;
+
+        var lbl = new Label { Text = labelText, HorizontalAlignment = HorizontalAlignment.Center };
+        lbl.AddThemeFontSizeOverride("font_size", 14);
+        lbl.AddThemeColorOverride("font_color", new Color(0.7f, 0.7f, 0.8f));
+        lbl.MouseFilter = Control.MouseFilterEnum.Ignore;
+        vbox.AddChild(lbl);
+
+        var mgr = SkinManager.Instance;
+        var skin = mgr?.Get(equippedId);
+
+        if (skin != null)
+        {
+            bool hasTex = !string.IsNullOrEmpty(skin.Frames) && skin.Frames.EndsWith(".png") && ResourceLoader.Exists(skin.Frames);
+            if (hasTex)
+            {
+                var tex = GD.Load<Texture2D>(skin.Frames);
+                var tr = new TextureRect { Texture = tex, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(48, 48) };
+                tr.MouseFilter = Control.MouseFilterEnum.Ignore;
+                vbox.AddChild(tr);
+            }
+            else
+            {
+                var swatch = new PanelContainer { CustomMinimumSize = new Vector2(48, 48) };
+                var swatchStyle = new StyleBoxFlat { BgColor = skin.ColorValue, CornerRadiusTopLeft = 8, CornerRadiusTopRight = 8, CornerRadiusBottomRight = 8, CornerRadiusBottomLeft = 8, BorderWidthLeft = 2, BorderWidthTop = 2, BorderWidthRight = 2, BorderWidthBottom = 2, BorderColor = new Color(0.243f, 0.255f, 0.345f) };
+                swatch.AddThemeStyleboxOverride("panel", swatchStyle);
+                swatch.MouseFilter = Control.MouseFilterEnum.Ignore;
+                vbox.AddChild(swatch);
+            }
+        }
+
+        var hint = new Label { Text = "(Kéo vào đây)", HorizontalAlignment = HorizontalAlignment.Center };
+        hint.AddThemeFontSizeOverride("font_size", 12);
+        hint.AddThemeColorOverride("font_color", new Color(0.5f, 0.5f, 0.6f));
+        hint.MouseFilter = Control.MouseFilterEnum.Ignore;
+        vbox.AddChild(hint);
+
+        slot.AddChild(vbox);
+    }
+
     // ───────────────────────── Input action ─────────────────────────
 
     private static void EnsureInputAction()
@@ -629,5 +848,69 @@ public partial class InventoryUi : CanvasLayer
                 return;
 
         InputMap.ActionAddEvent("toggle_inventory", new InputEventKey { PhysicalKeycode = Key.I });
+    }
+}
+
+public partial class DraggableSkinSlot : Button
+{
+    public string SkinId { get; set; }
+    public Texture2D DragIcon { get; set; }
+
+    public override Variant _GetDragData(Vector2 atPosition)
+    {
+        if (string.IsNullOrEmpty(SkinId)) return default;
+        if (DragIcon != null)
+        {
+            var preview = new TextureRect { Texture = DragIcon, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(64, 64) };
+            preview.Modulate = new Color(1, 1, 1, 0.7f);
+            SetDragPreview(preview);
+        }
+        return Variant.CreateFrom(SkinId);
+    }
+}
+
+public partial class SkinDropSlot : PanelContainer
+{
+    public SkinCategory TargetCategory { get; set; }
+    public System.Action<SkinCategory, string> OnDropAction { get; set; }
+
+    public override void _Ready()
+    {
+        var style = new StyleBoxFlat
+        {
+            BgColor = new Color(0.12f, 0.13f, 0.18f),
+            BorderColor = new Color(0.3f, 0.3f, 0.4f),
+            BorderWidthLeft = 2, BorderWidthTop = 2, BorderWidthRight = 2, BorderWidthBottom = 2,
+            CornerRadiusTopLeft = 12, CornerRadiusTopRight = 12, CornerRadiusBottomRight = 12, CornerRadiusBottomLeft = 12,
+        };
+        AddThemeStyleboxOverride("panel", style);
+    }
+
+    public override bool _CanDropData(Vector2 atPosition, Variant data)
+    {
+        return data.VariantType == Variant.Type.String;
+    }
+
+    public override void _DropData(Vector2 atPosition, Variant data)
+    {
+        if (data.VariantType == Variant.Type.String)
+        {
+            string skinId = data.AsString();
+            OnDropAction?.Invoke(TargetCategory, skinId);
+        }
+    }
+
+    public override void _GuiInput(InputEvent @event)
+    {
+        bool isClick = false;
+        if (@event is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
+            isClick = true;
+        else if (@event is InputEventScreenTouch tc && tc.Pressed)
+            isClick = true;
+
+        if (isClick && InventoryUi.Instance != null && !string.IsNullOrEmpty(InventoryUi.Instance.SelectedSkinId))
+        {
+            OnDropAction?.Invoke(TargetCategory, InventoryUi.Instance.SelectedSkinId);
+        }
     }
 }

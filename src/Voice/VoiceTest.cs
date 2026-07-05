@@ -2,7 +2,10 @@ using Godot;
 
 namespace FragmentOfJapanese.Voice;
 
-/// <summary>Harness test: giữ phím V để đọc 1 từ của bài, thả ra để nhận kết quả.</summary>
+/// <summary>
+/// Màn hình Test cho Groq Whisper API. 
+/// Giữ phím V để ghi âm, thả ra để gửi lên API.
+/// </summary>
 public partial class VoiceTest : Node
 {
 	[Export] public int Lesson = 1;
@@ -12,9 +15,13 @@ public partial class VoiceTest : Node
 	public override void _Ready()
 	{
 		_voice = new VoiceRecognizer();
+		// BẠN PHẢI ĐIỀN API KEY CỦA GROQ VÀO ĐÂY TRƯỚC KHI CHẠY
+		_voice.GroqApiKey = ""; 
+		
 		AddChild(_voice);
 		_voice.WordRecognized += OnWord;
-		GD.Print($"[VoiceTest] Giữ phím V để đọc 1 từ Bài {Lesson}, thả ra để nhận kết quả.");
+		
+		GD.Print($"[VoiceTest] Giữ phím V để đọc 1 từ Bài {Lesson}, thả ra để gửi lên Groq Cloud.");
 	}
 
 	public override void _UnhandledInput(InputEvent e)
@@ -26,9 +33,9 @@ public partial class VoiceTest : Node
 		}
 	}
 
-	private void OnWord(string raw, bool matched, string id)
+	private void OnWord(string raw, bool matched, string id, float similarity)
 	{
-		if (matched) GD.Print($"[VoiceTest] ✅ ĐÚNG: nghe '{raw}' → {id}");
-		else         GD.Print($"[VoiceTest] ❌ chưa khớp. Model nghe: '{raw}'");
+		if (matched) GD.Print($"[VoiceTest] ✅ ĐÚNG ({similarity*100:0.0}%): nghe '{raw}' → {id}");
+		else         GD.Print($"[VoiceTest] ❌ SAI ({similarity*100:0.0}%). Máy chủ nghe: '{raw}'");
 	}
 }

@@ -27,6 +27,10 @@ public sealed class SkinDef
     [JsonPropertyName("color")]    public string Color    { get; set; } = "#ffffff";
     [JsonPropertyName("frames")]   public string Frames   { get; set; } = "";
 
+    // Chỉ skin Player: cỡ frame khác nhau (vd 256 vs 128px) → cần pixel_size/Y riêng. 0 = giữ mặc định của node.
+    [JsonPropertyName("pixel_size")] public float PixelSize { get; set; } = 0f;
+    [JsonPropertyName("visual_y")]   public float VisualY   { get; set; } = 0f;
+
     [JsonIgnore]
     public SkinCategory Cat =>
         Enum.TryParse<SkinCategory>(Category, true, out var c) ? c : SkinCategory.Player;
