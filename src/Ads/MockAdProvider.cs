@@ -20,6 +20,10 @@ public sealed class MockAdProvider : IAdProvider
 
     public bool IsRealAds => false;
 
+    public bool IsRewardedReady => true;   // giả lập luôn sẵn sàng
+
+    public void PreloadRewarded() { }      // giả lập không cần nạp
+
     public void Initialize()
         => GD.Print("[Ads] Dùng GIẢ LẬP quảng cáo (chưa có plugin AdMob / đang chạy desktop).");
 

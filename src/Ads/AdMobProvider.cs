@@ -34,6 +34,13 @@ public sealed class AdMobProvider : IAdProvider
 
     public bool IsRealAds => true;
 
+    public bool IsRewardedReady => _rewarded != null;
+
+    public void PreloadRewarded()
+    {
+        if (_rewarded == null) LoadRewarded();
+    }
+
     public void Initialize()
     {
         // Khai thiết bị test (nếu có) → máy bạn ra quảng cáo test, xem an toàn không bị ban.

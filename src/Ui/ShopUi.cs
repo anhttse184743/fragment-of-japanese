@@ -1502,6 +1502,14 @@ public partial class ShopUi : CanvasLayer
         var ad = AdManager.Instance;
         if (ad == null)           { ShowFeedback("Hệ thống quảng cáo chưa sẵn sàng", false); return; }
         if (!ad.CanWatchRewarded) { ShowFeedback("Bạn đã hết lượt xem hôm nay", false);      return; }
+        // QC thật: nếu chưa nạp xong sẽ không hiện gì → báo cho người chơi thay vì im lặng,
+        // đồng thời thử nạp lại để lần bấm sau có thể có quảng cáo.
+        if (ad.IsRealAds && !ad.IsRewardedReady)
+        {
+            ad.PreloadRewarded();
+            ShowFeedback("Hiện tại không có quảng cáo, thử lại sau", false);
+            return;
+        }
         ad.WatchRewardedForChest();
     }
 

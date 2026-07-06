@@ -45,6 +45,10 @@ public partial class AdManager : CanvasLayer
     public int  DailyRewardCap   => AdConfig.DailyRewardCap;
     public bool CanWatchRewarded => !_lastRewardDate.Equals(Today) || RewardsToday < AdConfig.DailyRewardCap;
     public bool IsRealAds        => _provider?.IsRealAds ?? false;
+    /// <summary>Đã nạp sẵn quảng cáo-thưởng chưa (bấm là hiện ngay). Mock luôn true.</summary>
+    public bool IsRewardedReady  => _provider?.IsRewardedReady ?? false;
+    /// <summary>Thử nạp trước quảng cáo-thưởng (khi chưa sẵn sàng, để lần bấm sau có ad).</summary>
+    public void PreloadRewarded() => _provider?.PreloadRewarded();
 
     private static string Today => DateTime.Now.ToString("yyyy-MM-dd");
 

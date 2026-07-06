@@ -13,6 +13,12 @@ public interface IAdProvider
     /// <summary>True nếu là quảng cáo thật (AdMob); false nếu giả lập.</summary>
     bool IsRealAds { get; }
 
+    /// <summary>True nếu đã nạp sẵn 1 quảng cáo-thưởng, bấm là hiện ngay. (Mock luôn true.)</summary>
+    bool IsRewardedReady { get; }
+
+    /// <summary>Yêu cầu nạp trước 1 quảng cáo-thưởng (gọi lại khi lần trước nạp lỗi).</summary>
+    void PreloadRewarded();
+
     /// <summary>Khởi tạo SDK + nạp trước (preload) interstitial/rewarded.</summary>
     void Initialize();
 

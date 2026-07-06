@@ -44,20 +44,25 @@ public partial class VoiceRecognizer : Node
 		AudioServer.SetBusName(_busIdx, "CloudCapture");
 		_capture = new AudioEffectCapture();
 		AudioServer.AddBusEffect(_busIdx, _capture);
-		
-		if (MuteMicBus) AudioServer.SetBusVolumeDb(_busIdx, -80f);
+
+		// LUÔN mute bus thu: chỉ dùng để lấy mẫu âm gửi lên server, KHÔNG phát ngược ra loa
+		// (nếu không sẽ nghe tiếng mic hú/ồn). AudioEffectCapture vẫn lấy được mẫu đầy đủ.
+		AudioServer.SetBusVolumeDb(_busIdx, -80f);
 
 		_micPlayer = new AudioStreamPlayer();
 		_micPlayer.Stream = new AudioStreamMicrophone();
 		_micPlayer.Bus = "CloudCapture";
 		AddChild(_micPlayer);
-		_micPlayer.Play();
+		// KHÔNG Play() ở đây: chỉ bật mic khi người chơi GIỮ nút nói (push-to-talk).
 	}
 
 	public void StartListening(List<VocabularyEntry> pool)
 	{
 		if (pool != null)
 			_candidates = new List<VocabularyEntry>(pool);
+
+		// Bật mic đúng lúc bắt đầu nói (mic chỉ hoạt động khi đang giữ nút).
+		if (_micPlayer != null && !_micPlayer.Playing) _micPlayer.Play();
 
 		_capture.ClearBuffer();
 		_recordedFrames.Clear();
@@ -79,10 +84,13 @@ public partial class VoiceRecognizer : Node
 	{
 		if (!_listening) return;
 		_listening = false;
-		
+
 		// Flush buffer
 		int avail = _capture.GetFramesAvailable();
 		if (avail > 0) _recordedFrames.AddRange(_capture.GetBuffer(avail));
+
+		// Tắt mic ngay khi nhả nút — mic không còn hoạt động ngoài lúc đang nói.
+		if (_micPlayer != null && _micPlayer.Playing) _micPlayer.Stop();
 
 		if (string.IsNullOrEmpty(ApiClient.Instance?.AccessToken))
 		{
