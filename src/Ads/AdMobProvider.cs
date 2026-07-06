@@ -36,10 +36,16 @@ public sealed class AdMobProvider : IAdProvider
 
     public void Initialize()
     {
+        // Khai thiết bị test (nếu có) → máy bạn ra quảng cáo test, xem an toàn không bị ban.
+        var cfg = new RequestConfiguration();
+        cfg.TestDeviceIds.Add(RequestConfiguration.DeviceIdEmulator);   // máy ảo luôn ra ad test
+        foreach (var id in AdConfig.TestDeviceIds)
+            if (!string.IsNullOrEmpty(id)) cfg.TestDeviceIds.Add(id);
+        MobileAds.SetRequestConfiguration(cfg);
+
         MobileAds.Initialize();
-        LoadInterstitial();
         LoadRewarded();
-        GD.Print("[Ads] AdMob khởi tạo (ID THỬ NGHIỆM của Google).");
+        GD.Print($"[Ads] AdMob khởi tạo (ID THẬT). Test devices: {AdConfig.TestDeviceIds.Length}.");
     }
 
     // ───────── Banner ─────────

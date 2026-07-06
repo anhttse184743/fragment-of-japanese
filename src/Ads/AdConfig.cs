@@ -25,6 +25,19 @@ public static class AdConfig
     public const string AndroidBannerId       = "ca-app-pub-3940256099942544/6300978111";
     public const string AndroidInterstitialId = "ca-app-pub-3940256099942544/1033173712";
 
+    // ───────── Thiết bị TEST (tự xem an toàn, không bị ban) ─────────
+    /// <summary>
+    /// Mã thiết bị test: khi có, điện thoại của bạn sẽ nhận QUẢNG CÁO TEST dù dùng ID thật
+    /// → tự xem/bấm thoải mái, không tính doanh thu, KHÔNG bị ban.
+    /// Cách lấy: chạy game 1 lần trên máy, xem logcat dòng
+    ///   "Use ... setTestDeviceIds(Arrays.asList(\"ABC123...\")) to get test ads"
+    /// rồi dán mã "ABC123..." vào mảng dưới.
+    /// </summary>
+    public static readonly string[] TestDeviceIds =
+    {
+        // "DÁN_MÃ_THIẾT_BỊ_CỦA_BẠN_VÀO_ĐÂY",
+    };
+
     // ───────── Tinh chỉnh gameplay/kinh tế ─────────
     /// <summary>Số lần xem quảng cáo-thưởng tối đa mỗi ngày (khớp mockup "1–5" trong tab Nạp).</summary>
     public const int DailyRewardCap = 5;
