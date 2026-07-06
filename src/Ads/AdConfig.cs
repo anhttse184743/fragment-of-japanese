@@ -12,13 +12,18 @@ namespace FragmentOfJapanese.Ads;
 /// </summary>
 public static class AdConfig
 {
-    // ───────── ID thử nghiệm của Google ─────────
-    /// <summary>App ID test (meta-data com.google.android.gms.ads.APPLICATION_ID trong Manifest).</summary>
-    public const string AndroidAppId = "ca-app-pub-3940256099942544~3347511713";
+    // ───────── ID THẬT (AdMob của FOJ) ─────────
+    /// <summary>App ID thật (meta-data com.google.android.gms.ads.APPLICATION_ID trong Manifest).</summary>
+    public const string AndroidAppId = "ca-app-pub-1042984115395141~5427628638";
 
+    /// <summary>Rewarded THẬT — dùng cho rương xem quảng cáo nhận thưởng.</summary>
+    public const string AndroidRewardedId      = "ca-app-pub-1042984115395141/8385834009";
+
+    // Banner/Interstitial hiện KHÔNG dùng trong game (đã bỏ) → giữ ID test của Google
+    // để không request quảng cáo thật ở các định dạng chưa tạo. Nếu sau này dùng, tạo đơn vị
+    // riêng trong AdMob rồi thay 2 dòng dưới.
     public const string AndroidBannerId       = "ca-app-pub-3940256099942544/6300978111";
     public const string AndroidInterstitialId = "ca-app-pub-3940256099942544/1033173712";
-    public const string AndroidRewardedId      = "ca-app-pub-3940256099942544/5224354917";
 
     // ───────── Tinh chỉnh gameplay/kinh tế ─────────
     /// <summary>Số lần xem quảng cáo-thưởng tối đa mỗi ngày (khớp mockup "1–5" trong tab Nạp).</summary>
