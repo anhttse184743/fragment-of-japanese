@@ -54,10 +54,10 @@ public partial class VoiceRecognizer : Node
 		_micPlayer.Play();
 	}
 
-	public void StartListening(int lesson)
+	public void StartListening(List<VocabularyEntry> pool)
 	{
-		if (JapaneseDB.Instance != null)
-			_candidates = new List<VocabularyEntry>(JapaneseDB.Instance.GetHiraganaReadable(lesson));
+		if (pool != null)
+			_candidates = new List<VocabularyEntry>(pool);
 
 		_capture.ClearBuffer();
 		_recordedFrames.Clear();
@@ -84,19 +84,37 @@ public partial class VoiceRecognizer : Node
 		int avail = _capture.GetFramesAvailable();
 		if (avail > 0) _recordedFrames.AddRange(_capture.GetBuffer(avail));
 
-		if (string.IsNullOrEmpty(GroqApiKey))
+		if (string.IsNullOrEmpty(ApiClient.Instance?.AccessToken))
 		{
-			GD.PushError("[Voice] Thiếu Groq API Key! Hãy nhập vào thuộc tính GroqApiKey của Node VoiceRecognizer.");
+			GD.PushError("[Voice] Chưa đăng nhập — không gọi được nhận diện giọng nói.");
+			EmitSignal(SignalName.WordRecognized, "...", false, "", 0f);
 			return;
 		}
 
 		if (_recordedFrames.Count == 0)
 		{
 			GD.PushWarning("[Voice] Không thu được âm thanh nào.");
+			EmitSignal(SignalName.WordRecognized, "...", false, "", 0f);
 			return;
 		}
 
-		GD.Print($"[Voice] Đã ghi âm xong ({_recordedFrames.Count} frames). Đang mã hóa và gửi lên Groq...");
+		// Calculate volume (RMS) to prevent sending pure silence/noise to Groq
+		float energy = 0f;
+		foreach (var f in _recordedFrames)
+		{
+			float mono = (f.X + f.Y) * 0.5f;
+			energy += mono * mono;
+		}
+		float rms = Mathf.Sqrt(energy / _recordedFrames.Count);
+		
+		if (rms < 0.005f) // Ngưỡng âm thanh rất nhỏ (tiếng xì của mic)
+		{
+			GD.Print($"[Voice] Âm thanh quá nhỏ (RMS: {rms:F4}), bỏ qua API call để tránh AI nhận diện bậy bạ.");
+			EmitSignal(SignalName.WordRecognized, "[Im lặng]", false, "", 0f);
+			return;
+		}
+
+		GD.Print($"[Voice] Đã ghi âm xong ({_recordedFrames.Count} frames, RMS: {rms:F4}). Đang mã hóa và gửi lên Groq...");
 		byte[] wavBytes = GenerateWavBytes(_recordedFrames, (int)AudioServer.GetMixRate());
 		SendToGroq(wavBytes);
 	}
@@ -147,24 +165,27 @@ public partial class VoiceRecognizer : Node
 
 	private void SendToGroq(byte[] wavBytes)
 	{
+		// Gửi lên BACKEND (không gửi thẳng Groq) — server giữ GROQ_API_KEY, client chỉ đính JWT.
 		string boundary = "----GodotBoundary" + GD.Randi().ToString();
+		string url = ApiClient.BaseUrl + "/api/voice/transcribe";
+		string token = ApiClient.Instance?.AccessToken ?? "";
 		string[] headers = new string[]
 		{
-			$"Authorization: Bearer {GroqApiKey}",
+			$"Authorization: Bearer {token}",
 			$"Content-Type: multipart/form-data; boundary={boundary}"
 		};
 
 		var body = new List<byte>();
 
-		// Model param
-		body.AddRange(Encoding.UTF8.GetBytes($"--{boundary}\r\n"));
-		body.AddRange(Encoding.UTF8.GetBytes("Content-Disposition: form-data; name=\"model\"\r\n\r\n"));
-		body.AddRange(Encoding.UTF8.GetBytes("whisper-large-v3\r\n"));
-
-		// Language param
-		body.AddRange(Encoding.UTF8.GetBytes($"--{boundary}\r\n"));
-		body.AddRange(Encoding.UTF8.GetBytes("Content-Disposition: form-data; name=\"language\"\r\n\r\n"));
-		body.AddRange(Encoding.UTF8.GetBytes("ja\r\n"));
+		// Prompt param (gợi ý Whisper ra đúng từ; model/language/temperature do server đặt)
+		string promptWords = "";
+		foreach (var c in _candidates) promptWords += c.Kana + "、";
+		if (!string.IsNullOrEmpty(promptWords))
+		{
+			body.AddRange(Encoding.UTF8.GetBytes($"--{boundary}\r\n"));
+			body.AddRange(Encoding.UTF8.GetBytes("Content-Disposition: form-data; name=\"prompt\"\r\n\r\n"));
+			body.AddRange(Encoding.UTF8.GetBytes($"{promptWords}\r\n"));
+		}
 
 		// File param
 		body.AddRange(Encoding.UTF8.GetBytes($"--{boundary}\r\n"));
@@ -176,7 +197,7 @@ public partial class VoiceRecognizer : Node
 		// End boundary
 		body.AddRange(Encoding.UTF8.GetBytes($"--{boundary}--\r\n"));
 
-		_httpRequest.RequestRaw(API_URL, headers, HttpClient.Method.Post, body.ToArray());
+		_httpRequest.RequestRaw(url, headers, HttpClient.Method.Post, body.ToArray());
 	}
 
 	private void OnRequestCompleted(long result, long responseCode, string[] headers, byte[] body)
@@ -193,9 +214,9 @@ public partial class VoiceRecognizer : Node
 		try
 		{
 			using var doc = JsonDocument.Parse(json);
-			if (doc.RootElement.TryGetProperty("text", out var t))
+			if (TryVoiceText(doc.RootElement, out var t))
 			{
-				rawText = t.GetString() ?? "";
+				rawText = t ?? "";
 			}
 		}
 		catch { }
@@ -203,9 +224,28 @@ public partial class VoiceRecognizer : Node
 		// Xóa khoảng trắng và dấu câu tiếng Nhật thông dụng
 		rawText = rawText.Replace(" ", "").Replace("、", "").Replace("。", "").Replace("？", "").Replace("！", "");
 		
+		// Lọc các từ do AI bị ảo giác (Whisper hallucinations trên đoạn audio tĩnh/nhiễu)
+		if (rawText.Contains("視聴") || rawText.Contains("字幕") || rawText.Contains("チャンネル登録") || rawText == "ん" || rawText == "あ")
+		{
+			GD.Print("[Voice] Bắt được AI hallucination, bỏ qua.");
+			rawText = "[Không rõ]";
+		}
+		
 		var (matched, id, sim) = Match(rawText);
 		GD.Print($"[Voice] Groq nghe: '{rawText}' | matched={matched} id={id} sim={sim*100:0.0}%");
 		EmitSignal(SignalName.WordRecognized, rawText, matched, id ?? "", sim);
+	}
+
+	/// <summary>Lấy text từ response BE (ApiResponse { data: { text } }) hoặc từ Groq trực tiếp ({ text }).</summary>
+	private static bool TryVoiceText(JsonElement root, out string text)
+	{
+		text = "";
+		if (root.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Object
+		    && data.TryGetProperty("text", out var t1) && t1.ValueKind == JsonValueKind.String)
+		{ text = t1.GetString() ?? ""; return true; }
+		if (root.TryGetProperty("text", out var t2) && t2.ValueKind == JsonValueKind.String)
+		{ text = t2.GetString() ?? ""; return true; }
+		return false;
 	}
 
 	private (bool, string, float) Match(string raw)
