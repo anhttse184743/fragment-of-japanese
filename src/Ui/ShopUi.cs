@@ -440,7 +440,7 @@ public partial class ShopUi : CanvasLayer
         var rate = new Button { Text = "Tỉ lệ %", CustomMinimumSize = new Vector2(100, 44) };
         UiKit.StyleButton(rate, new Color(0.25f, 0.18f, 0.13f, 1f), new Color(0.35f, 0.25f, 0.18f, 1f), UiKit.Accent, radius: 12);
         rate.AddThemeFontSizeOverride("font_size", 18);
-        rate.Pressed += () => { if (_gachaRateDialog != null) { PopulateGachaRateList(); _gachaRateDialog.Visible = true; } };
+        rate.Pressed += () => { if (_gachaRateDialog != null) { PopulateGachaRateList(isGold); _gachaRateDialog.Visible = true; } };
         topRow.AddChild(rate);
         bv.AddChild(topRow);
 
@@ -538,10 +538,11 @@ public partial class ShopUi : CanvasLayer
 
         var packsScroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
         packsScroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled;
-        var packsGrid = new GridContainer { Columns = 4 };
+        
+        var packsGrid = new HFlowContainer { Alignment = FlowContainer.AlignmentMode.Center };
         packsGrid.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-        packsGrid.AddThemeConstantOverride("h_separation", 12);
-        packsGrid.AddThemeConstantOverride("v_separation", 12);
+        packsGrid.AddThemeConstantOverride("h_separation", 32);
+        packsGrid.AddThemeConstantOverride("v_separation", 32);
         packsScroll.AddChild(packsGrid);
         v.AddChild(packsScroll);
 
@@ -587,7 +588,7 @@ public partial class ShopUi : CanvasLayer
         if (GodotObject.IsInstanceValid(btn)) btn.Disabled = false;
     }
 
-    private async System.Threading.Tasks.Task FillPacks(GridContainer grid)
+    private async System.Threading.Tasks.Task FillPacks(Container grid)
     {
         var packs = Shop.Instance != null ? await Shop.Instance.GetPacksAsync() : new List<Shop.PaymentPack>();
         if (!GodotObject.IsInstanceValid(grid)) return;
@@ -607,24 +608,41 @@ public partial class ShopUi : CanvasLayer
 
     private Control MakePackCard(Shop.PaymentPack p)
     {
-        var card = new Button { CustomMinimumSize = new Vector2(190, 250), TooltipText = p.Description };
-        card.AddThemeStyleboxOverride("normal",  UiKit.Box(new Color(0.26f, 0.18f, 0.13f, 0.9f), 16, UiKit.MaThach, 2, 8, 8));
-        card.AddThemeStyleboxOverride("hover",   UiKit.Box(UiKit.Fade(UiKit.MaThach, 0.18f), 16, UiKit.MaThach, 2, 8, 8));
-        card.AddThemeStyleboxOverride("pressed", UiKit.Box(UiKit.Fade(UiKit.MaThach, 0.24f), 16, UiKit.MaThach, 2, 8, 8));
+        string imgPath = $"res://assets/sprites/ui/shop_ui_advance/package/{p.CurrencyAmount} pack.png";
+        bool hasImg = ResourceLoader.Exists(imgPath);
+
+        var card = new Button { CustomMinimumSize = new Vector2(285, 405), TooltipText = p.Description };
+        
+        if (hasImg)
+        {
+            var normal  = UiKit.Box(new Color(0, 0, 0, 0), 16, UiKit.Fade(UiKit.MaThach, 0.6f), 2);
+            var hover   = UiKit.Box(new Color(1, 1, 1, 0.12f), 16, UiKit.MaThach, 3);
+            var pressed = UiKit.Box(new Color(0, 0, 0, 0.4f), 16, UiKit.Fade(UiKit.MaThach, 0.8f), 2);
+            var focus   = new StyleBoxEmpty();
+            
+            card.AddThemeStyleboxOverride("normal", normal);
+            card.AddThemeStyleboxOverride("hover", hover);
+            card.AddThemeStyleboxOverride("pressed", pressed);
+            card.AddThemeStyleboxOverride("focus", focus);
+        }
+        else
+        {
+            card.AddThemeStyleboxOverride("normal",  UiKit.Box(new Color(0.26f, 0.18f, 0.13f, 0.9f), 16, UiKit.MaThach, 2, 8, 8));
+            card.AddThemeStyleboxOverride("hover",   UiKit.Box(UiKit.Fade(UiKit.MaThach, 0.18f), 16, UiKit.MaThach, 2, 8, 8));
+            card.AddThemeStyleboxOverride("pressed", UiKit.Box(UiKit.Fade(UiKit.MaThach, 0.24f), 16, UiKit.MaThach, 2, 8, 8));
+        }
 
         var v = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
         v.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        v.AddThemeConstantOverride("separation", 8);
+        if (!hasImg) v.AddThemeConstantOverride("separation", 8);
 
-        // Ảnh gói nạp theo mệnh giá (res://.../package/{amount} pack.png).
-        string imgPath = $"res://assets/sprites/ui/shop_ui_advance/package/{p.CurrencyAmount} pack.png";
-        if (ResourceLoader.Exists(imgPath))
+        if (hasImg)
         {
             var img = new TextureRect
             {
                 Texture = GD.Load<Texture2D>(imgPath),
-                CustomMinimumSize = new Vector2(0, 120),
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                SizeFlagsVertical = Control.SizeFlags.ExpandFill,
                 ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
                 StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
             };
@@ -640,25 +658,25 @@ public partial class ShopUi : CanvasLayer
             al.AddThemeColorOverride("font_color", UiKit.MaThach);
             amount.AddChild(al);
             v.AddChild(amount);
+
+            if (p.BonusPercent > 0)
+            {
+                var bonus = new Label { Text = $"+{p.BonusPercent}%", HorizontalAlignment = HorizontalAlignment.Center };
+                bonus.AddThemeFontSizeOverride("font_size", 16);
+                bonus.AddThemeColorOverride("font_color", UiKit.BuyGreenHi);
+                v.AddChild(bonus);
+            }
+
+            var name = new Label { Text = p.Name, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+            name.AddThemeFontSizeOverride("font_size", 16);
+            name.AddThemeColorOverride("font_color", new Color(0.8f, 0.75f, 0.7f));
+            v.AddChild(name);
+
+            var price = new Label { Text = $"{(p.PriceVnd ?? 0):N0}đ", HorizontalAlignment = HorizontalAlignment.Center };
+            price.AddThemeFontSizeOverride("font_size", 20);
+            price.AddThemeColorOverride("font_color", new Color(0.95f, 0.9f, 0.8f));
+            v.AddChild(price);
         }
-
-        if (p.BonusPercent > 0)
-        {
-            var bonus = new Label { Text = $"+{p.BonusPercent}%", HorizontalAlignment = HorizontalAlignment.Center };
-            bonus.AddThemeFontSizeOverride("font_size", 16);
-            bonus.AddThemeColorOverride("font_color", UiKit.BuyGreenHi);
-            v.AddChild(bonus);
-        }
-
-        var name = new Label { Text = p.Name, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
-        name.AddThemeFontSizeOverride("font_size", 16);
-        name.AddThemeColorOverride("font_color", new Color(0.8f, 0.75f, 0.7f));
-        v.AddChild(name);
-
-        var price = new Label { Text = $"{(p.PriceVnd ?? 0):N0}đ", HorizontalAlignment = HorizontalAlignment.Center };
-        price.AddThemeFontSizeOverride("font_size", 20);
-        price.AddThemeColorOverride("font_color", new Color(0.95f, 0.9f, 0.8f));
-        v.AddChild(price);
 
         card.AddChild(v);
         IgnoreMouse(v);
@@ -1391,60 +1409,56 @@ public partial class ShopUi : CanvasLayer
         scroll.AddChild(_gachaRateList);
     }
 
-    private void PopulateGachaRateList()
+    /// <summary>Bảng tỉ lệ THẬT theo banner (khớp loot-table server SkinService).</summary>
+    private void PopulateGachaRateList(bool isGold)
     {
-        if (_gachaRateList == null || ItemDatabase.Instance == null) return;
+        if (_gachaRateList == null) return;
         foreach (Node c in _gachaRateList.GetChildren()) c.QueueFree();
 
-        var itemsByRarity = new System.Collections.Generic.Dictionary<Rarity, System.Collections.Generic.List<ItemEntry>>();
-        foreach (var r in new[] { Rarity.Legendary, Rarity.Epic, Rarity.Rare, Rarity.Common })
-            itemsByRarity[r] = new System.Collections.Generic.List<ItemEntry>();
-
-        foreach (var item in ItemDatabase.Instance.Items.Values)
-            itemsByRarity[item.Rarity].Add(item);
-
-        var rates = new System.Collections.Generic.Dictionary<Rarity, string>
-        {
-            { Rarity.Legendary, "3%" },
-            { Rarity.Epic, "12%" },
-            { Rarity.Rare, "35%" },
-            { Rarity.Common, "50%" }
-        };
-
-        foreach (var rarity in new[] { Rarity.Legendary, Rarity.Epic, Rarity.Rare, Rarity.Common })
-        {
-            var list = itemsByRarity[rarity];
-            if (list.Count == 0) continue;
-
-            var rColor = UiKit.RarityColor(rarity);
-
-            var rHead = new Label { Text = $"{UiKit.RarityName(rarity)} - {rates[rarity]}" };
-            rHead.AddThemeFontSizeOverride("font_size", 24);
-            rHead.AddThemeColorOverride("font_color", rColor);
-            _gachaRateList.AddChild(rHead);
-
-            var grid = new GridContainer { Columns = 1 };
-            grid.AddThemeConstantOverride("h_separation", 16);
-            grid.AddThemeConstantOverride("v_separation", 12);
-            _gachaRateList.AddChild(grid);
-
-            foreach (var item in list)
+        // (Tên nhóm, tỉ lệ %, màu). Khớp SilverTable/GoldTable phía server.
+        (string label, int weight, Color color)[] rows = isGold
+            ? new[]
             {
-                var h = new HBoxContainer();
-                h.AddThemeConstantOverride("separation", 12);
-                
-                var icon = UiKit.ItemIcon(item, rColor, 56);
-                h.AddChild(icon);
-
-                var v = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
-                var name = new Label { Text = item.NameVi };
-                name.AddThemeFontSizeOverride("font_size", 20);
-                name.AddThemeColorOverride("font_color", Colors.White);
-                v.AddChild(name);
-                h.AddChild(v);
-
-                grid.AddChild(h);
+                ("Skin Sakura (player_sakura)",              1,  UiKit.RarityColor(Rarity.Legendary)),
+                ("Skin Sakura hiếm (đòn/tia/hoa ×4)",        5,  UiKit.RarityColor(Rarity.Epic)),
+                ("Skin Sakura (matcha, mochi)",              10, UiKit.RarityColor(Rarity.Epic)),
+                ("Skin Sakura (cherry, dango)",              12, UiKit.RarityColor(Rarity.Epic)),
+                ("Skin Sakura (bento, flute, geta)",         15, UiKit.RarityColor(Rarity.Epic)),
+                ("Cuộn Từ Vựng ×3–10",                       25, UiKit.MaThach),
+                ("Vàng 500–1500",                            33, UiKit.Gold),
             }
+            : new[]
+            {
+                ("Skin Hero (đầy bảo hiểm chắc ra)",         3,  UiKit.RarityColor(Rarity.Legendary)),
+                ("Skin Summer nổi bật (×7)",                 12, UiKit.RarityColor(Rarity.Rare)),
+                ("Skin Summer thường (×21)",                 22, UiKit.RarityColor(Rarity.Rare)),
+                ("Cuộn Từ Vựng ×2–5",                        25, UiKit.MaThach),
+                ("Vàng 100–500",                             33, UiKit.Gold),
+                ("Chìa Khóa Vàng ×1",                        5,  UiKit.Gold),
+            };
+
+        var note = new Label { Text = $"Bảo hiểm: đủ 80 lượt chắc chắn ra {(isGold ? "Skin Sakura" : "Skin Hero")}." };
+        note.AddThemeFontSizeOverride("font_size", 18);
+        note.AddThemeColorOverride("font_color", UiKit.WoodTextDim);
+        note.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+        _gachaRateList.AddChild(note);
+
+        foreach (var (label, weight, color) in rows)
+        {
+            var h = new HBoxContainer();
+            h.AddThemeConstantOverride("separation", 12);
+
+            var name = new Label { Text = label, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+            name.AddThemeFontSizeOverride("font_size", 20);
+            name.AddThemeColorOverride("font_color", Colors.White);
+            h.AddChild(name);
+
+            var pct = new Label { Text = $"{weight}%" };
+            pct.AddThemeFontSizeOverride("font_size", 22);
+            pct.AddThemeColorOverride("font_color", color);
+            h.AddChild(pct);
+
+            _gachaRateList.AddChild(h);
         }
     }
 
