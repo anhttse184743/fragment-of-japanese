@@ -607,7 +607,7 @@ public partial class ShopUi : CanvasLayer
 
     private Control MakePackCard(Shop.PaymentPack p)
     {
-        var card = new Button { CustomMinimumSize = new Vector2(190, 180), TooltipText = p.Description };
+        var card = new Button { CustomMinimumSize = new Vector2(190, 250), TooltipText = p.Description };
         card.AddThemeStyleboxOverride("normal",  UiKit.Box(new Color(0.26f, 0.18f, 0.13f, 0.9f), 16, UiKit.MaThach, 2, 8, 8));
         card.AddThemeStyleboxOverride("hover",   UiKit.Box(UiKit.Fade(UiKit.MaThach, 0.18f), 16, UiKit.MaThach, 2, 8, 8));
         card.AddThemeStyleboxOverride("pressed", UiKit.Box(UiKit.Fade(UiKit.MaThach, 0.24f), 16, UiKit.MaThach, 2, 8, 8));
@@ -616,14 +616,31 @@ public partial class ShopUi : CanvasLayer
         v.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         v.AddThemeConstantOverride("separation", 8);
 
-        var amount = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
-        amount.AddThemeConstantOverride("separation", 6);
-        AddIcon(amount, UiKit.AetherIconPath, 32);
-        var al = new Label { Text = $"{p.CurrencyAmount:N0}" };
-        al.AddThemeFontSizeOverride("font_size", 26);
-        al.AddThemeColorOverride("font_color", UiKit.MaThach);
-        amount.AddChild(al);
-        v.AddChild(amount);
+        // Ảnh gói nạp theo mệnh giá (res://.../package/{amount} pack.png).
+        string imgPath = $"res://assets/sprites/ui/shop_ui_advance/package/{p.CurrencyAmount} pack.png";
+        if (ResourceLoader.Exists(imgPath))
+        {
+            var img = new TextureRect
+            {
+                Texture = GD.Load<Texture2D>(imgPath),
+                CustomMinimumSize = new Vector2(0, 120),
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+                StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+            };
+            v.AddChild(img);
+        }
+        else
+        {
+            var amount = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+            amount.AddThemeConstantOverride("separation", 6);
+            AddIcon(amount, UiKit.AetherIconPath, 32);
+            var al = new Label { Text = $"{p.CurrencyAmount:N0}" };
+            al.AddThemeFontSizeOverride("font_size", 26);
+            al.AddThemeColorOverride("font_color", UiKit.MaThach);
+            amount.AddChild(al);
+            v.AddChild(amount);
+        }
 
         if (p.BonusPercent > 0)
         {
