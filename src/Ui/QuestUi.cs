@@ -69,11 +69,10 @@ public partial class QuestUi : CanvasLayer
 
     private void RefreshIfOpen() { if (_root != null && _root.Visible) Refresh(); }
 
-    /// <summary>EXP thưởng nhiệm vụ — cộng cho người chơi (các thưởng khác đã do QuestManager phát).</summary>
+    /// <summary>Thưởng nhiệm vụ (EXP/Vàng/chìa) do SERVER cộng khi claim; QuestManager đã sync lại.
+    /// KHÔNG cộng EXP ở đây nữa để tránh nhân đôi.</summary>
     private void OnClaimed(QuestEntry q)
     {
-        if (q?.Reward != null && q.Reward.Exp > 0)
-            (GetTree().GetFirstNodeInGroup("player") as PlayerNode)?.GainExp(q.Reward.Exp);
         RefreshIfOpen();
     }
 
@@ -246,6 +245,8 @@ public partial class QuestUi : CanvasLayer
         if (r.Exp     != 0) parts.Add($"+{r.Exp} EXP");
         if (r.Gold    != 0) parts.Add($"+{r.Gold} Vàng");
         if (r.MaThach != 0) parts.Add($"+{r.MaThach} Ma Thạch");
+        if (r.SilverKeys > 0) parts.Add($"+{r.SilverKeys} Chìa Bạc");
+        if (r.GoldenKeys > 0) parts.Add($"+{r.GoldenKeys} Chìa Vàng");
         if (!string.IsNullOrEmpty(r.ItemId) && r.ItemCount > 0) parts.Add($"+{r.ItemCount} {r.ItemId}");
         return parts.Count > 0 ? "· " + string.Join("  ", parts) : "";
     }
