@@ -16,6 +16,9 @@ public partial class ApiClient : Node
 {
     public static ApiClient Instance { get; private set; }
 
+    /// <summary>Phát khi một request thất bại do mạng (không tới được server) → ConnectivityGuard kiểm tra ngay.</summary>
+    public static event Action NetworkErrorDetected;
+
     private readonly System.Net.Http.HttpClient _http;
     public string AccessToken { get; private set; }
     
@@ -83,6 +86,7 @@ public partial class ApiClient : Node
             GD.PushError($"[ApiClient] PostAsync {endpoint} FAILED: {ex.GetType().Name}: {ex.Message}");
             if (ex.InnerException != null)
                 GD.PushError($"[ApiClient]   Inner: {ex.InnerException.GetType().Name}: {ex.InnerException.Message}");
+            NetworkErrorDetected?.Invoke();
             return new HttpResponseMessage(System.Net.HttpStatusCode.ServiceUnavailable);
         }
     }
@@ -96,6 +100,7 @@ public partial class ApiClient : Node
         catch (Exception ex)
         {
             GD.PushError($"[ApiClient] PutAsync failed: {ex.Message}");
+            NetworkErrorDetected?.Invoke();
             return new HttpResponseMessage(System.Net.HttpStatusCode.ServiceUnavailable);
         }
     }
@@ -109,6 +114,7 @@ public partial class ApiClient : Node
         catch (Exception ex)
         {
             GD.PushError($"[ApiClient] GetAsync failed: {ex.Message}");
+            NetworkErrorDetected?.Invoke();
             return new HttpResponseMessage(System.Net.HttpStatusCode.ServiceUnavailable);
         }
     }

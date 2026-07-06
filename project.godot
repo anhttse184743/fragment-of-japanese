@@ -23,6 +23,7 @@ driver/enable_input=true
 
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 ApiClient="*res://src/Autoloads/ApiClient.cs"
+ConnectivityGuard="*res://src/Autoloads/ConnectivityGuard.cs"
 AccountManager="*res://src/Autoloads/AccountManager.cs"
 ItemDatabase="*res://src/Autoloads/ItemDatabase.cs"
 JapaneseDB="*res://src/Autoloads/JapaneseDB.cs"
