@@ -32,10 +32,49 @@ public partial class Player : CharacterBody3D, IDamageable
 
 		if (Inventory.Instance != null) Inventory.Instance.ItemUsed += OnItemUsed;
 
-		_ = SyncFromServerAsync();
+		_ = InitFromServerAsync();
 	}
 
-	/// <summary>Áp hiệu ứng khi dùng vật phẩm tiêu hao (máu/mana là giá trị runtime → xử lý ở client).</summary>
+	private async System.Threading.Tasks.Task InitFromServerAsync()
+	{
+		await SyncFromServerAsync();   // Level/Exp/MaxExp
+		await LoadVitalsAsync();       // Máu/Mana/Thể lực đã lưu (bền qua phiên)
+	}
+
+	// ───── Máu/Mana/Thể lực bền qua phiên (lưu server) ─────
+	private int _lastSavedHp = -1, _lastSavedMana = -1, _lastSavedStamina = -1;
+	private float _vitalsSaveTimer;
+
+	private class VitalsDto { public int? Hp { get; set; } public int? Mana { get; set; } public int? Stamina { get; set; } }
+
+	/// <summary>Nạp Máu/Mana/Thể lực đã lưu; null = giữ đầy (mặc định).</summary>
+	private async System.Threading.Tasks.Task LoadVitalsAsync()
+	{
+		if (Data == null || string.IsNullOrEmpty(Autoloads.ApiClient.Instance.AccessToken)) return;
+		var res = await Autoloads.ApiClient.Instance.GetAsync("/api/player/vitals");
+		if (!res.IsSuccessStatusCode) return;
+		var data = await Autoloads.ApiClient.Instance.ReadAsAsync<Autoloads.AccountManager.ApiResponse<VitalsDto>>(res);
+		if (data?.Data == null) return;
+
+		if (data.Data.Hp.HasValue)      Data.Hp      = Mathf.Clamp(data.Data.Hp.Value,      1, Data.MaxHp);
+		if (data.Data.Mana.HasValue)    Data.Mana    = Mathf.Clamp(data.Data.Mana.Value,    0, Data.MaxMana);
+		if (data.Data.Stamina.HasValue) Data.Stamina = Mathf.Clamp(data.Data.Stamina.Value, 0, Data.MaxStamina);
+
+		_lastSavedHp = Data.Hp; _lastSavedMana = Data.Mana; _lastSavedStamina = Data.Stamina;
+		EmitSignal(SignalName.HpChanged,      Data.Hp,      Data.MaxHp);
+		EmitSignal(SignalName.ManaChanged,    Data.Mana,    Data.MaxMana);
+		EmitSignal(SignalName.StaminaChanged, Data.Stamina, Data.MaxStamina);
+	}
+
+	/// <summary>Lưu Máu/Mana/Thể lực hiện tại lên server (bền qua phiên).</summary>
+	public async System.Threading.Tasks.Task SaveVitalsAsync()
+	{
+		if (Data == null || string.IsNullOrEmpty(Autoloads.ApiClient.Instance.AccessToken)) return;
+		_lastSavedHp = Data.Hp; _lastSavedMana = Data.Mana; _lastSavedStamina = Data.Stamina;
+		await Autoloads.ApiClient.Instance.PostAsync("/api/player/vitals",
+			new { Hp = Data.Hp, Mana = Data.Mana, Stamina = Data.Stamina });
+	}
+
 	private void OnItemUsed(ItemEntry item)
 	{
 		switch (item.Effect)
@@ -44,17 +83,17 @@ public partial class Player : CharacterBody3D, IDamageable
 			case "mana":
 			case "heal_mana":     RestoreMana(item.Value);    break;
 			case "heal_stamina":  RestoreStamina(item.Value); break;
-			case "teleport":      TeleportToSpawn();          break;
+			case "teleport":      OpenFastTravel();           break;
 		}
 	}
 
-	/// <summary>Dịch chuyển về điểm hồi sinh (PlayerSpawn) trong cảnh hiện tại; không có thì về gốc toạ độ (làng).</summary>
-	private void TeleportToSpawn()
+	/// <summary>Mở giao diện Fast Travel để dịch chuyển giữa các map.</summary>
+	private void OpenFastTravel()
 	{
-		var spawn = GetTree().Root.FindChild("PlayerSpawn", recursive: true, owned: false) as Node3D;
-		GlobalPosition = spawn?.GlobalPosition ?? Vector3.Zero;
-		Velocity = Vector3.Zero;
+		var ui = new FragmentOfJapanese.Ui.FastTravelUi();
+		GetTree().Root.AddChild(ui);
 	}
+
 
 	public async System.Threading.Tasks.Task SyncFromServerAsync()
 	{
@@ -84,6 +123,7 @@ public partial class Player : CharacterBody3D, IDamageable
 	{
 		if (Inventory.Instance != null) Inventory.Instance.ItemUsed -= OnItemUsed;
 		SaveData();
+		_ = SaveVitalsAsync();   // best-effort lưu máu/mana/thể lực khi rời scene
 	}
 
 	private float _sinceDamage;
@@ -92,7 +132,18 @@ public partial class Player : CharacterBody3D, IDamageable
 
 	public override void _Process(double delta)
 	{
-		if (Data == null || Data.Hp <= 0) return;
+		if (Data == null) return;
+
+		// Lưu Máu/Mana/Thể lực định kỳ (5s) nếu có thay đổi → bền qua phiên, không hồi đầy khi relog.
+		_vitalsSaveTimer += (float)delta;
+		if (_vitalsSaveTimer >= 5f)
+		{
+			_vitalsSaveTimer = 0f;
+			if (Data.Hp != _lastSavedHp || Data.Mana != _lastSavedMana || Data.Stamina != _lastSavedStamina)
+				_ = SaveVitalsAsync();
+		}
+
+		if (Data.Hp <= 0) return;
 
 		// Hồi máu khi không bị đánh đủ lâu
 		if (Data.Hp < Data.MaxHp)
