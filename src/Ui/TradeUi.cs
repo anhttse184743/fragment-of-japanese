@@ -10,10 +10,6 @@ namespace FragmentOfJapanese.Ui;
 /// </summary>
 public partial class TradeUi : Control
 {
-    private static readonly Dictionary<string, (string nameVi, int goldPer)> _rates = new()
-    {
-        { "item_goblin_ear", ("Tai Goblin", 25) },
-    };
 
     private VBoxContainer _listContainer;
     private Label         _feedbackLabel;
@@ -115,13 +111,17 @@ public partial class TradeUi : Control
             return;
         }
 
+        // Chỉ đổi Tai Goblin lấy Vàng (giá theo DB sell_price). Cuộn từ vựng đổi chìa ở ScrollTradeUi.
         bool hasAny = false;
-        foreach (var (itemId, (nameVi, goldPer)) in _rates)
+        const string earId = "item_goblin_ear";
+        int earQty = inv.CountOf(earId);
+        if (earQty > 0)
         {
-            int qty = inv.CountOf(itemId);
-            if (qty <= 0) continue;
+            int goldPer = Shop.Instance?.GetSellPrice(earId) ?? 20;
+            if (goldPer <= 0) goldPer = 20;
+            string nameVi = ItemDatabase.Instance?.Get(earId)?.NameVi ?? "Tai Goblin";
             hasAny = true;
-            _listContainer.AddChild(MakeRow(itemId, nameVi, goldPer, qty));
+            _listContainer.AddChild(MakeRow(earId, nameVi, goldPer, earQty));
         }
 
         if (!hasAny)

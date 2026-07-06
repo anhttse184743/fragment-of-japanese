@@ -62,9 +62,18 @@ public partial class Shop : Node
 
     private class ItemPriceDto
     {
-        public string StringId { get; set; }
-        public int    BuyPrice { get; set; }
+        public string StringId  { get; set; }
+        public int    BuyPrice  { get; set; }
+        public int    SellPrice { get; set; }
     }
+
+    // Giá bán lại (Vàng/cái) theo DB — nạp cùng SyncPricesAsync.
+    private readonly Dictionary<string, int> _sellPrices = new();
+
+    /// <summary>Giá bán lại của item (0 = không bán được).</summary>
+    public int GetSellPrice(string itemId) => _sellPrices.TryGetValue(itemId, out var v) ? v : 0;
+    /// <summary>Các item bán lại được (sell_price > 0).</summary>
+    public IEnumerable<string> SellableIds => _sellPrices.Keys;
 
     /// <summary>Lấy giá bán THẬT từ DB (server là nơi trừ tiền) và ghi đè giá trong shop.json,
     /// để giá hiển thị = giá thực trừ. shop.json chỉ còn quyết định bán item nào + bằng tiền gì.</summary>
@@ -78,13 +87,15 @@ public partial class Shop : Node
         var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<List<ItemPriceDto>>>(res);
         if (data?.Data == null) return;
 
+        _sellPrices.Clear();
         foreach (var dto in data.Data)
         {
             if (string.IsNullOrEmpty(dto.StringId)) continue;
             var listing = GetListing(dto.StringId);
-            if (listing != null) listing.Price = dto.BuyPrice;
+            if (listing != null) listing.Price = dto.BuyPrice;          // giá mua = DB
+            if (dto.SellPrice > 0) _sellPrices[dto.StringId] = dto.SellPrice;   // giá bán lại = DB
         }
-        GD.Print("[Shop] Đã đồng bộ giá bán từ DB.");
+        GD.Print($"[Shop] Đồng bộ giá từ DB: {data.Data.Count} item, {_sellPrices.Count} bán được.");
     }
 
     /// <summary>Mua <paramref name="qty"/> đơn vị: gọi API mua, nếu thành công thì trừ tiền ví và thêm vào túi.</summary>
