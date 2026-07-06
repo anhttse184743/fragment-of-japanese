@@ -106,6 +106,21 @@ public partial class Inventory : Node
             GD.PushWarning($"[Inventory] Grant '{itemId}' x{amount} thất bại: {(int)res.StatusCode}");
     }
 
+    /// <summary>Đổi Cuộn Từ Vựng lấy 1 chìa (server trừ cuộn + cộng chìa nguyên tử). Trả (ok, lỗi).</summary>
+    public async System.Threading.Tasks.Task<(bool ok, string error)> ExchangeScrollsAsync(string keyStringId)
+    {
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return (false, "Bạn cần đăng nhập.");
+
+        var res = await ApiClient.Instance.PostAsync("/api/inventory/exchange-scrolls", new { KeyStringId = keyStringId });
+        if (res.IsSuccessStatusCode)
+        {
+            await SyncAsync();   // lấy số cuộn + chìa thật từ server
+            return (true, null);
+        }
+        var err = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<object>>(res);
+        return (false, err?.Message ?? "Trao đổi thất bại.");
+    }
+
     public void RemoveOptimistic(string itemId, int amount = 1)
     {
         var stack = Find(itemId);

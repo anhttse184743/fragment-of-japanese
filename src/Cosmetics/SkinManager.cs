@@ -94,7 +94,8 @@ public partial class SkinManager : Node
         foreach (var s in data.Data)
             if (s.Owned && !string.IsNullOrEmpty(s.SkinId)) _owned.Add(s.SkinId);
 
-        await SyncPityAsync();   // lấy số bảo hiểm hiện tại
+        await SyncPityAsync();      // lấy số bảo hiểm hiện tại
+        await LoadEquippedAsync();  // nạp skin đang mặc từ server (đồng bộ đa thiết bị)
 
         // Nếu skin đang mặc bị khóa (vd dữ liệu cũ) → trả về mặc định loại đó.
         foreach (SkinCategory cat in Enum.GetValues<SkinCategory>())
@@ -141,6 +142,31 @@ public partial class SkinManager : Node
         PityTarget  = outcome.PityTarget;
         OwnedChanged?.Invoke();
         return outcome;
+    }
+
+    /// <summary>Nạp skin đang mặc từ server và áp dụng (nếu vẫn sở hữu).</summary>
+    private async Task LoadEquippedAsync()
+    {
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return;
+        var res = await ApiClient.Instance.GetAsync("/api/skins/equipped");
+        if (!res.IsSuccessStatusCode) return;
+        var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<Dictionary<string, string>>>(res);
+        if (data?.Data == null) return;
+
+        foreach (var kv in data.Data)
+        {
+            if (!Enum.TryParse<SkinCategory>(kv.Key, out var cat)) continue;
+            if (string.IsNullOrEmpty(kv.Value) || !IsOwned(kv.Value)) continue;
+            if (_all.Exists(s => s.Id == kv.Value)) _equipped[cat] = kv.Value;
+        }
+        SaveEquipped();
+    }
+
+    /// <summary>Lưu lựa chọn skin đang mặc lên server (không chặn UI nếu lỗi mạng).</summary>
+    private async Task SaveEquippedServerAsync(SkinCategory cat, string id)
+    {
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return;
+        await ApiClient.Instance.PostAsync("/api/skins/equip", new { Category = cat.ToString(), SkinId = id });
     }
 
     /// <summary>Nạp số bảo hiểm trúng thưởng skin hiện tại từ server.</summary>
@@ -190,6 +216,7 @@ public partial class SkinManager : Node
         if (!IsOwned(id)) { GD.Print($"[Skin] Chưa mở khóa: {def.Name}"); return; }
         _equipped[cat] = id;
         SaveEquipped();
+        _ = SaveEquippedServerAsync(cat, id);   // bền hóa lựa chọn lên DB
         SkinChanged?.Invoke(cat, def);
         GD.Print($"[Skin] Mặc {cat} = {def.Name}");
     }
