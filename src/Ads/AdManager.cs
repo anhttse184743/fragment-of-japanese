@@ -38,8 +38,9 @@ public partial class AdManager : CanvasLayer
     private double _lastInterstitialMs = -1_000_000;
 
     // ── Sự kiện cho UI ──
-    public event Action<int> RewardGranted;     // số Vàng vừa nhận
-    public event Action      AdsRemovedChanged;
+    public event Action<int>    RewardGranted;      // (cũ) số Vàng vừa nhận
+    public event Action<string> AdChestClaimed;     // mô tả phần thưởng rương vừa mở
+    public event Action         AdsRemovedChanged;
 
     public int  DailyRewardCap   => AdConfig.DailyRewardCap;
     public bool CanWatchRewarded => !_lastRewardDate.Equals(Today) || RewardsToday < AdConfig.DailyRewardCap;
@@ -143,6 +144,54 @@ public partial class AdManager : CanvasLayer
             RewardGranted?.Invoke(gold);
         });
 
+    /// <summary>Xem quảng cáo-thưởng → mở RƯƠNG kế tiếp (server tính thưởng theo rương, cấp Vàng/Ma Thạch/vật phẩm).</summary>
+    public void WatchRewardedForChest()
+    {
+        ResetDailyIfNeeded();
+        if (_provider == null) return;
+        if (!CanWatchRewarded) { GD.Print("[Ads] Hết lượt rương hôm nay."); return; }
+        _provider.ShowRewarded(earned => { if (earned) _ = ClaimChestAsync(); });
+    }
+
+    private async Task ClaimChestAsync()
+    {
+        var api = FragmentOfJapanese.Autoloads.ApiClient.Instance;
+        if (string.IsNullOrEmpty(api.AccessToken)) return;
+
+        var res = await api.PostAsync("/api/player/ad-reward", new { });
+        var data = await api.ReadAsAsync<FragmentOfJapanese.Autoloads.AccountManager.ApiResponse<AdRewardDto>>(res);
+        if (!res.IsSuccessStatusCode || data?.Data == null)
+        {
+            GD.PushWarning($"[Ads] Mở rương thất bại: {data?.Message}");
+            return;
+        }
+
+        RewardsToday    = data.Data.Used;
+        _lastRewardDate = Today;
+        Save();
+
+        _ = Wallet.Instance?.SyncAsync();       // Vàng / Ma Thạch
+        _ = Inventory.Instance?.SyncAsync();    // vật phẩm
+        AdChestClaimed?.Invoke(data.Data.Summary ?? "");
+    }
+
+    /// <summary>Nạp số rương đã mở hôm nay từ server (để UI hiện đúng x/5).</summary>
+    public async Task SyncAdStatusAsync()
+    {
+        var api = FragmentOfJapanese.Autoloads.ApiClient.Instance;
+        if (string.IsNullOrEmpty(api.AccessToken)) return;
+        var res = await api.GetAsync("/api/player/ad-reward");
+        if (!res.IsSuccessStatusCode) return;
+        var data = await api.ReadAsAsync<FragmentOfJapanese.Autoloads.AccountManager.ApiResponse<AdStatusDto>>(res);
+        if (data?.Data == null) return;
+        RewardsToday    = data.Data.Used;
+        _lastRewardDate = Today;
+        Save();
+    }
+
+    private class AdRewardDto { public int Used { get; set; } public int Cap { get; set; } public string Summary { get; set; } }
+    private class AdStatusDto { public int Used { get; set; } public int Cap { get; set; } }
+
     // ───────────────────────── Gỡ quảng cáo ─────────────────────────
     /// <summary>Bật/tắt "đã gỡ QC" (tắt banner + interstitial; rewarded vẫn xem được).</summary>
     public void SetAdsRemoved(bool removed)
@@ -162,6 +211,8 @@ public partial class AdManager : CanvasLayer
     public async System.Threading.Tasks.Task SyncAsync()
     {
         if (string.IsNullOrEmpty(FragmentOfJapanese.Autoloads.ApiClient.Instance.AccessToken)) return;
+
+        await SyncAdStatusAsync();   // số rương đã mở hôm nay (server là nguồn chân lý)
 
         var res = await FragmentOfJapanese.Autoloads.ApiClient.Instance.GetAsync("/api/player/profile");
         if (!res.IsSuccessStatusCode) return;

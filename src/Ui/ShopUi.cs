@@ -101,7 +101,7 @@ public partial class ShopUi : CanvasLayer
 
         if (Wallet.Instance    != null) Wallet.Instance.Changed          += RefreshWallet;
         if (Gacha.Instance     != null) Gacha.Instance.Changed           += RefreshLuck;
-        if (AdManager.Instance != null) AdManager.Instance.RewardGranted += OnAdReward;
+        if (AdManager.Instance != null) AdManager.Instance.AdChestClaimed += OnAdChest;
 
         RefreshWallet();
         SetTab(Tab.Featured);
@@ -1502,15 +1502,16 @@ public partial class ShopUi : CanvasLayer
         var ad = AdManager.Instance;
         if (ad == null)           { ShowFeedback("Hệ thống quảng cáo chưa sẵn sàng", false); return; }
         if (!ad.CanWatchRewarded) { ShowFeedback("Bạn đã hết lượt xem hôm nay", false);      return; }
-        ad.WatchRewardedForGold();
+        ad.WatchRewardedForChest();
     }
 
-    private void OnAdReward(int gold)
+    private void OnAdChest(string summary)
     {
         if (_shopRoot == null || !_shopRoot.Visible) return;
         RefreshAdDialog();
+        RefreshWallet();
         SetTab(Tab.Topup);
-        ShowFeedback($"+{gold} Vàng từ quảng cáo!", true);
+        ShowFeedback($"🎁 Rương quảng cáo: {summary}!", true);
     }
 
     private void OnRemoveAds()
