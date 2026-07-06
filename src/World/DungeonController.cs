@@ -219,6 +219,13 @@ public partial class DungeonController : Node3D
 
         var pick   = lt.NextItem(ItemKind.Vocab);
         var target = pick != null ? FindVocab(db, pick.Id) : null;
+        if (target == null)
+        {
+            // Không có từ tới hạn/mới → lấy ngẫu nhiên 1 từ trong bài để thử thách VẪN hiện (không "chết trơn").
+            System.Collections.Generic.IReadOnlyList<VocabularyEntry> poolV = db.GetByLesson(lt.CurrentLesson);
+            if (poolV.Count == 0) poolV = db.VocabN5;
+            if (poolV.Count > 0) target = poolV[(int)(_rng.Randi() % (uint)poolV.Count)];
+        }
         if (target == null) { enemy.ResolveChallenge(true); return; }
 
         var prog = lt.Get(ItemKind.Vocab, target.Id);
@@ -243,6 +250,12 @@ public partial class DungeonController : Node3D
 
         var pick = lt.NextItem(ItemKind.Grammar);
         var g    = pick != null ? FindGrammar(db, pick.Id) : null;
+        if (g == null)
+        {
+            System.Collections.Generic.IReadOnlyList<GrammarPoint> poolG = db.GetGrammarByLesson(lt.CurrentLesson);
+            if (poolG.Count == 0) poolG = db.Grammar;
+            if (poolG.Count > 0) g = poolG[(int)(_rng.Randi() % (uint)poolG.Count)];
+        }
         if (g == null) { enemy.ResolveChallenge(true); return; }
 
         int stage = lt.Get(ItemKind.Grammar, g.Id)?.Seen ?? 0;
@@ -269,6 +282,12 @@ public partial class DungeonController : Node3D
 
         var pick = lt.NextItem(ItemKind.Reading);
         var r    = pick != null ? FindReading(db, pick.Id) : null;
+        if (r == null)
+        {
+            System.Collections.Generic.IReadOnlyList<ReadingPassage> poolR = db.GetReadingsByLesson(lt.CurrentLesson);
+            if (poolR.Count == 0) poolR = db.Readings;
+            if (poolR.Count > 0) r = poolR[(int)(_rng.Randi() % (uint)poolR.Count)];
+        }
         if (r == null) { enemy.ResolveChallenge(true); return; }
 
         int seen = lt.Get(ItemKind.Reading, r.Id)?.Seen ?? 0;
