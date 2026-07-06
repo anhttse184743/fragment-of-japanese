@@ -1,6 +1,9 @@
 using Godot;
+using System.Linq;
 using System.Text;
 using FragmentOfJapanese.Autoloads;
+using FragmentOfJapanese.Core;
+using FragmentOfJapanese.Learning;
 
 namespace FragmentOfJapanese.Ui;
 
@@ -63,25 +66,28 @@ public partial class MemoryKnowledgeUi : Control
     {
         if (_lessonListContainer == null) return;
 
-        // Giả sử có 25 bài (1-25)
+        var lt = LearningTracker.Instance;
+
+        // Chỉ mở bài ĐÃ MỞ KHÓA (đã học tới); bài chưa tới → khóa, không xem được.
         for (int i = 1; i <= 25; i++)
         {
             int lessonNum = i;
-            var btn = new Button { Text = $"BÀI {lessonNum}", CustomMinimumSize = new Vector2(0, 60) };
-            
-            // Highlight nếu có data hoặc tuỳ thuộc vào tiến trình (ví dụ: bài 1-3 đang học)
-            var info = JapaneseDB.Instance.GetLesson(lessonNum);
-            if (info != null)
-            {
-                UiKit.StyleButton(btn, UiKit.WoodCard, UiKit.Fade(UiKit.Accent, 0.4f), UiKit.Accent, radius: 8);
-            }
-            else
-            {
-                UiKit.StyleButton(btn, new Color(0.1f, 0.1f, 0.1f, 0.5f), new Color(0.2f, 0.2f, 0.2f, 0.8f), UiKit.Accent, radius: 8);
-            }
+            bool unlocked = lt == null ? lessonNum == 1 : lt.IsUnlocked(lessonNum);
 
-            btn.FocusMode = FocusModeEnum.None;
-            btn.Pressed += () => LoadLessonDetails(lessonNum);
+            var btn = new Button
+            {
+                Text = unlocked ? $"BÀI {lessonNum}" : $"🔒 BÀI {lessonNum}",
+                CustomMinimumSize = new Vector2(0, 60),
+                Disabled = !unlocked,
+                FocusMode = FocusModeEnum.None,
+            };
+
+            if (unlocked)
+                UiKit.StyleButton(btn, UiKit.WoodCard, UiKit.Fade(UiKit.Accent, 0.4f), UiKit.Accent, radius: 8);
+            else
+                UiKit.StyleButton(btn, new Color(0.1f, 0.1f, 0.1f, 0.5f), new Color(0.2f, 0.2f, 0.2f, 0.8f), UiKit.Accent, radius: 8);
+
+            if (unlocked) btn.Pressed += () => LoadLessonDetails(lessonNum);
             _lessonListContainer.AddChild(btn);
         }
     }
@@ -100,63 +106,66 @@ public partial class MemoryKnowledgeUi : Control
 
         if (_contentLabel == null) return;
 
-        var sb = new StringBuilder();
-        
-        if (info == null)
-        {
-            sb.AppendLine("[i]Nội dung bài học này chưa được mở khóa hoặc chưa có dữ liệu.[/i]\n");
-        }
+        var lt = LearningTracker.Instance;
+        // Chỉ hiện mục ĐÃ HỌC (đã ghi nhận qua LearningTracker). Chưa học → không hiện.
+        bool Learned(ItemKind k, string id) => lt != null && !lt.IsNew(k, id);
 
-        // TỪ VỰNG
-        var vocab = JapaneseDB.Instance.GetByLesson(lesson);
-        sb.AppendLine($"[color=#00BFFF][b]TỪ VỰNG ({vocab.Count})[/b][/color]");
+        var sb = new StringBuilder();
+
+        // TỪ VỰNG (đã học)
+        var vocabAll = JapaneseDB.Instance.GetByLesson(lesson);
+        var vocab = vocabAll.Where(v => Learned(ItemKind.Vocab, v.Id)).ToList();
+        sb.AppendLine($"[color=#00BFFF][b]TỪ VỰNG (đã học {vocab.Count}/{vocabAll.Count})[/b][/color]");
         if (vocab.Count > 0)
         {
             foreach (var v in vocab)
             {
-                string reading = string.IsNullOrEmpty(v.Kanji) ? v.Kana : $"{v.Kanji} ({v.Kana})";
+                string reading = string.IsNullOrEmpty(v.Kanji) ? JapaneseDB.ToHiragana(v.Kana) : $"{v.Kanji} ({JapaneseDB.ToHiragana(v.Kana)})";
                 sb.AppendLine($"- [b]{reading}[/b]: {v.MeaningVi}");
             }
         }
         else
         {
-            sb.AppendLine("Chưa có từ vựng.");
+            sb.AppendLine("[i]Chưa học từ nào trong bài này.[/i]");
         }
         sb.AppendLine();
 
-        // NGỮ PHÁP
-        var grammar = JapaneseDB.Instance.GetGrammarByLesson(lesson);
-        sb.AppendLine($"[color=#32CD32][b]NGỮ PHÁP ({grammar.Count})[/b][/color]");
+        // NGỮ PHÁP (đã học)
+        var grammarAll = JapaneseDB.Instance.GetGrammarByLesson(lesson);
+        var grammar = grammarAll.Where(g => Learned(ItemKind.Grammar, g.Id)).ToList();
+        sb.AppendLine($"[color=#32CD32][b]NGỮ PHÁP (đã học {grammar.Count}/{grammarAll.Count})[/b][/color]");
         if (grammar.Count > 0)
         {
             foreach (var g in grammar)
             {
-                sb.AppendLine($"[b]{g.Pattern}[/b]");
+                sb.AppendLine($"[b]{JapaneseDB.ToHiragana(g.Pattern)}[/b]");
                 sb.AppendLine($"[color=#CCCCCC]{g.MeaningVi}[/color]");
                 sb.AppendLine($"[color=#AAAAAA][i]{g.ExplanationVi}[/i][/color]");
             }
         }
         else
         {
-            sb.AppendLine("Chưa có ngữ pháp.");
+            sb.AppendLine("[i]Chưa học ngữ pháp nào trong bài này.[/i]");
         }
         sb.AppendLine();
 
-        // BÀI ĐỌC
-        var readings = JapaneseDB.Instance.GetReadingsByLesson(lesson);
-        sb.AppendLine($"[color=#FF69B4][b]BÀI ĐỌC ({readings.Count})[/b][/color]");
+        // BÀI ĐỌC (đã học)
+        var readingsAll = JapaneseDB.Instance.GetReadingsByLesson(lesson);
+        var readings = readingsAll.Where(r => Learned(ItemKind.Reading, r.Id)).ToList();
+        sb.AppendLine($"[color=#FF69B4][b]BÀI ĐỌC (đã học {readings.Count}/{readingsAll.Count})[/b][/color]");
         if (readings.Count > 0)
         {
             int i = 1;
             foreach (var r in readings)
             {
-                string snippet = r.TextJa.Length > 15 ? r.TextJa.Substring(0, 15) + "..." : r.TextJa;
+                string hiraganaText = JapaneseDB.ToHiragana(r.TextJa);
+                string snippet = hiraganaText.Length > 15 ? hiraganaText.Substring(0, 15) + "..." : hiraganaText;
                 sb.AppendLine($"[b]Đoạn {i++}:[/b] {snippet}");
             }
         }
         else
         {
-            sb.AppendLine("Chưa có bài đọc.");
+            sb.AppendLine("[i]Chưa đọc đoạn nào trong bài này.[/i]");
         }
 
         _contentLabel.Text = sb.ToString();
