@@ -60,6 +60,33 @@ public partial class Shop : Node
 
     public ShopListing GetListing(string itemId) => _listings.Find(l => l.ItemId == itemId);
 
+    private class ItemPriceDto
+    {
+        public string StringId { get; set; }
+        public int    BuyPrice { get; set; }
+    }
+
+    /// <summary>Lấy giá bán THẬT từ DB (server là nơi trừ tiền) và ghi đè giá trong shop.json,
+    /// để giá hiển thị = giá thực trừ. shop.json chỉ còn quyết định bán item nào + bằng tiền gì.</summary>
+    public async System.Threading.Tasks.Task SyncPricesAsync()
+    {
+        if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return;
+
+        var res = await ApiClient.Instance.GetAsync("/api/items");
+        if (!res.IsSuccessStatusCode) return;
+
+        var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<List<ItemPriceDto>>>(res);
+        if (data?.Data == null) return;
+
+        foreach (var dto in data.Data)
+        {
+            if (string.IsNullOrEmpty(dto.StringId)) continue;
+            var listing = GetListing(dto.StringId);
+            if (listing != null) listing.Price = dto.BuyPrice;
+        }
+        GD.Print("[Shop] Đã đồng bộ giá bán từ DB.");
+    }
+
     /// <summary>Mua <paramref name="qty"/> đơn vị: gọi API mua, nếu thành công thì trừ tiền ví và thêm vào túi.</summary>
     public async System.Threading.Tasks.Task<BuyResult> BuyAsync(string itemId, int qty = 1)
     {

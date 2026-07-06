@@ -3,7 +3,6 @@
   {"item_id":"item_mana_potion",  "currency":"gold",    "price":50},
   {"item_id":"item_stamina_potion","currency":"gold",   "price":50},
   {"item_id":"item_hi_potion",    "currency":"gold",    "price":120},
-  {"item_id":"item_scroll",       "currency":"gold",    "price":80},
   {"item_id":"item_silver_key",   "currency":"gold",    "price":300},
   {"item_id":"item_golden_key",   "currency":"mathach", "price":30}
 ]

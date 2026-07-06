@@ -16,6 +16,7 @@ public static class GameSync
         var tasks = new List<Task>();
         if (Items.Wallet.Instance            != null) tasks.Add(Items.Wallet.Instance.SyncAsync());
         if (Items.Inventory.Instance         != null) tasks.Add(Items.Inventory.Instance.SyncAsync());
+        if (Items.Shop.Instance              != null) tasks.Add(Items.Shop.Instance.SyncPricesAsync());
         if (Learning.LearningTracker.Instance != null) tasks.Add(Learning.LearningTracker.Instance.SyncAsync());
         if (Quests.QuestManager.Instance     != null) tasks.Add(Quests.QuestManager.Instance.SyncAsync());
         if (Ads.AdManager.Instance           != null) tasks.Add(Ads.AdManager.Instance.SyncAsync());
