@@ -421,11 +421,12 @@ public partial class VoiceMinigameUi : CanvasLayer
         _goblinTween = CreateTween();
         _goblinTween.TweenProperty(_currentGoblin, "global_position", targetPos, 20.0f);
 
-        // Hẹn giờ 20s
+        // Hẹn giờ 20s — gắn số lượt để timer của lượt CŨ không làm "Hết giờ!" oan cho lượt mới.
+        int timerRound = _round;
         _roundTimer = GetTree().CreateTimer(20.0f);
-        _roundTimer.Timeout += () => 
+        _roundTimer.Timeout += () =>
         {
-            if (_isPlaying && _isRoundActive)
+            if (_isPlaying && _isRoundActive && _round == timerRound)
             {
                 HandleWrongAnswer("Hết giờ!");
             }
