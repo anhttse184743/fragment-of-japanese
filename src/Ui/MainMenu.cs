@@ -20,8 +20,8 @@ public partial class MainMenu : Control
         if (_btnContinue != null)
             _btnContinue.Disabled = !FileAccess.FileExists("user://player.json");
 
-        // Banner quảng cáo hiển thị ở menu (ẩn khi vào chơi)
-        Ads.AdManager.Instance?.ShowBanner();
+        // (Đã bỏ banner quảng cáo trên đỉnh màn hình.)
+        Ads.AdManager.Instance?.HideBanner();
     }
 
     private void OnNewGame()
