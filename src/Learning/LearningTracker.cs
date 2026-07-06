@@ -101,6 +101,7 @@ public partial class LearningTracker : Node
         else { p.Wrong++; p.Streak = 0; p.Box = 0; }
 
         p.Due = Now + Intervals[Math.Clamp(p.Box, 0, Intervals.Length - 1)];
+        p.NextReviewAt = null;   // dùng lịch Due local tới lần SyncAsync kế (tránh hiện lại từ vừa học)
 
         if (!wasMastered && p.Box >= MasteredBox)
         {

@@ -24,12 +24,31 @@ public partial class QuestManager : Node
     public event Action<QuestEntry> Claimed;     
     public event Action             PeriodReset; 
 
+    private DateTime _lastSyncUtcDate = DateTime.MinValue;
+    private double _resetCheckTimer;
+
     public override void _Ready()
     {
         Instance = this;
         LoadDefs();
         // Thay vì LoadProgress từ local file, giờ sẽ load từ API
         _ = SyncAsync();
+    }
+
+    public override void _Process(double delta)
+    {
+        // Reset THỜI GIAN THỰC: nếu qua mốc ngày UTC (nửa đêm / thứ Hai) so với lần sync gần nhất
+        // thì đồng bộ lại (server đã reset → client nhận trạng thái mới). Kiểm tra mỗi 30s.
+        _resetCheckTimer += delta;
+        if (_resetCheckTimer < 30.0) return;
+        _resetCheckTimer = 0;
+
+        if (_lastSyncUtcDate != DateTime.MinValue && DateTime.UtcNow.Date > _lastSyncUtcDate
+            && !string.IsNullOrEmpty(Autoloads.ApiClient.Instance.AccessToken))
+        {
+            GD.Print("[Quest] Qua mốc reset (ngày UTC mới) → đồng bộ lại.");
+            _ = SyncAsync();
+        }
     }
 
     public async Task SyncAsync()
@@ -49,6 +68,7 @@ public partial class QuestManager : Node
                     s.Count = p.CurrentCount;
                     s.Claimed = p.IsClaimed;
                 }
+                _lastSyncUtcDate = DateTime.UtcNow.Date;
                 PeriodReset?.Invoke();
             }
         }
@@ -71,8 +91,8 @@ public partial class QuestManager : Node
             var s = StateOf(q.Id);
             if (s.Count >= q.Target) continue;
 
-            // Gọi API lưu tiến độ ngầm (không await để không block game logic)
-            _ = Autoloads.ApiClient.Instance.PostAsync("/api/quests/progress", new { QuestId = q.Id, Increment = amount });
+            // Lưu tiến độ lên server; nếu lỗi mạng → đối soát lại để client khớp server (không mất tiến độ ngầm).
+            _ = ReportToServerAsync(q.Id, amount);
 
             s.Count = Math.Min(s.Count + amount, q.Target);
             Progressed?.Invoke(q);
@@ -82,6 +102,17 @@ public partial class QuestManager : Node
                 GD.Print($"[Quest] HOÀN THÀNH: {q.NameVi}");
                 Completed?.Invoke(q);
             }
+        }
+    }
+
+    /// <summary>Gửi tiến độ lên server; thất bại thì đối soát lại (SyncAsync) để client không lệch server.</summary>
+    private async Task ReportToServerAsync(string questId, int amount)
+    {
+        var res = await Autoloads.ApiClient.Instance.PostAsync("/api/quests/progress", new { QuestId = questId, Increment = amount });
+        if (!res.IsSuccessStatusCode)
+        {
+            GD.PushWarning($"[Quest] Báo tiến độ '{questId}' lỗi ({(int)res.StatusCode}) → đối soát lại.");
+            await SyncAsync();
         }
     }
 
