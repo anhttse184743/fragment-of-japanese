@@ -183,4 +183,23 @@ public static class UiKit
         tw.TweenProperty(label, "modulate:a", 0f, 0.4);
         tw.TweenCallback(Callable.From(label.QueueFree));
     }
+
+    /// <summary>
+    /// Hiển thị Toast toàn cục (tạo layer riêng đè lên mọi thứ).
+    /// </summary>
+    public static void GlobalToast(string msg, float seconds = 1.4f)
+    {
+        if (Engine.GetMainLoop() is not SceneTree tree) return;
+        var layer = new CanvasLayer { Layer = 200, ProcessMode = Node.ProcessModeEnum.Always };
+        var ctrl  = new Control { MouseFilter = Control.MouseFilterEnum.Ignore };
+        ctrl.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        layer.AddChild(ctrl);
+        tree.Root.AddChild(layer);
+        
+        Toast(ctrl, msg, seconds);
+        
+        var tw = tree.CreateTween();
+        tw.TweenInterval(seconds + 0.5f);
+        tw.TweenCallback(Callable.From(layer.QueueFree));
+    }
 }

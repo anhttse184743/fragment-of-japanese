@@ -3,7 +3,8 @@
     "allow": [
       "PowerShell(@\\(Get-ChildItem -Recurse \"C:\\\\Users\\\\Tuan Anh\\\\Game Godot Dev\\\\fragment-of-japanese\\\\assets\" | Where-Object {-not $_.Name.EndsWith\\('.import'\\) -and -not $_.Name -eq '.gitkeep'} | Select-Object -ExpandProperty Name\\) | Sort-Object | Get-Unique)",
       "PowerShell(Write-Host \"=== Assets Summary ===\" ; Get-ChildItem -Recurse \"C:\\\\Users\\\\Tuan Anh\\\\Game Godot Dev\\\\fragment-of-japanese\\\\assets\" -File | Where-Object {-not $_.Name.EndsWith\\('.import'\\)} | Group-Object -Property Extension | Select-Object Name, Count)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(dotnet build *)"
     ]
   }
 }

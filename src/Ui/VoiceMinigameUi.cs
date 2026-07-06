@@ -27,11 +27,15 @@ public partial class VoiceMinigameUi : CanvasLayer
 
     private Container _topPanel;
     private Label _lblTurn;
-    private Label _lblWord;
+    private ProgressBar _playerHpBar;
     private Label _lblResult;
 
     private Enemy _currentGoblin;
-    private Label3D _goblinText;
+    private PanelContainer _chatBubble;
+    private Label _chatLabel;
+    private SceneTreeTimer _roundTimer;
+    private Tween _goblinTween;
+    private bool _isRoundActive = false;
     private VoiceRecognizer _voice;
     private List<VocabularyEntry> _pool = new();
     private VocabularyEntry _currentWord;
@@ -154,12 +158,35 @@ public partial class VoiceMinigameUi : CanvasLayer
         _lblTurn.AddThemeColorOverride("font_color", new Color(0.8f, 0.8f, 0.8f));
         topVbox.AddChild(_lblTurn);
 
-        _lblWord = new Label { HorizontalAlignment = HorizontalAlignment.Center };
-        _lblWord.AddThemeFontSizeOverride("font_size", 60);
-        _lblWord.AddThemeColorOverride("font_color", new Color(1f, 0.9f, 0.4f));
-        topVbox.AddChild(_lblWord);
+        var hpContainer = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+        hpContainer.AddThemeConstantOverride("separation", 10);
+        hpContainer.AddChild(new Label { Text = "HP", Modulate = Colors.LightGreen });
+        _playerHpBar = new ProgressBar { CustomMinimumSize = new Vector2(400, 24), ShowPercentage = true };
+        _playerHpBar.AddThemeStyleboxOverride("background", UiKit.Box(new Color(0.1f, 0.25f, 0.15f, 1f), 8));
+        _playerHpBar.AddThemeStyleboxOverride("fill", UiKit.Box(new Color(0.2f, 0.8f, 0.3f, 1f), 8));
+        hpContainer.AddChild(_playerHpBar);
+        topVbox.AddChild(hpContainer);
         
         topVbox.AddChild(_instructionLabel);
+
+        // --- Chat Bubble UI ---
+        _chatBubble = new PanelContainer();
+        _chatBubble.AddThemeStyleboxOverride("panel", UiKit.Box(Colors.White, 8));
+        _chatBubble.Visible = false;
+        
+        var chatMargin = new MarginContainer();
+        chatMargin.AddThemeConstantOverride("margin_left", 15);
+        chatMargin.AddThemeConstantOverride("margin_right", 15);
+        chatMargin.AddThemeConstantOverride("margin_top", 10);
+        chatMargin.AddThemeConstantOverride("margin_bottom", 10);
+        _chatBubble.AddChild(chatMargin);
+
+        _chatLabel = new Label();
+        _chatLabel.AddThemeFontSizeOverride("font_size", 28);
+        _chatLabel.AddThemeColorOverride("font_color", Colors.Black);
+        chatMargin.AddChild(_chatLabel);
+        
+        AddChild(_chatBubble);
     }
 
     private void PopulateLessonList()
@@ -266,24 +293,38 @@ public partial class VoiceMinigameUi : CanvasLayer
         {
             _originalPlayerPos = player.GlobalPosition;
             _originalPlayerRot = player.GlobalRotation;
-            _minigameCenter = _originalPlayerPos; // Center of our scene
+            _minigameCenter = _originalPlayerPos; 
+            
+            _playerHpBar.MaxValue = player.Data.MaxHp;
+            _playerHpBar.Value = player.Data.Hp;
 
-            _cinematicCamera = new Camera3D();
-            player.GetParent().AddChild(_cinematicCamera);
+            var root = GetTree().CurrentScene;
+            var arena = root?.FindChild("BattleArena", true, false) as Node3D;
 
-            var pPos = TargetNpc?.GetNodeOrNull<Node3D>("PlayerPos");
-            var gPos = TargetNpc?.GetNodeOrNull<Node3D>("GoblinPos");
-            var cPos = TargetNpc?.GetNodeOrNull<Node3D>("CameraPos");
-
-            if (pPos != null && gPos != null && cPos != null)
+            if (arena != null)
             {
-                player.GlobalTransform = pPos.GlobalTransform;
-                _cinematicCamera.GlobalTransform = cPos.GlobalTransform;
-                _customGoblinTransform = gPos.GlobalTransform;
+                var pPos = arena.GetNodeOrNull<Marker3D>("PlayerBattlePos");
+                var ePos = arena.GetNodeOrNull<Marker3D>("EnemyBattlePos");
+                var cPos = arena.GetNodeOrNull<Camera3D>("BattleCamera");
+
+                if (pPos != null && ePos != null && cPos != null)
+                {
+                    player.GlobalTransform = pPos.GlobalTransform;
+                    _customGoblinTransform = ePos.GlobalTransform;
+                    
+                    _cinematicCamera = new Camera3D();
+                    player.GetParent().AddChild(_cinematicCamera);
+                    _cinematicCamera.GlobalTransform = cPos.GlobalTransform;
+                    _cinematicCamera.MakeCurrent();
+                }
             }
-            else
+            
+            if (_cinematicCamera == null)
             {
-                // Fallback math if markers not found (looking South)
+                // Fallback if arena not found
+                _cinematicCamera = new Camera3D();
+                player.GetParent().AddChild(_cinematicCamera);
+                
                 player.GlobalPosition = _minigameCenter + new Vector3(-1.5f, 0, 0);
                 player.LookAt(_minigameCenter + new Vector3(1.5f, 0, 0), Vector3.Up);
 
@@ -291,14 +332,10 @@ public partial class VoiceMinigameUi : CanvasLayer
                 _cinematicCamera.LookAt(_minigameCenter + new Vector3(0, 0.8f, 0), Vector3.Up);
                 
                 _customGoblinTransform = null;
+                _cinematicCamera.MakeCurrent();
             }
-            
-            _cinematicCamera.MakeCurrent();
 
-            if (TargetNpc != null)
-            {
-                TargetNpc.Visible = false; // Ẩn NPC kích hoạt minigame
-            }
+            if (TargetNpc != null) TargetNpc.Visible = false;
         }
 
         SpawnGoblinRound();
@@ -308,8 +345,8 @@ public partial class VoiceMinigameUi : CanvasLayer
     {
         if (_round > MaxRounds)
         {
-            // End of Minigame
-            ShowResult(_mistakeCount <= 1);
+            // End of Minigame (Sống sót qua 5 vòng)
+            ShowResult(true);
             return;
         }
 
@@ -319,6 +356,7 @@ public partial class VoiceMinigameUi : CanvasLayer
             return;
         }
 
+        _isRoundActive = true;
         _currentWord = _pool[_rand.Next(_pool.Count)];
         
         var player = GetTree().GetFirstNodeInGroup("player") as Player;
@@ -330,31 +368,68 @@ public partial class VoiceMinigameUi : CanvasLayer
         _currentGoblin = goblinScene.Instantiate<Enemy>();
         player.GetParent().AddChild(_currentGoblin);
 
+        Vector3 targetPos;
         if (_customGoblinTransform.HasValue)
         {
+            targetPos = _customGoblinTransform.Value.Origin;
             _currentGoblin.GlobalTransform = _customGoblinTransform.Value;
         }
         else
         {
-            // Fallback
-            _currentGoblin.GlobalPosition = _minigameCenter + new Vector3(1.5f, 0, 0);
+            targetPos = _minigameCenter + new Vector3(1.5f, 0, 0);
         }
 
-        // Ép Player và Goblin quay mặt vào nhau
-        var anim = player.GetNodeOrNull<PlayerAnimator>("IdleLogic");
-        if (anim != null) anim.FaceTarget(_currentGoblin.GlobalPosition);
-        else player.LookAt(_currentGoblin.GlobalPosition, Vector3.Up);
-        
-        // Xoay Goblin nhìn về phía Player
-        _currentGoblin.LookAt(player.GlobalPosition, Vector3.Up);
+        // Đặt Goblin xa 6m theo trục X
+        Vector3 spawnPos = targetPos + new Vector3(6.0f, 0, 0);
+        _currentGoblin.GlobalPosition = spawnPos;
 
-        // Bỏ Text trên đầu Goblin vì đã mang lên TopPanel
+        // Xóa AI của Goblin để nó không tự đi bậy bạ
+        foreach (var child in _currentGoblin.GetChildren())
+        {
+            if (child is EnemyAi ai)
+            {
+                ai.SetPhysicsProcess(false);
+                ai.SetProcess(false);
+                ai.QueueFree();
+                break;
+            }
+        }
+
+        // ─── Ép cứng hướng nhìn (SỬA THỦ CÔNG) ───
+        var pAnim = player.GetNodeOrNull<PlayerAnimator>("Animator");
+        if (pAnim != null) pAnim.SetPhysicsProcess(false);
+
+        var eAnim = _currentGoblin.GetNodeOrNull<FragmentOfJapanese.Entities.CharacterAnimator>("Animator");
+        if (eAnim != null) eAnim.SetPhysicsProcess(false);
+
+        var pSprite = player.GetNodeOrNull<AnimatedSprite3D>("Visual");
+        if (pSprite != null) pSprite.Play("idle_right"); // Player nhìn qua phải
+
+        var gSprite = _currentGoblin.GetNodeOrNull<AnimatedSprite3D>("Visual");
+        if (gSprite != null) gSprite.Play("run_left"); // Goblin chạy qua trái
+
+        // Gán chữ vào chat bubble, _Process sẽ lo việc di chuyển và hiển thị
+        _chatLabel.Text = JapaneseDB.ToHiragana(_currentWord.Kana);
+
         _lblTurn.Text = $"LƯỢT {_round} / {MaxRounds}";
-        _lblWord.Text = JapaneseDB.ToHiragana(_currentWord.Kana);
         
         // Nghĩa tiếng Việt gợi ý trên màn hình
         _instructionLabel.Text = $"Nghĩa: {_currentWord.MeaningVi}";
         _instructionLabel.Modulate = Colors.White;
+
+        // Tween tiến lại gần trong 20s
+        _goblinTween = CreateTween();
+        _goblinTween.TweenProperty(_currentGoblin, "global_position", targetPos, 20.0f);
+
+        // Hẹn giờ 20s
+        _roundTimer = GetTree().CreateTimer(20.0f);
+        _roundTimer.Timeout += () => 
+        {
+            if (_isPlaying && _isRoundActive)
+            {
+                HandleWrongAnswer("Hết giờ!");
+            }
+        };
     }
 
     public override void _UnhandledInput(InputEvent e)
@@ -386,42 +461,129 @@ public partial class VoiceMinigameUi : CanvasLayer
 
     private void OnWordRecognized(string raw, bool matched, string id, float similarity)
     {
-        if (!_isPlaying || _currentGoblin == null || !IsInstanceValid(_currentGoblin)) return;
+        if (!_isPlaying || !_isRoundActive || _currentGoblin == null || !IsInstanceValid(_currentGoblin)) return;
 
         _instructionLabel.Modulate = Colors.White;
 
-        var player = GetTree().GetFirstNodeInGroup("player") as Player;
-        if (player == null) return;
-
         if (matched && id == _currentWord.Id)
         {
-            _instructionLabel.Text = $"Chính xác! Bạn nói: {raw}";
-            _instructionLabel.Modulate = Colors.Green;
-            
-            // Lượt của Player: Lao tới đánh Goblin
-            PlayDashAnimation(player, _currentGoblin, () => 
-            {
-                // Goblin chớp đỏ và chết
-                var mat = _currentGoblin.GetNodeOrNull<AnimatedSprite3D>("Visual")?.MaterialOverride as ShaderMaterial;
-                if (mat != null) mat.SetShaderParameter("flash_color", new Color(1, 0, 0, 1));
-                
-                _currentGoblin.QueueFree();
-                NextRound();
-            });
+            HandleCorrectAnswer(raw);
         }
         else
         {
-            _mistakeCount++;
-            _instructionLabel.Text = $"Sai rồi! Bạn nói: {raw}\nMáy chủ mong đợi: {_currentWord.Kana}";
-            _instructionLabel.Modulate = Colors.Red;
+            HandleWrongAnswer($"Sai rồi! Bạn nói: {raw}\nMáy chủ mong đợi: {_currentWord.Kana}");
+        }
+    }
+
+    private void HandleCorrectAnswer(string raw)
+    {
+        _isRoundActive = false;
+        _goblinTween?.Kill();
+        if (_chatBubble != null) _chatBubble.Visible = false;
+
+        _instructionLabel.Text = $"Chính xác! Bạn nói: {raw}";
+        _instructionLabel.Modulate = Colors.Green;
+        
+        var player = GetTree().GetFirstNodeInGroup("player") as Player;
+        if (player == null) return;
+
+        PlayDashAnimation(player, _currentGoblin, () => 
+        {
+            CreateExplosion(_currentGoblin.GetParent(), _currentGoblin.GlobalPosition);
+            _currentGoblin.QueueFree();
+            NextRound();
+        });
+    }
+
+    private void HandleWrongAnswer(string msg)
+    {
+        _isRoundActive = false;
+        _goblinTween?.Kill();
+        if (_chatBubble != null) _chatBubble.Visible = false;
+
+        _instructionLabel.Text = msg;
+        _instructionLabel.Modulate = Colors.Red;
+        
+        var player = GetTree().GetFirstNodeInGroup("player") as Player;
+        if (player == null) return;
+
+        PlayDashAnimation(_currentGoblin, player, () => 
+        {
+            // Flash người chơi đỏ
+            FlashPlayerRed(player);
             
-            // Lượt của Goblin: Lao tới đánh Player
-            PlayDashAnimation(_currentGoblin, player, () => 
+            // Goblin phát nổ
+            CreateExplosion(_currentGoblin.GetParent(), _currentGoblin.GlobalPosition);
+
+            // Trừ chính xác 34% HP tối đa (3 lần sai là chết)
+            int damage = (int)Math.Max(1, player.Data.MaxHp * 0.34f);
+            player.TakeDamage(damage);
+            _playerHpBar.Value = player.Data.Hp;
+
+            _currentGoblin.QueueFree();
+            
+            if (player.Data.Hp <= 0)
             {
-                player.TakeDamage(_currentGoblin.Attack);
-                _currentGoblin.QueueFree();
+                ShowResult(false);
+            }
+            else
+            {
                 NextRound();
-            });
+            }
+        });
+    }
+
+    private void CreateExplosion(Node parent, Vector3 pos)
+    {
+        var sphere = new CsgSphere3D();
+        sphere.Radius = 0.5f;
+        var mat = new StandardMaterial3D();
+        mat.AlbedoColor = new Color(1, 0.2f, 0, 1);
+        mat.EmissionEnabled = true;
+        mat.Emission = new Color(1, 0.4f, 0, 1);
+        mat.EmissionEnergyMultiplier = 2.0f;
+        mat.Transparency = BaseMaterial3D.TransparencyEnum.Alpha;
+        sphere.MaterialOverride = mat;
+        
+        parent.AddChild(sphere);
+        sphere.GlobalPosition = pos + new Vector3(0, 1f, 0);
+        
+        var t = sphere.GetTree().CreateTween();
+        t.TweenProperty(sphere, "scale", new Vector3(3, 3, 3), 0.3f).SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+        t.Parallel().TweenProperty(mat, "albedo_color", new Color(1, 0.2f, 0, 0f), 0.3f);
+        
+        var timer = sphere.GetTree().CreateTimer(0.35f);
+        timer.Connect("timeout", Callable.From(() => 
+        {
+            if (IsInstanceValid(sphere)) sphere.QueueFree();
+        }));
+    }
+
+    private void FlashPlayerRed(Player player)
+    {
+        var sprite = player.GetNodeOrNull<AnimatedSprite3D>("Visual");
+        if (sprite != null)
+        {
+            var mat = sprite.MaterialOverride as ShaderMaterial;
+            if (mat != null)
+            {
+                mat.SetShaderParameter("flash_color", new Color(1, 0, 0, 1));
+                mat.SetShaderParameter("flash_modifier", 1.0f);
+                var timer = player.GetTree().CreateTimer(0.15f);
+                timer.Connect("timeout", Callable.From(() => 
+                {
+                    if (IsInstanceValid(mat)) mat.SetShaderParameter("flash_modifier", 0.0f);
+                }));
+            }
+            else
+            {
+                sprite.Modulate = Colors.Red;
+                var timer = player.GetTree().CreateTimer(0.15f);
+                timer.Connect("timeout", Callable.From(() => 
+                {
+                    if (IsInstanceValid(sprite)) sprite.Modulate = Colors.White;
+                }));
+            }
         }
     }
 
@@ -506,9 +668,15 @@ public partial class VoiceMinigameUi : CanvasLayer
         var player = GetTree().GetFirstNodeInGroup("player") as Node3D;
         if (player != null)
         {
+            if (player is Player p) p.RestoreFull();
+
             // Restore position
             player.GlobalPosition = _originalPlayerPos;
             player.GlobalRotation = _originalPlayerRot;
+
+            // Bật lại Animator
+            var pAnim = player.GetNodeOrNull<PlayerAnimator>("Animator");
+            if (pAnim != null) pAnim.SetPhysicsProcess(true);
 
             if (TargetNpc != null)
             {
@@ -564,6 +732,33 @@ public partial class VoiceMinigameUi : CanvasLayer
                     if (draw != null) draw.Visible = visible;
                 }
             }
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        
+        if (_isPlaying && _isRoundActive && _currentGoblin != null && IsInstanceValid(_currentGoblin) && _cinematicCamera != null && IsInstanceValid(_cinematicCamera))
+        {
+            // Vị trí trên đầu Goblin (cao 1.8m)
+            Vector3 headPos = _currentGoblin.GlobalPosition + new Vector3(0, 1.8f, 0);
+            
+            if (_cinematicCamera.IsPositionBehind(headPos))
+            {
+                _chatBubble.Visible = false;
+            }
+            else
+            {
+                _chatBubble.Visible = true;
+                Vector2 screenPos = _cinematicCamera.UnprojectPosition(headPos);
+                // Canh giữa khung chat theo chiều ngang và đưa lên trên theo chiều dọc
+                _chatBubble.Position = screenPos - new Vector2(_chatBubble.Size.X / 2, _chatBubble.Size.Y);
+            }
+        }
+        else if (_chatBubble != null && _chatBubble.Visible)
+        {
+            _chatBubble.Visible = false;
         }
     }
 }

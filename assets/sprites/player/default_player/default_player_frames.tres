@@ -1,0 +1,197 @@
+[gd_resource type="SpriteFrames" load_steps=29 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/idle/down 1.png" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/idle/down 2.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/idle/left 1.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/idle/left 2.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/idle/up 1.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/idle/up 2.png" id="6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/idle/right 1.png" id="7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/idle/right 2.png" id="8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/run/down 1.png" id="9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/run/down 2.png" id="10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/run/left 1.png" id="11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/run/left 2.png" id="12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/run/up 1.png" id="13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/run/up 2.png" id="14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/run/right 1.png" id="15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/run/right 2.png" id="16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/jump/down.png" id="17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/jump/left.png" id="18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/jump/up.png" id="19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/jump/right.png" id="20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/attack/down 1.png" id="21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/attack/down 2.png" id="22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/attack/left 1.png" id="23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/attack/left 2.png" id="24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/attack/up 1.png" id="25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/attack/up 2.png" id="26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/attack/right 1.png" id="27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/default_player/attack/right 2.png" id="28"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2")
+}],
+"loop": 1,
+"name": &"idle_down",
+"speed": 6
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4")
+}],
+"loop": 1,
+"name": &"idle_left",
+"speed": 6
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6")
+}],
+"loop": 1,
+"name": &"idle_up",
+"speed": 6
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8")
+}],
+"loop": 1,
+"name": &"idle_right",
+"speed": 6
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10")
+}],
+"loop": 1,
+"name": &"run_down",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12")
+}],
+"loop": 1,
+"name": &"run_left",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14")
+}],
+"loop": 1,
+"name": &"run_up",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16")
+}],
+"loop": 1,
+"name": &"run_right",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17")
+}],
+"loop": 0,
+"name": &"jump_down",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("18")
+}],
+"loop": 0,
+"name": &"jump_left",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("19")
+}],
+"loop": 0,
+"name": &"jump_up",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20")
+}],
+"loop": 0,
+"name": &"jump_right",
+"speed": 10
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22")
+}],
+"loop": 0,
+"name": &"attack_down",
+"speed": 12
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24")
+}],
+"loop": 0,
+"name": &"attack_left",
+"speed": 12
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("25")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26")
+}],
+"loop": 0,
+"name": &"attack_up",
+"speed": 12
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28")
+}],
+"loop": 0,
+"name": &"attack_right",
+"speed": 12
+}]

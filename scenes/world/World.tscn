@@ -44,6 +44,10 @@
 [ext_resource type="PackedScene" uid="uid://csqljctoldjhs" path="res://assets/models/constructions/village/well.glb" id="37_qxjis"]
 [ext_resource type="PackedScene" uid="uid://cl5ibfcoebma1" path="res://scenes/ui/VirtualJoystick.tscn" id="38_nres0"]
 [ext_resource type="PackedScene" uid="uid://gffhdwvccigl" path="res://assets/models/constructions/village/village _house_t1.glb" id="39_bmjh4"]
+[ext_resource type="PackedScene" path="res://scenes/entities/Mailman.tscn" id="40_7vsg4"]
+[ext_resource type="PackedScene" path="res://scenes/entities/Merchant.tscn" id="41_ajmhc"]
+[ext_resource type="PackedScene" path="res://scenes/entities/Farmer.tscn" id="42_e4bm0"]
+[ext_resource type="PackedScene" path="res://scenes/entities/Healer.tscn" id="43_06qrm"]
 [ext_resource type="PackedScene" uid="uid://3sbp24ayfihf" path="res://assets/models/constructions/village/fence.glb" id="46_ers45"]
 [ext_resource type="PackedScene" path="res://scenes/entities/VillageChief.tscn" id="47_khbuy"]
 [ext_resource type="PackedScene" path="res://scenes/entities/HiraganaSensei.tscn" id="48_117vm"]
@@ -46629,7 +46633,7 @@ shape = SubResource("ConvexPolygonShape3D_l5iln")
 [node name="Village_region" type="Node3D" parent="." unique_id=1908370623]
 
 [node name="village _house_t1" parent="Village_region" unique_id=1153684171 instance=ExtResource("39_bmjh4")]
-transform = Transform3D(-14.933007, 0, -1.4160528, 0, 13.999999, 0, 1.4160528, 0, -14.933007, -19.290413, 2.3323922, 11.955427)
+transform = Transform3D(-14.970441, 0, 0.941198, 0, 14.000001, 0, -0.941198, 0, -14.970441, -28.45222, 3.376289, 7.2597065)
 
 [node name="node_0" parent="Village_region/village _house_t1" index="0" unique_id=1806834286]
 transform = Transform3D(1, 0, 0, 0, -3.5762787e-07, -0.99999994, 0, 0.99999994, -3.5762787e-07, 0, -0.04727304, 0)
@@ -46651,8 +46655,77 @@ shape = SubResource("ConvexPolygonShape3D_4jsvn")
 [node name="CollisionShape3D5" type="CollisionShape3D" parent="Village_region/village _house_t1/node_0/StaticBody3D" unique_id=1494772768]
 shape = SubResource("ConvexPolygonShape3D_my4yt")
 
+[node name="village _house_t6" parent="Village_region" unique_id=1017826505 instance=ExtResource("39_bmjh4")]
+transform = Transform3D(-3.90546, 0, -14.482656, 0, 14.000001, 0, 14.482656, 0, -3.90546, -10.68332, 2.2848744, 31.319292)
+
+[node name="node_0" parent="Village_region/village _house_t6" index="0" unique_id=1806834286]
+transform = Transform3D(1, 0, 0, 0, -3.5762787e-07, -0.99999994, 0, 0.99999994, -3.5762787e-07, 0, -0.04727304, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t6/node_0" index="0" unique_id=293451394]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/village _house_t6/node_0/StaticBody3D" unique_id=1783327130]
+shape = SubResource("ConvexPolygonShape3D_bp22d")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Village_region/village _house_t6/node_0/StaticBody3D" unique_id=1995462971]
+shape = SubResource("ConvexPolygonShape3D_my3ih")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Village_region/village _house_t6/node_0/StaticBody3D" unique_id=562123818]
+shape = SubResource("ConvexPolygonShape3D_enn7p")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Village_region/village _house_t6/node_0/StaticBody3D" unique_id=918076600]
+shape = SubResource("ConvexPolygonShape3D_4jsvn")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Village_region/village _house_t6/node_0/StaticBody3D" unique_id=992584348]
+shape = SubResource("ConvexPolygonShape3D_my4yt")
+
+[node name="village _house_t5" parent="Village_region" unique_id=1013729474 instance=ExtResource("39_bmjh4")]
+transform = Transform3D(-14.992043, 0, -0.48848057, 0, 14.000001, 0, 0.48848057, 0, -14.992043, -27.983433, 2.5745134, -6.222691)
+
+[node name="node_0" parent="Village_region/village _house_t5" index="0" unique_id=1806834286]
+transform = Transform3D(1, 0, 0, 0, -3.5762787e-07, -0.99999994, 0, 0.99999994, -3.5762787e-07, 0, -0.04727304, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t5/node_0" index="0" unique_id=1674174994]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/village _house_t5/node_0/StaticBody3D" unique_id=1760574557]
+shape = SubResource("ConvexPolygonShape3D_bp22d")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Village_region/village _house_t5/node_0/StaticBody3D" unique_id=1933797036]
+shape = SubResource("ConvexPolygonShape3D_my3ih")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Village_region/village _house_t5/node_0/StaticBody3D" unique_id=721713289]
+shape = SubResource("ConvexPolygonShape3D_enn7p")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Village_region/village _house_t5/node_0/StaticBody3D" unique_id=845339030]
+shape = SubResource("ConvexPolygonShape3D_4jsvn")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Village_region/village _house_t5/node_0/StaticBody3D" unique_id=457025070]
+shape = SubResource("ConvexPolygonShape3D_my4yt")
+
+[node name="village _house_t3" parent="Village_region" unique_id=685788483 instance=ExtResource("39_bmjh4")]
+transform = Transform3D(14.999997, 0, 0, 0, 13.999999, 0, 0, 0, 14.999997, 30.024939, 1.8787541, 1.3558412)
+
+[node name="node_0" parent="Village_region/village _house_t3" index="0" unique_id=1806834286]
+transform = Transform3D(1, 0, 0, 0, -3.5762787e-07, -0.99999994, 0, 0.99999994, -3.5762787e-07, 0, -0.04727304, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t3/node_0" index="0" unique_id=764780893]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/village _house_t3/node_0/StaticBody3D" unique_id=1050753194]
+shape = SubResource("ConvexPolygonShape3D_bp22d")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Village_region/village _house_t3/node_0/StaticBody3D" unique_id=1541137021]
+shape = SubResource("ConvexPolygonShape3D_my3ih")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Village_region/village _house_t3/node_0/StaticBody3D" unique_id=1604693662]
+shape = SubResource("ConvexPolygonShape3D_enn7p")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Village_region/village _house_t3/node_0/StaticBody3D" unique_id=157222184]
+shape = SubResource("ConvexPolygonShape3D_4jsvn")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Village_region/village _house_t3/node_0/StaticBody3D" unique_id=885913881]
+shape = SubResource("ConvexPolygonShape3D_my4yt")
+
 [node name="village _house_t2" parent="Village_region" unique_id=882088799 instance=ExtResource("32_0qn2w")]
-transform = Transform3D(0.36203375, 0, -14.99563, 0, 13.999999, 0, 14.99563, 0, 0.36203375, 27.334354, 1.5419445, 12.192295)
+transform = Transform3D(0.36203375, 0, -14.99563, 0, 13.999999, 0, 14.99563, 0, 0.36203375, 29.198956, 0.8162465, 13.5198)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t2/node_0" parent_id_path=PackedInt32Array(882088799, 130291953) index="0" unique_id=615199672]
 
@@ -46668,8 +46741,25 @@ shape = SubResource("ConvexPolygonShape3D_78idx")
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="Village_region/village _house_t2/node_0/StaticBody3D" unique_id=1872375583]
 shape = SubResource("ConvexPolygonShape3D_c5fwy")
 
+[node name="village _house_t8" parent="Village_region" unique_id=1373063003 instance=ExtResource("32_0qn2w")]
+transform = Transform3D(-14.695222, 0, -3.0083978, 0, 13.999999, 0, 3.0083978, 0, -14.695222, 12.380735, 0.8162465, 32.17598)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t8/node_0" parent_id_path=PackedInt32Array(1373063003, 130291953) index="0" unique_id=1879329389]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/village _house_t8/node_0/StaticBody3D" unique_id=2014546336]
+shape = SubResource("ConvexPolygonShape3D_navci")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Village_region/village _house_t8/node_0/StaticBody3D" unique_id=1210829346]
+shape = SubResource("ConvexPolygonShape3D_pryaa")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Village_region/village _house_t8/node_0/StaticBody3D" unique_id=1752098943]
+shape = SubResource("ConvexPolygonShape3D_78idx")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Village_region/village _house_t8/node_0/StaticBody3D" unique_id=996008223]
+shape = SubResource("ConvexPolygonShape3D_c5fwy")
+
 [node name="chef_village _house" parent="Village_region" unique_id=1469324321 instance=ExtResource("33_l5iln")]
-transform = Transform3D(15, 0, 0, 0, 14, 0, 0, 0, 15, -5.988735, 1.5354102, -22.482983)
+transform = Transform3D(15, 0, 0, 0, 14, 0, 0, 0, 15, -9.025707, 1.9597085, -28.414557)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/chef_village _house/node_0" parent_id_path=PackedInt32Array(1469324321, 996954016) index="0" unique_id=834987910]
 
@@ -46686,7 +46776,7 @@ shape = SubResource("ConvexPolygonShape3D_h0frk")
 shape = SubResource("ConvexPolygonShape3D_tenvm")
 
 [node name="village _house_t4" parent="Village_region" unique_id=1379359393 instance=ExtResource("34_qxjis")]
-transform = Transform3D(-0.3141364, 0, -14.99671, 0, 14.000001, 0, 14.99671, 0, -0.3141364, 4.003127, 1.4848089, 31.615572)
+transform = Transform3D(-0.3141364, 0, -14.99671, 0, 14.000001, 0, 14.99671, 0, -0.3141364, 2.2787523, 1.4848089, 31.943617)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t4/node_0" parent_id_path=PackedInt32Array(1379359393, 971597090) index="0" unique_id=1801921022]
 
@@ -46708,8 +46798,31 @@ shape = SubResource("ConvexPolygonShape3D_3yqxx")
 [node name="CollisionShape3D6" type="CollisionShape3D" parent="Village_region/village _house_t4/node_0/StaticBody3D" unique_id=999698207]
 shape = SubResource("ConvexPolygonShape3D_7rqe0")
 
+[node name="village _house_t7" parent="Village_region" unique_id=2044338624 instance=ExtResource("34_qxjis")]
+transform = Transform3D(14.99391, 0, -0.4273437, 0, 14.000001, 0, 0.4273437, 0, 14.99391, 29.994926, 1.5271134, -10.30311)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Village_region/village _house_t7/node_0" parent_id_path=PackedInt32Array(2044338624, 971597090) index="0" unique_id=692596732]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Village_region/village _house_t7/node_0/StaticBody3D" unique_id=1235429025]
+shape = SubResource("ConvexPolygonShape3D_t25rt")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Village_region/village _house_t7/node_0/StaticBody3D" unique_id=1495155633]
+shape = SubResource("ConvexPolygonShape3D_g8q35")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Village_region/village _house_t7/node_0/StaticBody3D" unique_id=776701959]
+shape = SubResource("ConvexPolygonShape3D_kdadn")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Village_region/village _house_t7/node_0/StaticBody3D" unique_id=1089416296]
+shape = SubResource("ConvexPolygonShape3D_6e5rj")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Village_region/village _house_t7/node_0/StaticBody3D" unique_id=834227408]
+shape = SubResource("ConvexPolygonShape3D_3yqxx")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="Village_region/village _house_t7/node_0/StaticBody3D" unique_id=1517031122]
+shape = SubResource("ConvexPolygonShape3D_7rqe0")
+
 [node name="sensei_village _house" parent="Village_region" unique_id=1990622595 instance=ExtResource("35_ers45")]
-transform = Transform3D(13.013748, 0, -7.4593787, 0, 13.999999, 0, 7.4593787, 0, 13.013748, 9.080885, 2.1166537, -18.702421)
+transform = Transform3D(14.713303, 0, -2.918675, 0, 13.999999, 0, 2.918675, 0, 14.713303, 5.7101107, 2.417678, -27.850292)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/sensei_village _house/node_0" parent_id_path=PackedInt32Array(1990622595, 3160042) index="0" unique_id=1197168426]
 
@@ -46732,7 +46845,7 @@ shape = SubResource("ConvexPolygonShape3D_q71q4")
 shape = SubResource("ConvexPolygonShape3D_ppam0")
 
 [node name="schoolboard" parent="Village_region" unique_id=186481826 instance=ExtResource("36_l5iln")]
-transform = Transform3D(2.029426, 0, -2.8515663, 0, 3, 0, 2.8515663, 0, 2.029426, 11.872559, 2.4494972, -9.464386)
+transform = Transform3D(2.029426, 0, -2.8515663, 0, 3, 0, 2.8515663, 0, 2.029426, 11.872559, 2.4494972, -20.977959)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Village_region/schoolboard/node_0" parent_id_path=PackedInt32Array(186481826, 1313372678) index="0" unique_id=1578037670]
 
@@ -47736,10 +47849,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011158437, 0.000110678375, 
 shape = SubResource("BoxShape3D_ers45")
 
 [node name="VillageChief" parent="Village_region" unique_id=2136826835 instance=ExtResource("47_khbuy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5005035, 2.5538743, -15.740345)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5005035, 2.5538743, -22.528896)
 
 [node name="HiraganaSensei" parent="Village_region" unique_id=1635053672 instance=ExtResource("48_117vm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.571863, 2.5104008, -10.871663)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.571863, 2.5104008, -20.782522)
+
+[node name="Mailman" parent="Village_region" unique_id=830112073 instance=ExtResource("40_7vsg4")]
+transform = Transform3D(-0.12902541, 0, -0.9916413, 0, 1, 0, 0.9916413, 0, -0.12902541, 21.09507, 2.4017591, -2.4045038)
+
+[node name="Merchant" parent="Village_region" unique_id=1692239369 instance=ExtResource("41_ajmhc")]
+transform = Transform3D(-0.04010119, 0, -0.99919564, 0, 1, 0, 0.99919564, 0, -0.04010119, 22.166897, 2.2366068, 5.260681)
+
+[node name="Farmer" parent="Village_region" unique_id=826921873 instance=ExtResource("42_e4bm0")]
+transform = Transform3D(0.021242647, 0, 0.99977434, 0, 1, 0, -0.99977434, 0, 0.021242647, -20.05931, 2.6215935, -7.043205)
+
+[node name="Healer" parent="Village_region" unique_id=1899699865 instance=ExtResource("43_06qrm")]
+transform = Transform3D(-0.99997723, 0, -0.0067584882, 0, 1, 0, 0.0067584882, 0, -0.99997723, -6.038545, 2.458352, 24.685913)
 
 [node name="Volcanic_peak_region" type="Node3D" parent="." unique_id=787763848]
 
@@ -48021,13 +48146,14 @@ ScenePath = "uid://cy0w7oqd3ynky"
 
 [node name="Forest_Portal" parent="." unique_id=936682418 instance=ExtResource("54_kqqcm")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 169.78352, 9, 166.50723)
+ScenePath = "uid://uygpwcw344i4"
 
 [node name="Castle_Portal" parent="." unique_id=997421894 instance=ExtResource("54_kqqcm")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -169.41512, 3.871373, 166.79712)
 ScenePath = "uid://cv3bxpybryyxv"
 
 [node name="PlayerSpawn" parent="." unique_id=1629409674 instance=ExtResource("54_lkldd")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25182772, 8.832642, -0.2843628)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25182772, 2.8381014, -5.7073193)
 
 [node name="WorldController" type="Node3D" parent="." unique_id=316626236]
 script = ExtResource("55_wctrl")
@@ -48091,9 +48217,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.967445, 4.454178, 104.9241
 [editable path="Echoing_forest_region/slope_stone6"]
 [editable path="Echoing_forest_region/slope_stone7"]
 [editable path="Village_region/village _house_t1"]
+[editable path="Village_region/village _house_t6"]
+[editable path="Village_region/village _house_t5"]
+[editable path="Village_region/village _house_t3"]
 [editable path="Village_region/village _house_t2"]
+[editable path="Village_region/village _house_t8"]
 [editable path="Village_region/chef_village _house"]
 [editable path="Village_region/village _house_t4"]
+[editable path="Village_region/village _house_t7"]
 [editable path="Village_region/sensei_village _house"]
 [editable path="Village_region/schoolboard"]
 [editable path="Village_region/well"]

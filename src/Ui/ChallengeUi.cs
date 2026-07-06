@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using FragmentOfJapanese.Autoloads;
 using FragmentOfJapanese.Core;
 
 namespace FragmentOfJapanese.Ui;
@@ -82,12 +84,12 @@ public partial class ChallengeUi : CanvasLayer
             var newWord = MkLabel("✨ TỪ MỚI", 24, UiKit.Gold);
             _content.AddChild(newWord);
             
-            _content.AddChild(MkLabel(target.Kana, 72, UiKit.WoodText));
+            _content.AddChild(MkLabel(JapaneseDB.ToHiragana(target.Kana), 72, UiKit.WoodText));
             _content.AddChild(MkLabel($"Nghĩa: {target.MeaningVi}", 26, UiKit.Accent));
         }
         else
         {
-            _content.AddChild(MkLabel(target.Kana, 72, UiKit.WoodText));
+            _content.AddChild(MkLabel(JapaneseDB.ToHiragana(target.Kana), 72, UiKit.WoodText));
         }
         
         var spacer = new Control { CustomMinimumSize = new Vector2(0, 12) };
@@ -114,7 +116,7 @@ public partial class ChallengeUi : CanvasLayer
         {
             if (!Begin("✨ KHÁM PHÁ NGỮ PHÁP", 0, false, onDone)) { onDone?.Invoke(false, 0); return; }
             
-            _content.AddChild(MkLabel(g.Pattern, 56, UiKit.WoodText));
+            _content.AddChild(MkLabel(JapaneseDB.ToHiragana(g.Pattern), 56, UiKit.WoodText));
             _content.AddChild(MkLabel(g.MeaningVi, 26, UiKit.Gold));
             
             var sep = new HSeparator();
@@ -131,7 +133,7 @@ public partial class ChallengeUi : CanvasLayer
             sep2.Modulate = new Color(1, 1, 1, 0.2f);
             _content.AddChild(sep2);
             
-            var exJa = WrapLabel($"Ví dụ:\n{g.ExampleJa}", UiKit.Accent);
+            var exJa = WrapLabel($"Ví dụ:\n{JapaneseDB.ToHiragana(g.ExampleJa)}", UiKit.Accent);
             exJa.AddThemeFontSizeOverride("font_size", 22);
             _content.AddChild(exJa);
             
@@ -155,7 +157,7 @@ public partial class ChallengeUi : CanvasLayer
             return;
         }
 
-        var parts = (g.ExampleJa ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var parts = (JapaneseDB.ToHiragana(g.ExampleJa) ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         // stage ≥ 2 và câu tách được ≥ 2 phần: GHÉP CÂU
         if (stage >= 2 && parts.Length >= 2)
@@ -170,7 +172,11 @@ public partial class ChallengeUi : CanvasLayer
         // stage 1 (hoặc fallback): TRẮC NGHIỆM chọn mẫu câu
         if (!Begin("📖  NGỮ PHÁP", timeoutSec, true, onDone)) { onDone?.Invoke(false, 0); return; }
         _content.AddChild(WrapLabel($"Mẫu câu nào diễn đạt: \"{g.MeaningVi}\"?", Colors.White));
-        AddChoiceGrid(BuildGrammarChoices(g, pool), ans => Finish(ans == g.Pattern));
+        
+        var hiraganaChoices = BuildGrammarChoices(g, pool).Select(c => JapaneseDB.ToHiragana(c)).ToList();
+        string hiraganaPattern = JapaneseDB.ToHiragana(g.Pattern);
+        
+        AddChoiceGrid(hiraganaChoices, ans => Finish(ans == hiraganaPattern));
         Show();
     }
 
@@ -180,10 +186,11 @@ public partial class ChallengeUi : CanvasLayer
         if (r == null || r.Choices == null || r.Choices.Count == 0) { onDone?.Invoke(false, 0); return; }
         if (!Begin("📜  ĐỌC HIỂU", timeoutSec, true, onDone)) { onDone?.Invoke(false, 0); return; }
 
-        string correct = r.Answer >= 0 && r.Answer < r.Choices.Count ? r.Choices[r.Answer] : "";
-        _content.AddChild(WrapLabel(r.TextJa, Colors.White));   // chỉ tiếng Nhật
-        _content.AddChild(WrapLabel(r.QuestionJa, UiKit.Gold)); // câu hỏi (không VI)
-        AddChoiceGrid(r.Choices, ans => Finish(ans == correct));
+        var hiraganaChoices = r.Choices.Select(c => JapaneseDB.ToHiragana(c)).ToList();
+        string correct = r.Answer >= 0 && r.Answer < hiraganaChoices.Count ? hiraganaChoices[r.Answer] : "";
+        _content.AddChild(WrapLabel(JapaneseDB.ToHiragana(r.TextJa), Colors.White));   // chỉ tiếng Nhật
+        _content.AddChild(WrapLabel(JapaneseDB.ToHiragana(r.QuestionJa), UiKit.Gold)); // câu hỏi (không VI)
+        AddChoiceGrid(hiraganaChoices, ans => Finish(ans == correct));
         Show();
     }
 

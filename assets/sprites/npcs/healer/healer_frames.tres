@@ -1,6 +1,6 @@
-[gd_resource type="SpriteFrames" format=3]
+[gd_resource type="SpriteFrames" format=3 uid="uid://dajjb6ensiiu3"]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/npcs/healer/healer.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://cjjv0sgvagqp6" path="res://assets/sprites/npcs/healer/healer.png" id="1"]
 
 [sub_resource type="AtlasTexture" id="dn0"]
 atlas = ExtResource("1")
@@ -10,13 +10,13 @@ region = Rect2(0, 0, 500, 500)
 atlas = ExtResource("1")
 region = Rect2(500, 0, 500, 500)
 
-[sub_resource type="AtlasTexture" id="up0"]
-atlas = ExtResource("1")
-region = Rect2(1000, 0, 500, 500)
-
 [sub_resource type="AtlasTexture" id="rt0"]
 atlas = ExtResource("1")
 region = Rect2(1500, 0, 500, 500)
+
+[sub_resource type="AtlasTexture" id="up0"]
+atlas = ExtResource("1")
+region = Rect2(1000, 0, 500, 500)
 
 [resource]
 animations = [{

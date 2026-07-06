@@ -17,8 +17,18 @@ public partial class VillageChiefNpc : Npc
 		},
 		Choices = new[]
 		{
-			new DialogueChoice { Label = "Xem cửa hàng",         Action = () => ShopUi.Instance?.Open() },
-			new DialogueChoice { Label = "Đổi chiến lợi phẩm",   Action = () => TradeUi.Open() },
+			new DialogueChoice
+			{
+				Label = "Hỏi bí quyết học tập",
+				Next  = new DialogueNode
+				{
+					Speaker = NpcName,
+					Lines   = new[] {
+						new DialogueLine("にほんごの べんきょうは まいにち すこしずつ やるのが だいじです。", "Học tiếng Nhật quan trọng nhất là mỗi ngày học một chút."),
+						new DialogueLine("まものと たたかいながら、ことばの ちからを みにつけてください。", "Hãy vừa chiến đấu với quái vật, vừa rèn luyện sức mạnh của ngôn từ nhé.")
+					},
+				},
+			},
 			new DialogueChoice
 			{
 				Label = "Hỏi chuyện trong làng",

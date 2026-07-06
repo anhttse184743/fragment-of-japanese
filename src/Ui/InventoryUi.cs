@@ -642,6 +642,32 @@ public partial class InventoryUi : CanvasLayer
         else          ClearSelection();
     }
 
+    private Texture2D GetSkinPreviewTexture(SkinDef skin)
+    {
+        if (string.IsNullOrEmpty(skin.Frames) || !ResourceLoader.Exists(skin.Frames)) return null;
+        if (skin.Frames.EndsWith(".png"))
+        {
+            return GD.Load<Texture2D>(skin.Frames);
+        }
+        else if (skin.Frames.EndsWith(".tres"))
+        {
+            var sf = GD.Load<SpriteFrames>(skin.Frames);
+            if (sf != null)
+            {
+                string[] tryAnims = { "idle_down", "idle", "default" };
+                foreach (var a in tryAnims)
+                {
+                    if (sf.HasAnimation(a) && sf.GetFrameCount(a) > 0)
+                        return sf.GetFrameTexture(a, 0);
+                }
+                var names = sf.GetAnimationNames();
+                if (names.Length > 0 && sf.GetFrameCount(names[0]) > 0)
+                    return sf.GetFrameTexture(names[0], 0);
+            }
+        }
+        return null;
+    }
+
     private Button MakeSkinSlot(SkinDef skin, bool selected, bool equipped, bool owned)
     {
         var btn = new DraggableSkinSlot
@@ -658,10 +684,9 @@ public partial class InventoryUi : CanvasLayer
         v.AddThemeConstantOverride("separation", 4);
 
         var swHolder = new CenterContainer();
-        bool hasTex = !string.IsNullOrEmpty(skin.Frames) && skin.Frames.EndsWith(".png") && ResourceLoader.Exists(skin.Frames);
-        if (hasTex)
+        var tex = GetSkinPreviewTexture(skin);
+        if (tex != null)
         {
-            var tex = GD.Load<Texture2D>(skin.Frames);
             btn.DragIcon = tex;
             var tr = new TextureRect { Texture = tex, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(54, 54) };
             if (!owned) tr.Modulate = new Color(1, 1, 1, 0.28f);
@@ -731,10 +756,9 @@ public partial class InventoryUi : CanvasLayer
 
         foreach (Node c in _detailImage.GetChildren()) c.QueueFree();
 
-        bool hasTex = !string.IsNullOrEmpty(skin.Frames) && skin.Frames.EndsWith(".png") && ResourceLoader.Exists(skin.Frames);
-        if (hasTex)
+        var tex = GetSkinPreviewTexture(skin);
+        if (tex != null)
         {
-            var tex = GD.Load<Texture2D>(skin.Frames);
             var tr = new TextureRect { Texture = tex, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(132, 132) };
             if (!owned) tr.Modulate = new Color(1, 1, 1, 0.3f);
             _detailImage.AddChild(tr);

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3]
 
-[ext_resource type="Script" path="res://src/Entities/Npc/Npc.cs" id="1_npc"]
+[ext_resource type="Script" path="res://src/Entities/Npc/MailmanNpc.cs" id="1_npc"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/npcs/mailman/mailman_frames.tres" id="2_frames"]
 [ext_resource type="Script" path="res://src/World/Interactable.cs" id="3_int"]
 [ext_resource type="Script" path="res://src/Entities/Npc/NpcDirectionalIdle.cs" id="4_idle"]

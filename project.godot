@@ -21,9 +21,9 @@ driver/enable_input=true
 
 [autoload]
 
+AudioManager="*res://src/Autoloads/AudioManager.cs"
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 ApiClient="*res://src/Autoloads/ApiClient.cs"
-ConnectivityGuard="*res://src/Autoloads/ConnectivityGuard.cs"
 AccountManager="*res://src/Autoloads/AccountManager.cs"
 ItemDatabase="*res://src/Autoloads/ItemDatabase.cs"
 JapaneseDB="*res://src/Autoloads/JapaneseDB.cs"
@@ -48,6 +48,7 @@ HiraganaChartUi="*res://scenes/ui/HiraganaChartUi.tscn"
 MinigameUi="*res://scenes/ui/MinigameUi.tscn"
 SaveSystem="*res://src/Autoloads/SaveSystem.cs"
 GameManager="*res://src/Autoloads/GameManager.cs"
+ConnectivityGuard="*res://src/Autoloads/ConnectivityGuard.cs"
 
 [display]
 

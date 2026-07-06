@@ -82,6 +82,7 @@ public partial class Npc : StaticBody3D
         DialogueAction.OpenShop     => () => ShopUi.Instance?.Open(),
         DialogueAction.OpenKanaDraw => () => KanaDrawUi.Open(),
         DialogueAction.OpenDrawBattle => () => FragmentOfJapanese.Battle.DrawBattleManager.StartBattleFromWorld(),
+        DialogueAction.OpenScrollTrade => () => ScrollTradeUi.Open(),
         _                           => null,
     };
 

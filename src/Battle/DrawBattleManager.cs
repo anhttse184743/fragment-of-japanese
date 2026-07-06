@@ -105,6 +105,7 @@ public partial class DrawBattleManager : Node
         {
             _playerController.SetPhysicsProcess(false);
             _playerController.SetProcess(false);
+            _player.Velocity = Godot.Vector3.Zero;
         }
 
         // Ẩn UI điều khiển bên ngoài và lưu lại danh sách để khôi phục
@@ -155,6 +156,27 @@ public partial class DrawBattleManager : Node
         
         // Bắt đầu lượt Player
         StartPlayerTurn();
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        // Khi AI/Controller bị tắt, MoveAndSlide() không chạy -> IsOnFloor() sẽ = false.
+        // Điều này làm Animator tưởng nhân vật đang trên không và cố chạy animation "jump".
+        // Ta dùng 1 trick nhỏ: ép rớt xuống đất 1 lần để cập nhật IsOnFloor() = true.
+        
+        if (IsInstanceValid(_player) && !_player.IsOnFloor())
+        {
+            _player.Velocity = new Godot.Vector3(0, -10f, 0);
+            _player.MoveAndSlide();
+            _player.Velocity = Godot.Vector3.Zero; // Đảm bảo đứng yên để play "idle"
+        }
+
+        if (IsInstanceValid(_enemy) && !_enemy.IsOnFloor())
+        {
+            _enemy.Velocity = new Godot.Vector3(0, -10f, 0);
+            _enemy.MoveAndSlide();
+            _enemy.Velocity = Godot.Vector3.Zero;
+        }
     }
 
     private void StartPlayerTurn()

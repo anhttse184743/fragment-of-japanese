@@ -31,6 +31,11 @@ public partial class ActionButtons : Control
         if (_atkBtn  != null) _atkBtn.ButtonDown  += () => Ctrl()?.RequestAttack();
         if (_fastBtn != null) _fastBtn.Pressed    += OnFast;
         // DrawBtn / VoiceBtn: placeholder trong scene — nối sau (viết kana / đọc từ).
+        var voiceBtn = GetNodeOrNull<Button>("VoiceBtn");
+        if (voiceBtn != null) voiceBtn.Visible = false;
+
+        var drawBtn = GetNodeOrNull<Button>("DrawBtn");
+        if (drawBtn != null) drawBtn.Visible = false;
     }
 
     private void StyleActionBtn(Button btn)

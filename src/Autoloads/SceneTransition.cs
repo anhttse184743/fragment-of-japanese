@@ -73,13 +73,16 @@ public partial class SceneTransition : Node
         }
     }
 
+    /// <summary>Gán tên node portal muốn teleport tới (chỉ dùng cho Fast Travel). Tự reset sau mỗi lần chuyển.</summary>
+    public static string TargetPortalName { get; set; }
+
     /// <summary>
-    /// Đặt người chơi tại cổng (ở scene MỚI) có ScenePath trỏ VỀ <paramref name="fromScene"/>.
-    /// Chờ scene + người chơi sẵn sàng (PlayerSpawn tạo trễ). Map đích không có cổng quay-về → giữ vị trí mặc định.
+    /// Đặt người chơi tại cổng (ở scene MỚI) có ScenePath trỏ VỀ <paramref name="fromScene"/>,
+    /// hoặc cổng có Name trùng với <see cref="TargetPortalName"/>.
     /// </summary>
     private async System.Threading.Tasks.Task PlaceAtReturnPortal(string fromScene)
     {
-        if (string.IsNullOrEmpty(fromScene)) return;
+        if (string.IsNullOrEmpty(fromScene) && string.IsNullOrEmpty(TargetPortalName)) return;
 
         Node3D portal = null, player = null;
         for (int i = 0; i < 40; i++)
@@ -90,6 +93,9 @@ public partial class SceneTransition : Node
             if (portal != null && player != null) break;
             if (i >= 5 && portal == null) return;   // map đích rõ ràng không có cổng quay-về → thôi
         }
+        
+        TargetPortalName = null; // reset sau khi dùng
+        
         if (portal == null || player == null) return;
 
         player.GlobalPosition = portal.GlobalPosition;          // đứng NGAY tại cổng
@@ -99,8 +105,15 @@ public partial class SceneTransition : Node
     private Node3D FindReturnPortal(string fromScene)
     {
         foreach (var n in GetTree().GetNodesInGroup("portal"))
-            if (n is Portal p && ScenePathsEqual(p.ScenePath, fromScene))
-                return p;
+        {
+            if (n is Portal p)
+            {
+                if (!string.IsNullOrEmpty(TargetPortalName) && p.Name == TargetPortalName)
+                    return p;
+                if (string.IsNullOrEmpty(TargetPortalName) && ScenePathsEqual(p.ScenePath, fromScene))
+                    return p;
+            }
+        }
         return null;
     }
 
@@ -109,7 +122,25 @@ public partial class SceneTransition : Node
     {
         if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b)) return false;
         if (a == b) return true;
+
+        a = ResolveUidPath(a);
+        b = ResolveUidPath(b);
+
         return System.IO.Path.GetFileName(a) == System.IO.Path.GetFileName(b);
+    }
+
+    private static string ResolveUidPath(string path)
+    {
+        if (path.StartsWith("uid://"))
+        {
+            try
+            {
+                long id = ResourceUid.TextToId(path);
+                if (ResourceUid.HasId(id)) return ResourceUid.GetIdPath(id);
+            }
+            catch { }
+        }
+        return path;
     }
 
     private async System.Threading.Tasks.Task FadeTo(float alpha, float duration)

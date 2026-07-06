@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://ch7gk36wewsiw" path="res://assets/sprites/ui/jump button.png" id="3_jump"]
 [ext_resource type="Texture2D" uid="uid://cv11yatklmo2r" path="res://assets/sprites/ui/draw button button.png" id="4_draw"]
 [ext_resource type="Texture2D" uid="uid://c1l7r6fqqqcvl" path="res://assets/sprites/ui/voice button.png" id="5_voice"]
+[ext_resource type="Texture2D" uid="uid://du0mvh1gym0mk" path="res://assets/sprites/ui/run button.png" id="6_run"]
 
 [sub_resource type="StyleBoxFlat" id="fast_n"]
 bg_color = Color(0.72, 0.6, 0.24, 1)
@@ -93,16 +94,9 @@ offset_bottom = -280.0
 grow_horizontal = 0
 grow_vertical = 0
 focus_mode = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 13
-theme_override_styles/normal = SubResource("fast_n")
-theme_override_styles/pressed = SubResource("fast_p")
-theme_override_styles/hover = SubResource("fast_h")
-theme_override_styles/hover_pressed = SubResource("fast_p")
-theme_override_styles/focus = SubResource("empty")
-text = "FAST"
+icon = ExtResource("6_run")
+flat = true
+expand_icon = true
 
 [node name="DrawBtn" type="Button" parent="." unique_id=460261650]
 layout_mode = 1

@@ -4,5 +4,6 @@
   {"item_id":"item_stamina_potion","currency":"gold",   "price":50},
   {"item_id":"item_hi_potion",    "currency":"gold",    "price":120},
   {"item_id":"item_silver_key",   "currency":"gold",    "price":300},
+  {"item_id":"item_teleport_stone", "currency":"gold",    "price":150},
   {"item_id":"item_golden_key",   "currency":"mathach", "price":30}
 ]

@@ -4,7 +4,7 @@
     "category": "Player",
     "name": "Mặc định",
     "color": "#ffffff",
-    "frames": "res://assets/sprites/player/player_frames.tres"
+    "frames": "res://assets/sprites/player/default_player/default_player_frames.tres"
   },
   {
     "id": "player_sakura",
@@ -20,21 +20,37 @@
     "category": "Player",
     "name": "Đỏ thẫm",
     "color": "#ff7a7a",
-    "frames": "res://assets/sprites/player/player_frames.tres"
+    "frames": "res://assets/sprites/player/default_player/default_player_frames.tres"
   },
   {
     "id": "player_azure",
     "category": "Player",
     "name": "Thiên thanh",
     "color": "#8ac0ff",
-    "frames": "res://assets/sprites/player/player_frames.tres"
+    "frames": "res://assets/sprites/player/default_player/default_player_frames.tres"
   },
   {
     "id": "player_emerald",
     "category": "Player",
     "name": "Lục bảo",
     "color": "#86e0a4",
-    "frames": "res://assets/sprites/player/player_frames.tres"
+    "frames": "res://assets/sprites/player/default_player/default_player_frames.tres"
+  },
+  {
+    "id": "player_hero",
+    "category": "Player",
+    "name": "Hero",
+    "color": "#ffffff",
+    "frames": "res://assets/sprites/player/player_frames.tres",
+    "pixel_size": 0.02869,
+    "visual_y": 0.832
+  },
+  {
+    "id": "basic_swing",
+    "category": "AttackSwing",
+    "name": "Basic Swing",
+    "color": "#ffffff",
+    "frames": "res://assets/sprites/effect/attack_swing/basic_swing.png"
   },
   {
     "id": "slash_silver",
@@ -77,6 +93,13 @@
     "category": "RunDust",
     "name": "Cỏ",
     "color": "#8fd49a"
+  },
+  {
+    "id": "basic_spark",
+    "category": "HitSpark",
+    "name": "Basic Spark",
+    "color": "#ffffff",
+    "frames": "res://assets/sprites/effect/hit_spark/basic_spark.png"
   },
   {
     "id": "spark_gold",
@@ -133,25 +156,11 @@
     "color": "#ff6060"
   },
   {
-    "id": "basic_swing",
-    "category": "AttackSwing",
-    "name": "Basic Swing",
-    "color": "#ffffff",
-    "frames": "res://assets/sprites/effect/attack_swing/basic_swing.png"
-  },
-  {
     "id": "sakura_spark",
     "category": "HitSpark",
     "name": "Sakura Spark",
     "color": "#ffffff",
     "frames": "res://assets/sprites/effect/hit_spark/sakura_spark.png"
-  },
-  {
-    "id": "basic_spark",
-    "category": "HitSpark",
-    "name": "Basic Spark",
-    "color": "#ffffff",
-    "frames": "res://assets/sprites/effect/hit_spark/basic_spark.png"
   },
   {
     "id": "sakura_attack_swing",

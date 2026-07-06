@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="4_pcam"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="5_host"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_lfoco"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/player/player_frames.tres" id="7_frames"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/player/default_player/default_player_frames.tres" id="7_frames"]
 [ext_resource type="Script" uid="uid://br776t024ji3u" path="res://src/Entities/Player/PlayerAnimator.cs" id="8_anim"]
 [ext_resource type="Script" uid="uid://c8xpeb3lhqugw" path="res://src/Entities/AttackZone.cs" id="9_zone"]
 [ext_resource type="Script" uid="uid://bp173m4oyscgu" path="res://src/Entities/Player/PlayerCosmetics.cs" id="10_cos"]
@@ -28,8 +28,8 @@ unique_name_in_owner = true
 script = ExtResource("1_player")
 
 [node name="Visual" type="AnimatedSprite3D" parent="Player" unique_id=89265302]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.832, 0)
-pixel_size = 0.02869
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8475, 0)
+pixel_size = 0.02734
 billboard = 2
 alpha_cut = 1
 texture_filter = 0

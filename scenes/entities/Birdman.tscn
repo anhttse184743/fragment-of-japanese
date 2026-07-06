@@ -1,25 +1,25 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://bx13ykeykqs65"]
 
-[ext_resource type="Script" path="res://src/Entities/Npc/Npc.cs" id="1_npc"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/npcs/birdman/birdman_frames.tres" id="2_frames"]
-[ext_resource type="Script" path="res://src/World/Interactable.cs" id="3_int"]
-[ext_resource type="Script" path="res://src/Entities/Npc/NpcDirectionalIdle.cs" id="4_idle"]
+[ext_resource type="Script" uid="uid://urnchn5bxywp" path="res://src/Entities/Npc/BirdmanNpc.cs" id="1_npc"]
+[ext_resource type="SpriteFrames" uid="uid://fm0s0u1gyo54" path="res://assets/sprites/npcs/birdman/birdman_frames.tres" id="2_frames"]
+[ext_resource type="Script" uid="uid://cl4i03cbl5f8s" path="res://src/World/Interactable.cs" id="3_int"]
+[ext_resource type="Script" uid="uid://c2m7ibwohqo7h" path="res://src/Entities/Npc/NpcDirectionalIdle.cs" id="4_idle"]
 
 [sub_resource type="CapsuleShape3D" id="cap_body"]
 radius = 0.35
 height = 1.75
 
 [sub_resource type="CylinderShape3D" id="cyl_zone"]
-radius = 2.2
 height = 3.0
+radius = 2.2
 
-[node name="Birdman" type="StaticBody3D" node_paths=PackedStringArray("_interactable")]
+[node name="Birdman" type="StaticBody3D" unique_id=1608262021 node_paths=PackedStringArray("_interactable")]
 script = ExtResource("1_npc")
 NpcId = "birdman"
 NpcName = "Người Chim"
 _interactable = NodePath("Interactable")
 
-[node name="Visual" type="AnimatedSprite3D" parent="."]
+[node name="Visual" type="AnimatedSprite3D" parent="." unique_id=886387734]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8705, 0)
 pixel_size = 0.00372
 billboard = 2
@@ -29,19 +29,19 @@ sprite_frames = ExtResource("2_frames")
 animation = &"idle_down"
 autoplay = "idle_down"
 
-[node name="Body" type="CollisionShape3D" parent="."]
+[node name="Body" type="CollisionShape3D" parent="." unique_id=781118907]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
 shape = SubResource("cap_body")
 
-[node name="Idle" type="Node" parent="." node_paths=PackedStringArray("_sprite")]
+[node name="Idle" type="Node" parent="." unique_id=276378278 node_paths=PackedStringArray("_sprite")]
 script = ExtResource("4_idle")
 _sprite = NodePath("../Visual")
 
-[node name="Interactable" type="Area3D" parent="."]
+[node name="Interactable" type="Area3D" parent="." unique_id=1521964673]
 script = ExtResource("3_int")
 ActionText = "Nói chuyện"
 PromptOffset = Vector3(0, 2.3, 0)
 
-[node name="Zone" type="CollisionShape3D" parent="Interactable"]
+[node name="Zone" type="CollisionShape3D" parent="Interactable" unique_id=213145606]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("cyl_zone")

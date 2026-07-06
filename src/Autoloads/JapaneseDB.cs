@@ -94,7 +94,23 @@ public partial class JapaneseDB : Node
 		return true;
 	}
 
+	/// <summary>Chuyển toàn bộ ký tự Katakana trong chuỗi thành Hiragana.</summary>
+	public static string ToHiragana(string text)
+	{
+		if (string.IsNullOrEmpty(text)) return text;
+		char[] result = text.ToCharArray();
+		for (int i = 0; i < result.Length; i++)
+		{
+			char c = result[i];
+			if (c >= '\u30a1' && c <= '\u30f6') // Katakana range
+			{
+				result[i] = (char)(c - 0x0060);
+			}
+		}
+		return new string(result);
+	}
+
 	/// <summary>Từ trong một bài có cách đọc thuần hiragana (loại từ katakana) — dùng cho giai đoạn hiragana.</summary>
 	public List<VocabularyEntry> GetHiraganaReadable(int lesson)
-		=> _vocabN5.FindAll(v => v.Lesson == lesson && IsHiraganaOnly(v.Kana));
+		=> _vocabN5.FindAll(v => v.Lesson == lesson);
 }

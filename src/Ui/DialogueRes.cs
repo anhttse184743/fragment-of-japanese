@@ -10,7 +10,8 @@ public enum DialogueAction
     OpenLearning,   // mở màn học từ (chỉ NPC dạy học mới có tác dụng)
     OpenKanaDraw,   // mở màn luyện viết chữ kana (KanaDrawUi)
     OpenMemoryKnowledge, // Mở Sổ tay kiến thức
-    OpenDrawBattle  // Mở màn chiến đấu vẽ chữ (DrawBattleUi)
+    OpenDrawBattle, // Mở màn chiến đấu vẽ chữ (DrawBattleUi)
+    OpenScrollTrade // Mở giao diện đổi cuộn từ vựng lấy chìa khóa
 }
 
 /// <summary>

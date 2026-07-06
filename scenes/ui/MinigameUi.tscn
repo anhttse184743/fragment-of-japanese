@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/Ui/MinigameUi.cs" id="1_mini"]
 
-[node name="MinigameUi" type="CanvasLayer" node_paths=PackedStringArray("_root", "_modeSelectionPanel", "_questionPanel", "_btnModeHiragana", "_btnModeVocab", "_btnClose", "_lblProgress", "_timerBar", "_btnPlayAudio", "_cardsContainer", "_audioPlayer")]
+[node name="MinigameUi" type="CanvasLayer" node_paths=PackedStringArray("_root", "_modeSelectionPanel", "_questionPanel", "_btnModeHiragana", "_btnModeVocab", "_btnClose", "_lblProgress", "_timerBar", "_btnPlayAudio", "_cardsContainer", "_audioPlayer", "_lblResult")]
 layer = 200
 script = ExtResource("1_mini")
 _root = NodePath("Control")
@@ -16,6 +16,7 @@ _timerBar = NodePath("Control/QuestionPanel/VBox/TimerBar")
 _btnPlayAudio = NodePath("Control/QuestionPanel/VBox/BtnPlayAudio")
 _cardsContainer = NodePath("Control/QuestionPanel/VBox/GridCards")
 _audioPlayer = NodePath("AudioStreamPlayer")
+_lblResult = NodePath("Control/ResultLabel")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -127,5 +128,26 @@ size_flags_vertical = 6
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 columns = 4
+
+[node name="ResultLabel" type="Label" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 15
+theme_override_font_sizes/font_size = 100
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

@@ -38,12 +38,16 @@ public partial class PlayerAnimator : Node
     private string _currentAnim = "";
     private bool   _attacking;
 
+    private AudioStream _attackSfx;
+
     public override void _Ready()
     {
         if (_controller != null)
             _controller.AttackPressed += OnAttack;
         if (_sprite != null)
             _sprite.AnimationFinished += OnSpriteAnimationFinished;
+            
+        _attackSfx = GD.Load<AudioStream>("res://assets/audio/sfx/sword-swing.mp3");
     }
 
     public override void _ExitTree()
@@ -86,6 +90,11 @@ public partial class PlayerAnimator : Node
         _attacking = true;
         _sprite.SpeedScale = 1f;
         Play("attack", force: true);
+        
+        if (_attackSfx != null && Autoloads.AudioManager.Instance != null)
+        {
+            Autoloads.AudioManager.Instance.PlaySfx(_attackSfx);
+        }
     }
 
     private void OnSpriteAnimationFinished()
