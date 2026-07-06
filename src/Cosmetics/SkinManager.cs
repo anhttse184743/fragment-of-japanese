@@ -7,14 +7,18 @@ using FragmentOfJapanese.Autoloads;
 
 namespace FragmentOfJapanese.Cosmetics;
 
-/// <summary>Kết quả 1 skin khi quay (cho UI reveal).</summary>
+/// <summary>Kết quả 1 lượt quay (gacha ra hỗn hợp: skin / cuộn / vàng / chìa).</summary>
 public class SkinGachaResult
 {
+    public string Kind     { get; set; } = "skin";   // skin | scroll | gold | golden_key
     public string SkinId   { get; set; } = "";
     public string Category { get; set; } = "";
     public string Name     { get; set; } = "";
     public string Rarity   { get; set; } = "";
     public bool   IsNew    { get; set; }
+    public int    Amount   { get; set; }              // cuộn/vàng/chìa: số lượng
+    public bool   IsDuplicate  { get; set; }
+    public int    RefundScrolls { get; set; }
 }
 
 /// <summary>Kết quả tổng của 1 lượt quay skin.</summary>
@@ -22,9 +26,8 @@ public class SkinPullOutcome
 {
     public List<SkinGachaResult> Results = new();
     public int    KeysLeft;
-    public int    GoldRefunded;
     public int    PityCurrent;
-    public int    PityTarget = 60;
+    public int    PityTarget = 80;
     public string Error;   // null nếu thành công
 }
 
@@ -45,9 +48,10 @@ public partial class SkinManager : Node
     private readonly Dictionary<SkinCategory, string> _equipped = new();
     private readonly HashSet<string> _owned = new();   // skin đã mở khóa (gồm mặc định mỗi loại)
 
-    /// <summary>Bảo hiểm trúng thưởng skin hiện tại (server-authoritative).</summary>
-    public int PityCurrent { get; private set; }
-    public int PityTarget  { get; private set; } = 60;
+    /// <summary>Bảo hiểm hiện tại theo banner (server-authoritative).</summary>
+    public int PitySilver { get; private set; }
+    public int PityGold   { get; private set; }
+    public int PityTarget { get; private set; } = 80;
 
     /// <summary>Phát khi đổi skin một loại (category, skin mới).</summary>
     public event Action<SkinCategory, SkinDef> SkinChanged;
@@ -128,18 +132,19 @@ public partial class SkinManager : Node
 
         foreach (var r in data.Data.Results)
         {
-            if (r.IsNew && !string.IsNullOrEmpty(r.SkinId)) _owned.Add(r.SkinId);
+            if (r.Kind == "skin" && r.IsNew && !string.IsNullOrEmpty(r.SkinId)) _owned.Add(r.SkinId);
             outcome.Results.Add(new SkinGachaResult
             {
-                SkinId = r.SkinId, Category = r.Category, Name = r.Name, Rarity = r.Rarity ?? "common", IsNew = r.IsNew
+                Kind = r.Kind ?? "skin", SkinId = r.SkinId, Category = r.Category, Name = r.Name,
+                Rarity = r.Rarity ?? "common", IsNew = r.IsNew, Amount = r.Amount,
+                IsDuplicate = r.IsDuplicate, RefundScrolls = r.RefundScrolls
             });
         }
-        outcome.KeysLeft     = data.Data.KeysLeft;
-        outcome.GoldRefunded = data.Data.GoldRefunded;
+        outcome.KeysLeft    = data.Data.KeysLeft;
         outcome.PityCurrent = data.Data.PityStreak;
         if (data.Data.PityTarget > 0) outcome.PityTarget = data.Data.PityTarget;
-        PityCurrent = outcome.PityCurrent;
-        PityTarget  = outcome.PityTarget;
+        PityTarget = outcome.PityTarget;
+        if (useGoldenKey) PityGold = outcome.PityCurrent; else PitySilver = outcome.PityCurrent;
         OwnedChanged?.Invoke();
         return outcome;
     }
@@ -169,16 +174,22 @@ public partial class SkinManager : Node
         await ApiClient.Instance.PostAsync("/api/skins/equip", new { Category = cat.ToString(), SkinId = id });
     }
 
-    /// <summary>Nạp số bảo hiểm trúng thưởng skin hiện tại từ server.</summary>
+    /// <summary>Nạp số bảo hiểm hiện tại cho cả hai banner.</summary>
     public async Task SyncPityAsync()
     {
         if (string.IsNullOrEmpty(ApiClient.Instance.AccessToken)) return;
-        var res = await ApiClient.Instance.GetAsync("/api/skins/pity");
-        if (!res.IsSuccessStatusCode) return;
+        PitySilver = await FetchPityAsync("silver");
+        PityGold   = await FetchPityAsync("gold");
+    }
+
+    private async Task<int> FetchPityAsync(string banner)
+    {
+        var res = await ApiClient.Instance.GetAsync($"/api/skins/pity?banner={banner}");
+        if (!res.IsSuccessStatusCode) return 0;
         var data = await ApiClient.Instance.ReadAsAsync<AccountManager.ApiResponse<PityDto>>(res);
-        if (data?.Data == null) return;
-        PityCurrent = data.Data.PityStreak;
+        if (data?.Data == null) return 0;
         if (data.Data.PityTarget > 0) PityTarget = data.Data.PityTarget;
+        return data.Data.PityStreak;
     }
 
     // ───────── Truy vấn ─────────
@@ -276,20 +287,23 @@ public partial class SkinManager : Node
 
     private class SkinGachaResultDto
     {
+        public string Kind     { get; set; }
         public string SkinId   { get; set; }
         public string Category { get; set; }
         public string Name     { get; set; }
         public string Rarity   { get; set; }
         public bool   IsNew    { get; set; }
+        public int    Amount   { get; set; }
+        public bool   IsDuplicate  { get; set; }
+        public int    RefundScrolls { get; set; }
     }
 
     private class SkinGachaResponseDto
     {
         public List<SkinGachaResultDto> Results { get; set; } = new();
-        public int KeysLeft     { get; set; }
-        public int GoldRefunded { get; set; }
-        public int PityStreak   { get; set; }
-        public int PityTarget   { get; set; }
+        public int KeysLeft   { get; set; }
+        public int PityStreak { get; set; }
+        public int PityTarget { get; set; }
     }
 
     private class PityDto

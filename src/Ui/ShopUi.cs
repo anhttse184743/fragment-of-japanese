@@ -843,12 +843,12 @@ public partial class ShopUi : CanvasLayer
     private void RefreshLuck()
     {
         var mgr = SkinManager.Instance;
-        int cur = mgr?.PityCurrent ?? 0;
-        int tgt = mgr?.PityTarget  ?? 60;
+        int tgt = mgr?.PityTarget ?? 80;
         foreach (var (lbl, isGold) in _gachaLuckLabels)
         {
-            if (lbl != null && GodotObject.IsInstanceValid(lbl))
-                lbl.Text = $"Bảo hiểm trúng thưởng: {cur}/{tgt}";
+            if (lbl == null || !GodotObject.IsInstanceValid(lbl)) continue;
+            int cur = mgr == null ? 0 : (isGold ? mgr.PityGold : mgr.PitySilver);
+            lbl.Text = $"Bảo hiểm trúng thưởng: {cur}/{tgt}";
         }
     }
 
@@ -860,10 +860,14 @@ public partial class ShopUi : CanvasLayer
         var outcome = await mgr.GachaPullAsync(count, isGold);
         if (outcome.Error != null) { ShowFeedback(outcome.Error, false); return; }
 
-        _ = Inventory.Instance?.SyncAsync();   // chìa đã trừ ở server → làm mới túi
+        await (Inventory.Instance?.SyncAsync() ?? System.Threading.Tasks.Task.CompletedTask);  // chìa/cuộn/vàng đổi → làm mới túi
+        if (Wallet.Instance != null) await Wallet.Instance.SyncAsync();   // gacha có thể thưởng Vàng
         RefreshWallet();
         RefreshLuck();
-        if (outcome.GoldRefunded > 0) ShowFeedback($"Trùng skin → hoàn {outcome.GoldRefunded:N0} Vàng.", true);
+
+        int refundScrolls = 0;
+        foreach (var r in outcome.Results) refundScrolls += r.RefundScrolls;
+        if (refundScrolls > 0) ShowFeedback($"Trùng skin → hoàn {refundScrolls} Cuộn Từ Vựng.", true);
         ShowSkinReveal(outcome.Results);
     }
 
@@ -898,17 +902,33 @@ public partial class ShopUi : CanvasLayer
         var v = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
         v.AddThemeConstantOverride("separation", 6);
 
-        var swatch = new ColorRect { CustomMinimumSize = new Vector2(64, 64), Color = SkinSwatchColor(r.SkinId) };
+        bool isSkin = r.Kind == "skin" || string.IsNullOrEmpty(r.Kind);
+
+        // Ảnh: skin → ô màu; vàng/cuộn/chìa → icon vật phẩm tương ứng.
         var sw = new CenterContainer();
-        sw.AddChild(swatch);
+        if (isSkin)
+        {
+            sw.AddChild(new ColorRect { CustomMinimumSize = new Vector2(64, 64), Color = SkinSwatchColor(r.SkinId) });
+        }
+        else
+        {
+            string iconItem = r.Kind switch { "scroll" => "item_scroll", "golden_key" => "item_golden_key", _ => null };
+            if (r.Kind == "gold")
+                sw.AddChild(new TextureRect { Texture = GD.Load<Texture2D>(UiKit.GoldIconPath), CustomMinimumSize = new Vector2(64, 64), ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered });
+            else
+                sw.AddChild(UiKit.ItemIcon(ItemDatabase.Instance?.Get(iconItem), rc, 64));
+        }
         v.AddChild(sw);
 
-        var name = new Label { Text = r.Name, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+        string nameText = isSkin ? r.Name : $"{r.Name} x{r.Amount:N0}";
+        var name = new Label { Text = nameText, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
         name.AddThemeFontSizeOverride("font_size", 13);
         name.AddThemeColorOverride("font_color", UiKit.WoodText);
         v.AddChild(name);
 
-        var tag = new Label { Text = r.IsNew ? "MỚI!" : "Trùng", HorizontalAlignment = HorizontalAlignment.Center };
+        // Nhãn: skin mới/trùng; non-skin không cần.
+        string tagText = !isSkin ? "" : (r.IsNew ? "MỚI!" : $"Trùng +{r.RefundScrolls} cuộn");
+        var tag = new Label { Text = tagText, HorizontalAlignment = HorizontalAlignment.Center };
         tag.AddThemeFontSizeOverride("font_size", 12);
         tag.AddThemeColorOverride("font_color", r.IsNew ? UiKit.BuyGreenHi : UiKit.WoodTextDim);
         v.AddChild(tag);
