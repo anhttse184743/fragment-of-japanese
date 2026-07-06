@@ -42,8 +42,14 @@ public partial class VoiceRecognizer : Node
 		AudioServer.AddBus();
 		_busIdx = AudioServer.BusCount - 1;
 		AudioServer.SetBusName(_busIdx, "CloudCapture");
+
+		// Lọc bớt nhiễu tần số thấp (tiếng quạt/điều hòa/rung ù) TRƯỚC khi ghi.
+		// Giọng nói tiếng Nhật nằm trên ~300Hz nên cắt dưới 150Hz không ảnh hưởng lời nói.
+		var highPass = new AudioEffectHighPassFilter { CutoffHz = 150f };
+		AudioServer.AddBusEffect(_busIdx, highPass);
+
 		_capture = new AudioEffectCapture();
-		AudioServer.AddBusEffect(_busIdx, _capture);
+		AudioServer.AddBusEffect(_busIdx, _capture);   // đặt SAU high-pass → ghi âm đã lọc
 
 		// LUÔN mute bus thu: chỉ dùng để lấy mẫu âm gửi lên server, KHÔNG phát ngược ra loa
 		// (nếu không sẽ nghe tiếng mic hú/ồn). AudioEffectCapture vẫn lấy được mẫu đầy đủ.
@@ -115,7 +121,7 @@ public partial class VoiceRecognizer : Node
 		}
 		float rms = Mathf.Sqrt(energy / _recordedFrames.Count);
 		
-		if (rms < 0.005f) // Ngưỡng âm thanh rất nhỏ (tiếng xì của mic)
+		if (rms < 0.008f) // Ngưỡng chặn nền yếu (tiếng quạt/xì mic) — nói bình thường vẫn qua tốt
 		{
 			GD.Print($"[Voice] Âm thanh quá nhỏ (RMS: {rms:F4}), bỏ qua API call để tránh AI nhận diện bậy bạ.");
 			EmitSignal(SignalName.WordRecognized, "[Im lặng]", false, "", 0f);
