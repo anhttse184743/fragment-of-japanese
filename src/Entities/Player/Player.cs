@@ -40,9 +40,20 @@ public partial class Player : CharacterBody3D, IDamageable
 	{
 		switch (item.Effect)
 		{
-			case "heal": Heal(item.Value); break;
-			case "mana": RestoreMana(item.Value); break;
+			case "heal":          Heal(item.Value);          break;
+			case "mana":
+			case "heal_mana":     RestoreMana(item.Value);    break;
+			case "heal_stamina":  RestoreStamina(item.Value); break;
+			case "teleport":      TeleportToSpawn();          break;
 		}
+	}
+
+	/// <summary>Dịch chuyển về điểm hồi sinh (PlayerSpawn) trong cảnh hiện tại; không có thì về gốc toạ độ (làng).</summary>
+	private void TeleportToSpawn()
+	{
+		var spawn = GetTree().Root.FindChild("PlayerSpawn", recursive: true, owned: false) as Node3D;
+		GlobalPosition = spawn?.GlobalPosition ?? Vector3.Zero;
+		Velocity = Vector3.Zero;
 	}
 
 	public async System.Threading.Tasks.Task SyncFromServerAsync()
@@ -77,20 +88,36 @@ public partial class Player : CharacterBody3D, IDamageable
 
 	private float _sinceDamage;
 	private float _regenTimer;
+	private float _manaRegenTimer;
 
 	public override void _Process(double delta)
 	{
-		// Không bị đánh đủ lâu → hồi máu dần tới khi đầy
-		if (Data == null || Data.Hp <= 0 || Data.Hp >= Data.MaxHp) return;
+		if (Data == null || Data.Hp <= 0) return;
 
-		_sinceDamage += (float)delta;
-		if (_sinceDamage < RegenDelay) return;
-
-		_regenTimer += (float)delta;
-		if (_regenTimer >= RegenTick)
+		// Hồi máu khi không bị đánh đủ lâu
+		if (Data.Hp < Data.MaxHp)
 		{
-			_regenTimer = 0f;
-			Heal(RegenAmount);
+			_sinceDamage += (float)delta;
+			if (_sinceDamage >= RegenDelay)
+			{
+				_regenTimer += (float)delta;
+				if (_regenTimer >= RegenTick)
+				{
+					_regenTimer = 0f;
+					Heal(RegenAmount);
+				}
+			}
+		}
+
+		// Hồi Mana mỗi 30s (2-5 mana)
+		if (Data.Mana < Data.MaxMana)
+		{
+			_manaRegenTimer += (float)delta;
+			if (_manaRegenTimer >= 30f)
+			{
+				_manaRegenTimer = 0f;
+				RestoreMana((int)(GD.Randi() % 4) + 2); // 2..5
+			}
 		}
 	}
 
