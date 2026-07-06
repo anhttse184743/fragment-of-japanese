@@ -22,7 +22,7 @@
 
 const Library := preload("res://addons/admob/internal/exporters/android/library.gd")
 
-const APPLICATION_ID := "ca-app-pub-3940256099942544~3347511713" # Change to your own AdMob App ID when releasing your game.
+const APPLICATION_ID := "ca-app-pub-1042984115395141~5427628638" # AdMob App ID thật của FOJ
 
 var libraries: Array[Library] = [
 	# Main Plugin

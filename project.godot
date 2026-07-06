@@ -65,7 +65,7 @@ project/assembly_name="FRAGMENT OF JAPANESE"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/phantom_camera/plugin.cfg")
+enabled=PackedStringArray("res://addons/admob/plugin.cfg", "res://addons/phantom_camera/plugin.cfg")
 
 [input_devices]
 
