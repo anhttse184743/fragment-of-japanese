@@ -37,6 +37,12 @@ public partial class DrawBattleManager : Node
             return;
         }
 
+        if (!player.UseMana(5))
+        {
+            UiKit.GlobalToast("Không đủ Mana! Cần 5 Mana.", 2.5f);
+            return;
+        }
+
         // Tải 3D Arena và các vị trí
         var root = tree.CurrentScene;
         var arena = root.FindChild("BattleArena", true, false) as Node3D;
@@ -305,8 +311,14 @@ public partial class DrawBattleManager : Node
 
     private void ScheduleEndBattle(bool win)
     {
+        // Thắng mini game viết → báo tiến độ quest (daily_write / weekly_write).
+        if (win) FragmentOfJapanese.Quests.QuestManager.Instance?.Report("minigame", "write");
+
         GetTree().CreateTimer(3.0f).Timeout += () => {
-            if (IsInstanceValid(this)) EndBattle(win);
+            if (IsInstanceValid(this)) 
+            {
+                MinigameRewardUi.ShowReward("TRẬN CHIẾN VẼ", win, () => EndBattle(win));
+            }
         };
     }
 

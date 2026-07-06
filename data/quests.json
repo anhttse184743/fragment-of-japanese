@@ -1,38 +1,62 @@
 [
   {
-    "id": "daily_vocab", "name_vi": "Học từ vựng", "name_en": "Vocabulary Study", "name_ja": "単語の学習",
-    "description_vi": "Trả lời đúng 5 từ vựng hôm nay.",
-    "period": "daily", "type": "learn", "target": 5, "target_key": "vocab",
-    "reward": {"exp": 20, "gold": 100, "ma_thach": 0, "item_id": "item_silver_key", "item_count": 1}
-  },
-  {
-    "id": "daily_grammar", "name_vi": "Luyện ngữ pháp", "name_en": "Grammar Drill", "name_ja": "文法練習",
-    "description_vi": "Trả lời đúng 3 câu ngữ pháp hôm nay.",
-    "period": "daily", "type": "learn", "target": 3, "target_key": "grammar",
-    "reward": {"exp": 25, "gold": 120, "ma_thach": 0, "item_id": "", "item_count": 0}
-  },
-  {
-    "id": "daily_reading", "name_vi": "Đọc hội thoại", "name_en": "Reading Practice", "name_ja": "読解練習",
-    "description_vi": "Đọc hiểu đúng 2 đoạn hội thoại hôm nay.",
-    "period": "daily", "type": "learn", "target": 2, "target_key": "reading",
-    "reward": {"exp": 30, "gold": 120, "ma_thach": 0, "item_id": "item_silver_key", "item_count": 1}
-  },
-  {
     "id": "daily_goblin", "name_vi": "Diệt Goblin", "name_en": "Goblin Slayer", "name_ja": "ゴブリン討伐",
-    "description_vi": "Hạ 10 Goblin hôm nay.",
-    "period": "daily", "type": "kill", "target": 10, "target_key": "goblin",
-    "reward": {"exp": 30, "gold": 150, "ma_thach": 0, "item_id": "", "item_count": 0}
+    "description_vi": "Hạ 5 Goblin hôm nay.",
+    "period": "daily", "type": "kill", "target": 5, "target_key": "goblin",
+    "reward": {"exp": 50, "gold": 100, "silver_keys": 0, "golden_keys": 0}
   },
   {
-    "id": "weekly_learn", "name_vi": "Bậc thầy học tập", "name_en": "Study Master", "name_ja": "週間マスター",
-    "description_vi": "Học đúng 30 mục trong tuần này.",
-    "period": "weekly", "type": "learn", "target": 30, "target_key": "",
-    "reward": {"exp": 100, "gold": 500, "ma_thach": 0, "item_id": "item_golden_key", "item_count": 1}
+    "id": "daily_vocab", "name_vi": "Học từ mới", "name_en": "Learn Vocabulary", "name_ja": "新しい単語",
+    "description_vi": "Học đúng 5 từ mới hôm nay.",
+    "period": "daily", "type": "learn", "target": 5, "target_key": "vocab",
+    "reward": {"exp": 50, "gold": 100, "silver_keys": 0, "golden_keys": 0}
+  },
+  {
+    "id": "daily_listen", "name_vi": "Mini game Nghe", "name_en": "Listening Game", "name_ja": "リスニング",
+    "description_vi": "Chơi 1 mini game luyện nghe hôm nay.",
+    "period": "daily", "type": "minigame", "target": 1, "target_key": "listen",
+    "reward": {"exp": 40, "gold": 80, "silver_keys": 1, "golden_keys": 0}
+  },
+  {
+    "id": "daily_speak", "name_vi": "Mini game Nói", "name_en": "Speaking Game", "name_ja": "スピーキング",
+    "description_vi": "Chơi 1 mini game luyện nói hôm nay.",
+    "period": "daily", "type": "minigame", "target": 1, "target_key": "speak",
+    "reward": {"exp": 40, "gold": 80, "silver_keys": 1, "golden_keys": 0}
+  },
+  {
+    "id": "daily_write", "name_vi": "Mini game Viết", "name_en": "Writing Game", "name_ja": "ライティング",
+    "description_vi": "Chơi 1 mini game luyện viết hôm nay.",
+    "period": "daily", "type": "minigame", "target": 1, "target_key": "write",
+    "reward": {"exp": 40, "gold": 80, "silver_keys": 1, "golden_keys": 0}
   },
   {
     "id": "weekly_goblin", "name_vi": "Thợ săn Goblin", "name_en": "Goblin Hunter", "name_ja": "週間ゴブリン狩り",
     "description_vi": "Hạ 50 Goblin trong tuần này.",
     "period": "weekly", "type": "kill", "target": 50, "target_key": "goblin",
-    "reward": {"exp": 150, "gold": 600, "ma_thach": 0, "item_id": "item_golden_key", "item_count": 1}
+    "reward": {"exp": 300, "gold": 500, "silver_keys": 1, "golden_keys": 1}
+  },
+  {
+    "id": "weekly_vocab", "name_vi": "Bậc thầy từ vựng", "name_en": "Vocabulary Master", "name_ja": "週間単語マスター",
+    "description_vi": "Học đúng 50 từ mới trong tuần này.",
+    "period": "weekly", "type": "learn", "target": 50, "target_key": "vocab",
+    "reward": {"exp": 300, "gold": 500, "silver_keys": 2, "golden_keys": 1}
+  },
+  {
+    "id": "weekly_listen", "name_vi": "Cao thủ Nghe", "name_en": "Listening Master", "name_ja": "週間リスニング",
+    "description_vi": "Chơi 10 mini game luyện nghe trong tuần này.",
+    "period": "weekly", "type": "minigame", "target": 10, "target_key": "listen",
+    "reward": {"exp": 300, "gold": 500, "silver_keys": 2, "golden_keys": 1}
+  },
+  {
+    "id": "weekly_speak", "name_vi": "Cao thủ Nói", "name_en": "Speaking Master", "name_ja": "週間スピーキング",
+    "description_vi": "Chơi 10 mini game luyện nói trong tuần này.",
+    "period": "weekly", "type": "minigame", "target": 10, "target_key": "speak",
+    "reward": {"exp": 300, "gold": 500, "silver_keys": 2, "golden_keys": 1}
+  },
+  {
+    "id": "weekly_write", "name_vi": "Cao thủ Viết", "name_en": "Writing Master", "name_ja": "週間ライティング",
+    "description_vi": "Chơi 10 mini game luyện viết trong tuần này.",
+    "period": "weekly", "type": "minigame", "target": 10, "target_key": "write",
+    "reward": {"exp": 300, "gold": 500, "silver_keys": 2, "golden_keys": 1}
   }
 ]

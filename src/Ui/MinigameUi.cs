@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using FragmentOfJapanese.Autoloads;
 using FragmentOfJapanese.Core;
+using FragmentOfJapanese.Entities;
 using FragmentOfJapanese.Entities.Enemy;
 using FragmentOfJapanese.Entities.Player;
+using FragmentOfJapanese.Learning;
 
 namespace FragmentOfJapanese.Ui;
 
@@ -28,6 +30,7 @@ public partial class MinigameUi : CanvasLayer
     [Export] private Button _btnPlayAudio;
     [Export] private GridContainer _cardsContainer;
     [Export] private AudioStreamPlayer _audioPlayer;
+    [Export] private Label _lblResult;
 
     private int _currentQuestion = 0;
     private const int MaxQuestions = 5;
@@ -39,6 +42,7 @@ public partial class MinigameUi : CanvasLayer
     private List<VocabularyEntry> _pool = new();
     private Random _rand = new();
     private Dictionary<string, AudioStream> _audioCache = new();
+    private int _mistakeCount = 0;
 
     // Mode
     private string _currentMode = "hiragana"; // or "vocab"
@@ -48,10 +52,60 @@ public partial class MinigameUi : CanvasLayer
         Instance = this;
         if (_root != null) _root.Visible = false;
 
-        if (_btnModeHiragana != null) _btnModeHiragana.Pressed += () => StartGame("hiragana");
-        if (_btnModeVocab != null) _btnModeVocab.Pressed += () => StartGame("vocab");
+        PopulateLessonList();
+        
         if (_btnClose != null) _btnClose.Pressed += Close;
         if (_btnPlayAudio != null) _btnPlayAudio.Pressed += PlayCurrentAudio;
+    }
+
+    private GridContainer _lessonGrid;
+    private Button _btnReview;
+
+    private void PopulateLessonList()
+    {
+        if (_btnModeHiragana != null) { _btnModeHiragana.QueueFree(); _btnModeHiragana = null; }
+        if (_btnModeVocab != null) { _btnModeVocab.QueueFree(); _btnModeVocab = null; }
+
+        var vbox = _btnClose?.GetParent() as Container;
+        if (vbox == null) return;
+
+        var title = new Label { Text = "CHỌN BÀI HỌC", HorizontalAlignment = HorizontalAlignment.Center };
+        title.AddThemeFontSizeOverride("font_size", 36);
+        vbox.AddChild(title);
+        vbox.MoveChild(title, 0);
+
+        var scroll = new ScrollContainer { CustomMinimumSize = new Vector2(700, 400) };
+        _lessonGrid = new GridContainer { Columns = 3 };
+        _lessonGrid.AddThemeConstantOverride("h_separation", 15);
+        _lessonGrid.AddThemeConstantOverride("v_separation", 15);
+        scroll.AddChild(_lessonGrid);
+        vbox.AddChild(scroll);
+        vbox.MoveChild(scroll, 1);
+
+        for (int i = 1; i <= 25; i++)
+        {
+            int lessonNum = i;
+            var btn = new Button { Text = $"Bài {lessonNum}", CustomMinimumSize = new Vector2(200, 80) };
+            btn.AddThemeFontSizeOverride("font_size", 26);
+            btn.FocusMode = Control.FocusModeEnum.None;
+            btn.Pressed += () => StartGame(lessonNum.ToString());
+            _lessonGrid.AddChild(btn);
+        }
+
+        _btnModeHiragana = new Button { Text = "Bảng chữ cái Hiragana", CustomMinimumSize = new Vector2(630, 70) };
+        _btnModeHiragana.AddThemeFontSizeOverride("font_size", 28);
+        _btnModeHiragana.FocusMode = Control.FocusModeEnum.None;
+        _btnModeHiragana.Pressed += () => StartGame("hiragana");
+        UiKit.StyleButton(_btnModeHiragana, new Color(0.8f, 0.5f, 0.2f), new Color(0.9f, 0.6f, 0.3f), new Color(0.6f, 0.4f, 0.1f), radius: 12);
+        vbox.AddChild(_btnModeHiragana);
+        vbox.MoveChild(_btnModeHiragana, 2);
+
+        _btnReview = new Button { Text = "Ôn Tập Tổng Hợp", CustomMinimumSize = new Vector2(630, 70) };
+        _btnReview.AddThemeFontSizeOverride("font_size", 28);
+        _btnReview.FocusMode = Control.FocusModeEnum.None;
+        _btnReview.Pressed += () => StartGame("review");
+        vbox.AddChild(_btnReview);
+        vbox.MoveChild(_btnReview, 3);
     }
 
     public override void _Process(double delta)
@@ -66,6 +120,10 @@ public partial class MinigameUi : CanvasLayer
 
         if (_timeRemaining <= 0)
         {
+            if (LearningTracker.Instance != null && _currentMode != "hiragana" && !string.IsNullOrEmpty(_currentCorrectId))
+            {
+                LearningTracker.Instance.Record(ItemKind.Vocab, _currentCorrectId, false, 20000);
+            }
             HandleWrongAnswer();
         }
     }
@@ -76,9 +134,39 @@ public partial class MinigameUi : CanvasLayer
         _root.Visible = true;
         _modeSelectionPanel.Visible = true;
         _questionPanel.Visible = false;
+        if (_lblResult != null) _lblResult.Visible = false;
         _isPlaying = false;
         _isWaitingForCombat = false;
         SetHudVisible(false);
+        UpdateLessonUI();
+    }
+
+    private void UpdateLessonUI()
+    {
+        if (_lessonGrid == null) return;
+        int unlocked = LearningTracker.Instance != null ? LearningTracker.Instance.UnlockedLesson : 1;
+        for (int i = 0; i < _lessonGrid.GetChildCount(); i++)
+        {
+            if (_lessonGrid.GetChild(i) is Button btn)
+            {
+                int lessonNum = i + 1;
+                if (lessonNum <= unlocked)
+                {
+                    btn.Disabled = false;
+                    UiKit.StyleButton(btn, UiKit.WoodCard, UiKit.Fade(UiKit.Accent, 0.4f), UiKit.Accent, radius: 12);
+                }
+                else
+                {
+                    btn.Disabled = true;
+                    UiKit.StyleButton(btn, new Color(0.1f, 0.1f, 0.1f, 0.5f), new Color(0.1f, 0.1f, 0.1f, 0.5f), new Color(0.1f, 0.1f, 0.1f, 0.5f), new Color(0.1f, 0.1f, 0.1f, 0.5f), radius: 12);
+                }
+            }
+        }
+        if (_btnReview != null)
+        {
+            _btnReview.Text = $"Ôn Tập Tổng Hợp (Bài 1 - {unlocked})";
+            UiKit.StyleButton(_btnReview, new Color(0.2f, 0.6f, 0.2f), new Color(0.3f, 0.7f, 0.3f), new Color(0.1f, 0.5f, 0.1f), radius: 12);
+        }
     }
 
     public void Close()
@@ -92,15 +180,42 @@ public partial class MinigameUi : CanvasLayer
 
     private void StartGame(string mode)
     {
+        var player = GetTree().GetFirstNodeInGroup("player") as Player;
+        if (player != null && !player.UseMana(5))
+        {
+            UiKit.GlobalToast("Không đủ Mana! Cần 5 Mana.", 2.5f);
+            return;
+        }
+
         _currentMode = mode;
         _currentQuestion = 0;
+        _mistakeCount = 0;
         _modeSelectionPanel.Visible = false;
         _questionPanel.Visible = true;
 
-        if (mode == "hiragana") _pool = new List<VocabularyEntry>(JapaneseDB.Instance.Hiragana);
-        else _pool = new List<VocabularyEntry>(JapaneseDB.Instance.VocabN5);
+        if (mode == "review")
+        {
+            int unlocked = LearningTracker.Instance != null ? LearningTracker.Instance.UnlockedLesson : 1;
+            _pool = JapaneseDB.Instance.VocabN5
+                .Where(v => v.Lesson <= unlocked)
+                .ToList();
+        }
+        else if (mode == "hiragana")
+        {
+            _pool = new List<VocabularyEntry>(JapaneseDB.Instance.Hiragana);
+        }
+        else if (int.TryParse(mode, out int lessonNum))
+        {
+            _pool = JapaneseDB.Instance.VocabN5
+                .Where(v => v.Lesson == lessonNum)
+                .ToList();
+        }
+        else 
+        {
+            _pool = JapaneseDB.Instance.VocabN5.ToList();
+        }
 
-        // Filter pool to only include entries with existing audio
+        // Lọc pool chỉ giữ lại những từ có sẵn audio
         string pathPrefix = mode == "hiragana" ? "res://assets/audio/hiragana/" : "res://assets/audio/vocab/";
         _pool = _pool.Where(e => ResourceLoader.Exists($"{pathPrefix}{e.Id}.mp3")).ToList();
 
@@ -114,8 +229,7 @@ public partial class MinigameUi : CanvasLayer
         {
             // WIN
             GD.Print("[Minigame] Hoàn thành 5 thử thách!");
-            // TODO: Give reward
-            Close();
+            ShowResult(true);
             return;
         }
 
@@ -156,28 +270,45 @@ public partial class MinigameUi : CanvasLayer
         for (int i = 0; i < 4; i++)
         {
             var entry = shuffled[i];
-            var btn = CreateCardButton(entry);
-            btn.Pressed += () => OnAnswerSelected(entry.Id);
+            var btn = CreateCardButton();
+            btn.Pressed += () => OnAnswerSelected(btn);
             _cardsContainer.AddChild(btn);
+
+            string mainText = JapaneseDB.ToHiragana(entry.Kana); // Chuyển toàn bộ Katakana sang Hiragana
+            string finalTxt = $"{mainText}\n\n{entry.MeaningVi}";
+            btn.SetMeta("final_txt", finalTxt);
+            btn.SetMeta("entry_id", entry.Id);
+
+            var t = CreateTween();
+            float delay = i * 0.15f;
+            
+            t.TweenProperty(btn, "scale:x", 0.0f, 0.2f).SetDelay(delay).SetTrans(Tween.TransitionType.Sine);
+            t.TweenCallback(Callable.From(() => {
+                btn.Text = mainText;
+                btn.AddThemeFontSizeOverride("font_size", 64);
+                UiKit.StyleButton(btn, UiKit.WoodCard, UiKit.WoodBorder, UiKit.WoodDark, radius: 24);
+                btn.Disabled = false;
+            }));
+            t.TweenProperty(btn, "scale:x", 1.0f, 0.2f).SetTrans(Tween.TransitionType.Sine);
         }
     }
 
-    private Button CreateCardButton(VocabularyEntry entry)
+    private Button CreateCardButton()
     {
-        string mainText = _currentMode == "hiragana" ? entry.Kana : (!string.IsNullOrEmpty(entry.Kanji) ? entry.Kanji : entry.Kana);
-        
         var btn = new Button
         {
-            CustomMinimumSize = new Vector2(180, 120),
+            CustomMinimumSize = new Vector2(220, 300),
             FocusMode = Control.FocusModeEnum.None,
-            Text = $"{mainText}\n{entry.MeaningVi}",
-            MouseFilter = Control.MouseFilterEnum.Stop
+            Text = "?",
+            MouseFilter = Control.MouseFilterEnum.Stop,
+            PivotOffset = new Vector2(110, 150),
+            Disabled = true
         };
 
-        btn.AddThemeFontSizeOverride("font_size", 24);
+        btn.AddThemeFontSizeOverride("font_size", 64);
         btn.AddThemeColorOverride("font_color", UiKit.WoodText);
         
-        UiKit.StyleButton(btn, UiKit.WoodCard, UiKit.WoodBorder, UiKit.WoodDark, radius: 15);
+        UiKit.StyleButton(btn, UiKit.WoodDark, UiKit.WoodBorder, UiKit.WoodCard, radius: 24);
 
         return btn;
     }
@@ -205,26 +336,63 @@ public partial class MinigameUi : CanvasLayer
         }
     }
 
-    private void OnAnswerSelected(string selectedId)
+    private void OnAnswerSelected(Button selectedBtn)
     {
         if (!_isPlaying || _isWaitingForCombat) return;
 
-        if (selectedId == _currentCorrectId)
+        _isPlaying = false;
+        
+        string selectedId = selectedBtn.GetMeta("entry_id").AsString();
+        bool isCorrect = selectedId == _currentCorrectId;
+
+        if (LearningTracker.Instance != null)
         {
-            // Đoán đúng
-            _isPlaying = false;
-            // TODO: Hiệu ứng đúng
-            NextQuestion();
+            double responseMs = (20f - _timeRemaining) * 1000.0;
+            LearningTracker.Instance.Record(ItemKind.Vocab, _currentCorrectId, isCorrect, responseMs);
         }
-        else
+
+        // Reveal text and colors
+        foreach (Node child in _cardsContainer.GetChildren())
         {
-            // Đoán sai
-            HandleWrongAnswer();
+            if (child is Button b)
+            {
+                b.MouseFilter = Control.MouseFilterEnum.Ignore; // Vô hiệu hóa chuột thay vì Disabled để giữ màu
+                b.Text = b.GetMeta("final_txt").AsString();
+                b.AddThemeFontSizeOverride("font_size", 36);
+                
+                string id = b.GetMeta("entry_id").AsString();
+                if (id == _currentCorrectId)
+                {
+                    // Green for correct
+                    UiKit.StyleButton(b, new Color(0.15f, 0.65f, 0.25f), new Color(0.15f, 0.65f, 0.25f), new Color(0.15f, 0.65f, 0.25f), radius: 24);
+                }
+                else if (b == selectedBtn && !isCorrect)
+                {
+                    // Red for incorrect
+                    UiKit.StyleButton(b, new Color(0.85f, 0.25f, 0.25f), new Color(0.85f, 0.25f, 0.25f), new Color(0.85f, 0.25f, 0.25f), radius: 24);
+                }
+            }
         }
+
+        // Wait before proceeding
+        var t = CreateTween();
+        t.TweenInterval(1.5f);
+        t.TweenCallback(Callable.From(() => 
+        {
+            if (isCorrect)
+            {
+                NextQuestion();
+            }
+            else
+            {
+                HandleWrongAnswer();
+            }
+        }));
     }
 
     private void HandleWrongAnswer()
     {
+        _mistakeCount++;
         _isPlaying = false;
         _isWaitingForCombat = true;
         _root.Visible = false; // Ẩn UI để đánh quái
@@ -248,12 +416,18 @@ public partial class MinigameUi : CanvasLayer
 
         var goblin = goblinScene.Instantiate<Enemy>();
         
-        // Đặt vị trí gần player (cách khoảng 3m)
-        Vector3 offset = new Vector3((_rand.Next(2) == 0 ? 1 : -1) * 3f, 0, (_rand.Next(2) == 0 ? 1 : -1) * 3f);
-        goblin.GlobalPosition = player.GlobalPosition + offset;
+        // Tăng sức mạnh quái vật dựa trên số lần sai
+        int extraDamage = (_mistakeCount - 1) * 8; // Sai lần 1: dmg gốc. Sai lần 2: +8 dmg. Sai lần 3: +16 dmg...
+        goblin.Attack += extraDamage; 
+        var zone = goblin.GetNodeOrNull<AttackZone>("AttackZone");
+        if (zone != null) zone.Damage += extraDamage;
         
         // Spawn vào level
         player.GetParent().AddChild(goblin);
+
+        // Đặt vị trí gần player (cách khoảng 3m)
+        Vector3 offset = new Vector3((_rand.Next(2) == 0 ? 1 : -1) * 3f, 0, (_rand.Next(2) == 0 ? 1 : -1) * 3f);
+        goblin.GlobalPosition = player.GlobalPosition + offset;
 
         // Lắng nghe sự kiện chết
         goblin.Died += OnGoblinDefeated;
@@ -290,7 +464,48 @@ public partial class MinigameUi : CanvasLayer
         if (player != null) player.Died -= OnPlayerDied;
 
         // Đóng minigame luôn
-        Close();
+        ShowResult(false);
+    }
+
+
+
+    private void ShowResult(bool isVictory)
+    {
+        _isPlaying = false;
+        _isWaitingForCombat = false;
+
+        // Thắng mini game nghe → báo tiến độ quest (daily_listen / weekly_listen).
+        if (isVictory) Quests.QuestManager.Instance?.Report("minigame", "listen");
+
+        // Hiện background mờ và giấu câu hỏi
+        _questionPanel.Visible = false;
+        _root.Visible = true;
+        
+        if (_lblResult != null)
+        {
+            _lblResult.Visible = true;
+            _lblResult.Text = isVictory ? "CHIẾN THẮNG!" : "THẤT BẠI!";
+            _lblResult.AddThemeColorOverride("font_color", isVictory ? new Color(1, 0.8f, 0.2f) : new Color(1, 0.3f, 0.3f));
+            
+            // Animation
+            _lblResult.PivotOffset = _lblResult.Size / 2;
+            _lblResult.Scale = Vector2.Zero;
+            var t = CreateTween();
+            t.TweenProperty(_lblResult, "scale", Vector2.One, 0.5f).SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
+            
+            // Tắt sau 2s
+            t.TweenInterval(2.0f);
+            t.TweenCallback(Callable.From(() => 
+            {
+                _lblResult.Visible = false;
+                _root.Visible = false;
+                MinigameRewardUi.ShowReward("LUYỆN NGHE", isVictory, Close);
+            }));
+        }
+        else
+        {
+            Close();
+        }
     }
 
     private void SetHudVisible(bool visible)

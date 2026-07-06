@@ -96,14 +96,14 @@ public partial class QuestManager : Node
         if (!res.IsSuccessStatusCode) return false;
 
         var r = q.Reward;
-        // Vàng do SERVER cộng khi /claim → chỉ đồng bộ lại ví (tránh đếm trùng).
-        _ = Wallet.Instance?.SyncAsync();
-        // Vật phẩm thưởng → grant qua server để lưu thật.
-        if (!string.IsNullOrEmpty(r.ItemId) && r.ItemCount > 0)
-            _ = Inventory.Instance?.GrantAsync(r.ItemId, r.ItemCount);
+        // Server cộng HẾT khi /claim (Vàng + EXP + chìa) → client chỉ đồng bộ lại (tránh đếm trùng).
+        _ = Wallet.Instance?.SyncAsync();       // Vàng
+        _ = Inventory.Instance?.SyncAsync();    // chìa bạc/vàng
+        var player = GetTree().GetFirstNodeInGroup("player") as Entities.Player.Player;
+        if (player != null) _ = player.SyncFromServerAsync();   // EXP/cấp
 
         StateOf(id).Claimed = true;
-        GD.Print($"[Quest] Nhận '{q.NameVi}': +{r.Exp} exp, +{r.Gold} Vàng, +{r.MaThach} Ma Thạch");
+        GD.Print($"[Quest] Nhận '{q.NameVi}': +{r.Exp} exp, +{r.Gold} Vàng, +{r.SilverKeys} bạc, +{r.GoldenKeys} vàng");
         Claimed?.Invoke(q);   
         return true;
     }

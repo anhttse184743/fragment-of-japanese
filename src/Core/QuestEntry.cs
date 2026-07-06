@@ -10,6 +10,8 @@ public class QuestReward
     [JsonPropertyName("ma_thach")]   public int    MaThach   { get; set; }
     [JsonPropertyName("item_id")]    public string ItemId    { get; set; } = "";
     [JsonPropertyName("item_count")] public int    ItemCount { get; set; }
+    [JsonPropertyName("silver_keys")] public int   SilverKeys { get; set; }
+    [JsonPropertyName("golden_keys")] public int   GoldenKeys { get; set; }
 }
 
 /// <summary>
