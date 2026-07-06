@@ -47,6 +47,8 @@ public partial class MinigameUi : CanvasLayer
     // Mode
     private string _currentMode = "hiragana"; // or "vocab"
 
+    private Enemy _penaltyGoblin;   // goblin phạt hiện tại (dọn khi thua/đóng để không kẹt lại thế giới)
+
     public override void _Ready()
     {
         Instance = this;
@@ -175,6 +177,13 @@ public partial class MinigameUi : CanvasLayer
         _root.Visible = false;
         _isPlaying = false;
         _isWaitingForCombat = false;
+
+        // An toàn: gỡ listener + dọn goblin phạt còn sót (nếu đóng giữa lúc combat).
+        var player = GetTree().GetFirstNodeInGroup("player") as Player;
+        if (player != null) player.Died -= OnPlayerDied;
+        if (IsInstanceValid(_penaltyGoblin)) _penaltyGoblin.QueueFree();
+        _penaltyGoblin = null;
+
         SetHudVisible(true);
     }
 
@@ -415,7 +424,8 @@ public partial class MinigameUi : CanvasLayer
         if (goblinScene == null) return;
 
         var goblin = goblinScene.Instantiate<Enemy>();
-        
+        _penaltyGoblin = goblin;
+
         // Tăng sức mạnh quái vật dựa trên số lần sai
         int extraDamage = (_mistakeCount - 1) * 8; // Sai lần 1: dmg gốc. Sai lần 2: +8 dmg. Sai lần 3: +16 dmg...
         goblin.Attack += extraDamage; 
@@ -442,6 +452,7 @@ public partial class MinigameUi : CanvasLayer
         var player = GetTree().GetFirstNodeInGroup("player") as Player;
         if (player != null) player.Died -= OnPlayerDied;
 
+        _penaltyGoblin = null;   // goblin này đã bị hạ (tự QueueFree khi chết)
         _isWaitingForCombat = false;
         _root.Visible = true;
         SetHudVisible(false);
@@ -462,6 +473,10 @@ public partial class MinigameUi : CanvasLayer
         // Xóa listener
         var player = GetTree().GetFirstNodeInGroup("player") as Player;
         if (player != null) player.Died -= OnPlayerDied;
+
+        // Dọn goblin phạt để nó không kẹt lại tấn công trong thế giới sau khi minigame đóng.
+        if (IsInstanceValid(_penaltyGoblin)) _penaltyGoblin.QueueFree();
+        _penaltyGoblin = null;
 
         // Đóng minigame luôn
         ShowResult(false);

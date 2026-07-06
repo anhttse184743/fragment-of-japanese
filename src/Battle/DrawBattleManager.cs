@@ -24,6 +24,7 @@ public partial class DrawBattleManager : Node
     private Camera3D _battleCamera;
     private Node3D _battleArena;
     private PlayerController _playerController;
+    private bool _turnResolved;   // chặn xử lý 2 lần khi vẽ-xong trùng đúng lúc hết giờ
 
     public static void StartBattleFromWorld()
     {
@@ -197,15 +198,18 @@ public partial class DrawBattleManager : Node
             if (h.Romaji == targetStrokes.Romaji) { kana = h.Kana; break; }
         }
 
+        _turnResolved = false;
         _ui.ShowPrompt($"Hãy vẽ chữ: {kana} ({targetStrokes.Romaji})", 10.0f);
         _ui.SetTargetStrokes(targetStrokes);
-        
+
         _timer.Start();
     }
 
     public void OnDrawEvaluated(StrokeRecognizer.Result result)
     {
-        _timer.Stop(); 
+        if (_turnResolved) return;
+        _turnResolved = true;
+        _timer.Stop();
 
         float score = result.Pass ? result.Score : 0f;
 
@@ -245,6 +249,8 @@ public partial class DrawBattleManager : Node
     private void OnTurnTimeout()
     {
         if (!IsInstanceValid(this) || _ui == null) return;
+        if (_turnResolved) return;
+        _turnResolved = true;
 
         // Player không kịp vẽ -> Quái đánh
         _ui.ShowFeedback("Hết giờ! Quái vật tấn công", Colors.Orange);
